@@ -1,0 +1,110 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xml:lang="en" lang="en"
+      i18n:domain="plone"
+      metal:use-macro="here/main_template/macros/master">
+
+  <head>
+      <metal:block fill-slot="top_slot">
+        <tal:insert tal:replace="nothing"
+              tal:define="dummy python:request.set('enable_border', 1)" />
+      </metal:block>
+      <metal:css fill-slot="style_slot">
+      <link href="++resource++wcfc/bootstrap/bootstrap-fixed.css" 
+        tal:attributes="href string:${context/portal_url}/++resource++wcfc/bootstrap/bootstrap-fixed.css"
+        rel="stylesheet" type="text/css"/>
+        <link href="++resource++wcfc/uploadify/uploadify.css" 
+        tal:attributes="href string:${context/portal_url}/++resource++wcfc/uploadify/uploadify.css"
+        rel="stylesheet" type="text/css"/>
+  </metal:css>
+  <metal:js fill-slot="javascript_head_slot">
+    <script type="text/javascript" src="++resource++wcfc/jquery.js"
+      tal:attributes="src string:${context/portal_url}/++resource++wcfc/jquery.js"></script>
+    <script type="text/javascript" src="++resource++wcfc/collective.js.jqueryui.custom.min.js"
+      tal:attributes="src string:${context/portal_url}/collective.js.jqueryui.custom.min.js"></script>
+    <script type="text/javascript" src="++resource++wcfc/bootstrap/bootstrap-dropdown.js"
+      tal:attributes="src string:${context/portal_url}/++resource++wcfc/bootstrap/bootstrap-dropdown.js"></script>
+    <script type="text/javascript" src="++resource++wcfc/uploadify/uploadify.js"
+      tal:attributes="src string:${context/portal_url}/++resource++wcfc/uploadify/uploadify.js"></script>
+    <script type="text/javascript" tal:content="view/uploadify"></script>
+    <script type="text/javascript" src="++resource++wcfc/integration.js"
+      tal:attributes="src string:${context/portal_url}/++resource++wcfc/integration.js"></script>
+
+  </metal:js>
+  </head>
+
+  <body>
+
+      <metal:content-title fill-slot="content-title">
+          <h1 class="documentFirstHeading"> 
+              <tal:block condition="exists:here/aq_explicit/widget">
+                  <metal:field use-macro="python:here.widget('title', mode='view')">
+                  Title
+                  </metal:field>
+              </tal:block>
+              <tal:block condition="not:exists:here/aq_explicit/widget">
+                  <span tal:content="view/title" tal:omit-tag="">Directory Id</span>
+              </tal:block>
+          </h1>        
+      </metal:content-title>
+      
+      <metal:content-description fill-slot="content-description">
+          <div class="documentDescription" tal:condition="exists:here/aq_explicit/widget">
+              <metal:field use-macro="python:here.widget('description', mode='view')">
+                  Description
+              </metal:field>
+          </div>
+          <tal:block condition="not:exists:here/aq_explicit/widget">
+              <div class="documentDescription" 
+                         tal:content="context/Description" 
+                         tal:condition="context/Description"> 
+                  Description
+              </div>
+          </tal:block>
+      </metal:content-description>
+
+      <metal:content-core fill-slot="content-core">
+          <a href=""
+             class="link-parent"
+             tal:define="parent_url view/parent_url"
+             tal:condition="parent_url"
+             tal:attributes="href string:${parent_url}/folder_contents"
+             i18n:translate="go_to_parent_url">
+              Up one level
+          </a>
+
+        <div class="fc">
+          <form name="folderContentsForm"
+                method="post"
+                action="folder_object"
+                tal:attributes="action context/absolute_url"
+                class="kssattr-serveraction-foldercontents_update_table">
+            <div tal:replace="structure view/contents_table"></div>
+            <input tal:replace="structure context/@@authenticator/authenticator" />
+          </form>
+          <div id="uploader"></div>
+          <div id="sort-container" style="display:none">
+            <form class="well form-inline" method="POST"
+              tal:attributes="action string:${context/absolute_url}/@@wcfcsort">
+              <label>Sort on:</label>
+              <select name="on">
+                <option value="sortable_title">Title</option>
+                <option value="id">ID</option>
+                <option value="modified">Modification Date</option>
+                <option value="created">Creation Date</option>
+                <option value="effective">Effective Date</option>
+              </select>
+              <label class="checkbox">
+                <input type="checkbox" name="reversed"> Reversed
+              </label>
+              <input tal:replace="structure context/@@authenticator/authenticator" />
+              <button type="submit" class="btn btn-warning">Sort folder</button>
+            </form>
+          </div>
+        </div>
+      </metal:content-core>
+      
+  </body>
+</html>

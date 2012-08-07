@@ -1,0 +1,55 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="wildcard.foldercontents">
+
+  <five:registerPackage package="." initialize=".initialize" />
+
+  <browser:page
+    for="Products.CMFCore.interfaces._content.IFolderish"
+    class=".views.NewFolderContentsView"
+    name="folder_contents"
+    template="folder_contents.pt"
+    permission="cmf.ListFolderContents"
+    layer=".interfaces.ILayer" />
+
+  <browser:page
+    for="Products.CMFCore.interfaces._content.IFolderish"
+    class=".views.Move"
+    name="fcmove"
+    permission="cmf.ModifyPortalContent"
+    layer=".interfaces.ILayer" />
+
+  <browser:page
+    for="Products.CMFCore.interfaces._content.IFolderish"
+    class=".views.Uploadify"
+    name="fcuploadify"
+    permission="cmf.AddPortalContent"
+    layer=".interfaces.ILayer" />
+    
+  <browser:page
+    for="Products.CMFCore.interfaces._content.IFolderish"
+    class=".views.Sort"
+    name="wcfcsort"
+    permission="cmf.ModifyPortalContent"
+    layer=".interfaces.ILayer" />
+
+  <browser:resourceDirectory
+    name="wcfc"
+    directory="resources"
+  />
+
+  <genericsetup:registerProfile
+      name="default"
+      title="wildcard.foldercontents"
+      directory="profiles/default"
+      description="Installs the wildcard.foldercontents package"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <adapter factory=".factories.ACTCFileFactory" />
+  
+</configure>
