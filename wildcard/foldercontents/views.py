@@ -76,8 +76,11 @@ class NewFolderContentsView(FolderContentsView):
     function addUploader(){
         $('#uploader').uploadify({
             'swf': portal_url + '/++resource++wcfc/uploadify/uploadify.swf',
-            'uploader'      : $('base').attr('href') + '@@fcuploadify',
-            'formData'    : {'cookie': '%s'}
+            'uploader': $('base').attr('href') + '@@fcuploadify',
+            'formData': {'cookie': '%s'},
+            'onQueueComplete': function(){
+                window.location.reload();
+            }
         });
     }""" % encode(self.request.cookies.get('__ac', ''))
 
@@ -126,6 +129,8 @@ class Sort(BrowserView):
             'query': '/'.join(self.context.getPhysicalPath()),
             'depth': 1
         }, sort_on=self.request.form.get('on'))
+        if self.request.form.get('reversed'):
+            brains = [b for b in reversed(brains)]
         for idx, brain in enumerate(brains):
             ordering.moveObjectToPosition(brain.id, idx)
         self.request.response.redirect(
