@@ -109,7 +109,7 @@ fc = {
         });
 
         $('#upload-files').click(function(){
-            addUploader();
+            $('#uploader').show();
             return false;
         });
         $('#sort-folder').click(function(){

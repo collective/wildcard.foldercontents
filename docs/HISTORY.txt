@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.0a3 (unreleased)
+------------------
+
+- Switch to using jupload so it works with cookies properly.
+  This fixes issues when behind multi-factor authentication. 
+
 1.0a2 (2012-08-06)
 ------------------
 

@@ -15,9 +15,6 @@
       <link href="++resource++wcfc/bootstrap/bootstrap-fixed.css" 
         tal:attributes="href string:${context/portal_url}/++resource++wcfc/bootstrap/bootstrap-fixed.css"
         rel="stylesheet" type="text/css"/>
-        <link href="++resource++wcfc/uploadify/uploadify.css" 
-        tal:attributes="href string:${context/portal_url}/++resource++wcfc/uploadify/uploadify.css"
-        rel="stylesheet" type="text/css"/>
   </metal:css>
   <metal:js fill-slot="javascript_head_slot">
     <script type="text/javascript" src="++resource++wcfc/jquery.js"
@@ -26,9 +23,6 @@
       tal:attributes="src string:${context/portal_url}/collective.js.jqueryui.custom.min.js"></script>
     <script type="text/javascript" src="++resource++wcfc/bootstrap/bootstrap-dropdown.js"
       tal:attributes="src string:${context/portal_url}/++resource++wcfc/bootstrap/bootstrap-dropdown.js"></script>
-    <script type="text/javascript" src="++resource++wcfc/uploadify/uploadify.js"
-      tal:attributes="src string:${context/portal_url}/++resource++wcfc/uploadify/uploadify.js"></script>
-    <script type="text/javascript" tal:content="view/uploadify"></script>
     <script type="text/javascript" src="++resource++wcfc/integration.js"
       tal:attributes="src string:${context/portal_url}/++resource++wcfc/integration.js"></script>
 
@@ -84,7 +78,21 @@
             <div tal:replace="structure view/contents_table"></div>
             <input tal:replace="structure context/@@authenticator/authenticator" />
           </form>
-          <div id="uploader"></div>
+          <div id="uploader" style="display:none;">
+            <applet code="wjhk.jupload2.JUploadApplet" name="JUpload"
+              archive="wjhk.jupload.jar" width="640" height="300" mayscript="true"
+              alt="The java pugin must be installed."
+              tal:attributes="archive string:${context/portal_url}/++resource++wcfc/jupload/wjhk.jupload.jar">
+            <param name="postURL" value=""
+              tal:attributes="value string:${context/absolute_url}/@@fcjupload">
+            <param name="afterUploadURL" value=""
+              tal:attributes="value string:${context/absolute_url}/@@folder_contents">
+            <param name="lookAndFeel" value="system" />
+            <!-- Optionnal, see code comments -->
+            <param name="showLogWindow" value="false">
+            Java 1.5 or higher plugin required. 
+        </applet>
+          </div>
           <div id="sort-container" style="display:none">
             <form class="well form-inline" method="POST"
               tal:attributes="action string:${context/absolute_url}/@@wcfcsort">
