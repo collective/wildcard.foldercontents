@@ -111,11 +111,11 @@ fc = {
         });
 
         $('#upload-files').click(function(){
-            $('#uploader').show();
+            $('#fileupload').fadeIn();
             return false;
         });
         $('#sort-folder').click(function(){
-            $('#sort-container').show();
+            $('#sort-container').fadeIn();
             return false;
         });
 
@@ -137,6 +137,7 @@ fc = {
                 last_checked = $(this);
             }
         });
+
     }
 };
 

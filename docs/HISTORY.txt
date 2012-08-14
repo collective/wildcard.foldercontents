@@ -1,10 +1,10 @@
 Changelog
 =========
 
-1.0a3 (unreleased)
+1.0a3 (2012-08-13)
 ------------------
 
-- Switch to using jupload so it works with cookies properly.
+- Switch to using jquery upload solution
 
 - provide some shift + click ability
 
