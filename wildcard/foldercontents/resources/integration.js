@@ -2,6 +2,8 @@ var id_prefix = 'folder-contents-item-';
 var container_id = 'folderlisting-main-table-noplonedrag';
 var load_more_locked = false;
 var last_folder_url = window.location.href;
+var shifted = false;
+var last_checked = null;
 
 fc = {
     showLoading: function(){
@@ -116,11 +118,31 @@ fc = {
             $('#sort-container').show();
             return false;
         });
+
+        $('#content-core').delegate('#listing-table input[type="checkbox"]', 'change', function(evt){
+            if(shifted && last_checked !== null){
+                //find closest sibling
+                var self = $(this);
+                var last_checked_index = last_checked.parents('tr').index();
+                var this_index = self.parents('tr').index();
+                $('#listing-table input[type="checkbox"]').each(function(){
+                    var el = $(this);
+                    var index = el.parents('tr').index();
+                    if((index > last_checked_index && index < this_index) ||
+                       (index < last_checked_index && index > this_index)){
+                        this.checked = self[0].checked;
+                    } 
+                });
+            }else{
+                last_checked = $(this);
+            }
+        });
     }
 };
 
 (function($){
 $(document).ready(function(){
     fc.initialize();
+    $(document).bind('keyup keydown', function(e){shifted = e.shiftKey} );
 });
 })(jQuery);
