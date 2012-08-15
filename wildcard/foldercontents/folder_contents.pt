@@ -15,8 +15,6 @@
       <link href="++resource++wcfc/bootstrap/bootstrap-fixed.css" 
         tal:attributes="href string:${resources_url}/bootstrap/bootstrap-fixed.css"
         rel="stylesheet" type="text/css"/>
-      <link rel="stylesheet" href="css/style.css"
-        tal:attributes="href string:${resources_url}/jquery-file-upload/css/style.css">
       <!-- Bootstrap Image Gallery styles -->
       <link rel="stylesheet"
         href="http://blueimp.github.com/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css"
