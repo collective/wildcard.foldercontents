@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0a3 (2012-08-13)
+1.0a3 (2012-08-15)
 ------------------
 
 - Switch to using jquery upload solution
