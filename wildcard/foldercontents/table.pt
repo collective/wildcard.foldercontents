@@ -61,6 +61,24 @@
           <th class="nosort column"
               id="foldercontents-order-column"
               tal:condition="view/show_sort_column">
+            <div class="btn-group">
+            <button data-toggle="dropdown" class="btn btn-small dropdown-toggle allowMultiSubmit">
+              Display sort order <span class="caret"></span></button>
+            <ul class="dropdown-menu" tal:define="baseurl view/sort_base_url">
+              <li><a href="#" tal:attributes="href string:${baseurl}">Folder Order</a></li>
+              <li><a href="#" tal:attributes="href string:${baseurl}Title">Title</a></li>
+              <li><a href="#" tal:attributes="href string:${baseurl}modified">Modification Date</a></li>
+              <li><a href="#" tal:attributes="href string:${baseurl}created">Creation Date</a></li>
+              <li><a href="#" tal:attributes="href string:${baseurl}effective">Effective Date</a></li>
+              <li tal:condition="python: 'sort_order' in request.form">
+                <a tal:attributes="href view/ascending_url">Ascending order</a>
+              </li>
+              <li tal:condition="python: 'sort_order' not in request.form">
+                <a tal:attributes="href view/descending_url">Descending order</a>
+              </li>
+            </ul>
+          </div>
+
           </th>
           <th class="nosort"
               id="foldercontents-select-column"

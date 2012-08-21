@@ -13,6 +13,7 @@ from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
 import mimetypes
 from zope.filerepresentation.interfaces import IFileFactory
 import json
+from urllib import urlencode
 
 import logging
 logger = logging.getLogger("wildcard.foldercontents")
@@ -21,12 +22,43 @@ logger = logging.getLogger("wildcard.foldercontents")
 class NewTable(Table):
     render = ViewPageTemplateFile('table.pt')
 
+    def sort_base_url(self):
+        form = dict(self.request.form)
+        if 'sort_on' in form:
+            del form['sort_on']
+        qs = urlencode(form)
+        if qs:
+            qs += '&'
+        return '%s/@@folder_contents?%ssort_on=' % (
+            self.base_url, qs)
+
+    def ascending_url(self):
+        form = dict(self.request.form)
+        if 'sort_order' in form:
+            del form['sort_order']
+        qs = urlencode(form)
+        return '%s/@@folder_contents?%s' % (
+            self.base_url, qs)
+
+    def descending_url(self):
+        form = dict(self.request.form)
+        form['sort_order'] = 'reverse'
+        qs = urlencode(form)
+        return '%s/@@folder_contents?%s' % (
+            self.base_url, qs)
+
 
 class NewFolderContentsTable(FolderContentsTable):
     def __init__(self, context, request, contentFilter=None):
         self.context = context
         self.request = request
         self.contentFilter = contentFilter is not None and contentFilter or {}
+        sort = self.request.form.get('sort_on')
+        if sort:
+            self.contentFilter['sort_on'] = sort
+        order = self.request.form.get('sort_order')
+        if order:
+            self.contentFilter['sort_order'] = 'reverse'
         self.items = self.folderitems()
 
         url = context.absolute_url()
@@ -114,6 +146,7 @@ class NewFolderContentsView(FolderContentsView):
 {% } %}
 </script>
 """
+
 
 def getOrdering(context):
     if IPloneSiteRoot.providedBy(context):
