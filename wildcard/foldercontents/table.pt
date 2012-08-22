@@ -66,7 +66,7 @@
               Display sort order <span class="caret"></span></button>
             <ul class="dropdown-menu" tal:define="baseurl view/sort_base_url">
               <li><a href="#" tal:attributes="href string:${baseurl}">Folder Order</a></li>
-              <li><a href="#" tal:attributes="href string:${baseurl}Title">Title</a></li>
+              <li><a href="#" tal:attributes="href string:${baseurl}sortable_title">Title</a></li>
               <li><a href="#" tal:attributes="href string:${baseurl}modified">Modification Date</a></li>
               <li><a href="#" tal:attributes="href string:${baseurl}created">Creation Date</a></li>
               <li><a href="#" tal:attributes="href string:${baseurl}effective">Effective Date</a></li>
