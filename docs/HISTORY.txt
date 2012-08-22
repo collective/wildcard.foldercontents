@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0b1 (unreleased)
+1.0b1 (2012-08-21)
 ------------------
 
 - provide ability to change display sort order
