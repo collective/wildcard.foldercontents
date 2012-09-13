@@ -1,3 +1,4 @@
+from zope.interface import Interface
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 from AccessControl import Unauthorized
@@ -14,9 +15,20 @@ import mimetypes
 from zope.filerepresentation.interfaces import IFileFactory
 import json
 from urllib import urlencode
+from Products.ATContentTypes.interfaces.topic import IATTopic
+try:
+    from plone.app.collection.interfaces import ICollection
+except ImportError:
+    class ICollection(Interface):
+        pass
 
 import logging
 logger = logging.getLogger("wildcard.foldercontents")
+
+
+def _is_collection(context):
+    return IATTopic.providedBy(context) or \
+        ICollection.providedBy(context)
 
 
 class NewTable(Table):
@@ -66,12 +78,15 @@ class NewFolderContentsTable(FolderContentsTable):
         self.table = NewTable(request, url, view_url, self.items,
                            show_sort_column=self.show_sort_column,
                            buttons=self.buttons)
+        self.table.is_collection = _is_collection(self.context)
 
 
 class NewFolderContentsView(FolderContentsView):
 
     @property
     def orderable(self):
+        if _is_collection(self.context):
+            return False
         if IPloneSiteRoot.providedBy(self.context):
             return True
         ordering = self.context.getOrdering()

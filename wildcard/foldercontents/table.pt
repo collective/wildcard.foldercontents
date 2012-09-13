@@ -1,5 +1,6 @@
 <div id="folderlisting-main-table-noplonedrag"
-     i18n:domain="plone">
+     i18n:domain="plone"
+     tal:define="is_collection python: view.is_collection">
   <input type="hidden" name="sort_on"
          tal:attributes="value request/sort_on|string:getObjPositionInParent"
          />
@@ -98,7 +99,7 @@
               id="foldercontents-status-column"
               tal:condition="view/show_status_column">&nbsp;<tal:state i18n:translate="listingheader_status"
               >State</tal:state>&nbsp;</th>
-          <th class="nosort column">Sort</th>
+          <th tal:condition="not: is_collection" class="nosort column">Sort</th>
         </tr>
       </thead>
 
@@ -134,7 +135,7 @@
                 </label>
               </td>
               <td tal:define="sc item/state_class|nothing;
-                              tc item/type_clas|nothing;">
+                              tc item/type_class|nothing;">
                   <img tal:replace="structure item/icon|nothing" />
                   <a href="#" tal:attributes="href  item/view_url|string:${view/base_url}/${id};
                                               title item/url_href_title|nothing;
@@ -166,7 +167,7 @@
                       tal:attributes="class item/state_class|nothing" />
                 <span tal:condition="not: item/state_title|nothing">&nbsp;</span>
               </td>
-              <td>
+              <td tal:condition="not: is_collection">
                 <div class="btn-group">
                   <button class="btn btn-mini dropdown-toggle" class="allowMultiSubmit"><i class="icon-cog"></i><span class="caret"></span></button>
                     <ul class="dropdown-menu">
@@ -206,8 +207,8 @@
              i18n:attributes="value"
              tal:attributes="value button/title; name button/url; class string:${button/cssclass|nothing} btn" />
     </tal:buttons>
-    <a class="btn btn-success" id="upload-files">Upload Files</a>
-    <a class="btn btn-danger" id="sort-folder">Sort folder by...</a>
+    <a tal:condition="not: is_collection" class="btn btn-success" id="upload-files">Upload Files</a>
+    <a tal:condition="not: is_collection" class="btn btn-danger" id="sort-folder">Sort folder by...</a>
   </div>
   </metal:listing>
 </div>
