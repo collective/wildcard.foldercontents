@@ -26,6 +26,16 @@ import logging
 logger = logging.getLogger("wildcard.foldercontents")
 
 
+def _normalize_form_val(form, key, default=''):
+    val = form.get(key, default)
+    if isinstance(val, basestring) or val is None:
+        return val
+    for valval in val:
+        if valval and valval not in (None, 'None'):
+            return valval
+    return None
+
+
 def _is_collection(context):
     return IATTopic.providedBy(context) or \
         ICollection.providedBy(context)
@@ -33,6 +43,7 @@ def _is_collection(context):
 
 class NewTable(Table):
     render = ViewPageTemplateFile('table.pt')
+    batching = ViewPageTemplateFile("batching.pt")
 
     def sort_base_url(self):
         form = dict(self.request.form)
@@ -77,10 +88,10 @@ class NewFolderContentsTable(FolderContentsTable):
         self.context = context
         self.request = request
         self.contentFilter = contentFilter is not None and contentFilter or {}
-        sort = self.request.form.get('sort_on', '')
+        sort = _normalize_form_val(self.request.form, 'sort_on')
         if sort:
             self.contentFilter['sort_on'] = sort
-        order = self.request.form.get('sort_order', '')
+        order = _normalize_form_val(self.request.form, 'sort_order')
         if order:
             self.contentFilter['sort_order'] = 'reverse'
         self.items = self.folderitems()
@@ -95,7 +106,7 @@ class NewFolderContentsTable(FolderContentsTable):
 
     @property
     def show_sort_column(self):
-        sort = self.request.form.get('sort_on')
+        sort = _normalize_form_val(self.request.form, 'sort_on')
         return self.orderable and self.editable and \
             sort in ('', None, 'getObjPositionInParent')
 
