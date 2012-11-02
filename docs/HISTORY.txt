@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.0b3 (unreleased)
+------------------
+
+- do not allow manual sorting when changing
+  display sort order.
+
+
 1.0b3 (2012-09-12)
 ------------------
 

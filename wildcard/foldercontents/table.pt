@@ -61,16 +61,28 @@
         <tr>
           <th class="nosort column"
               id="foldercontents-order-column"
-              tal:condition="view/show_sort_column">
+              tal:define="sort_on request/sort_on|nothing;"
+              tal:attributes="data-sort_on sort_on">
             <div class="btn-group">
             <button data-toggle="dropdown" class="btn btn-small dropdown-toggle allowMultiSubmit">
               Display sort order <span class="caret"></span></button>
             <ul class="dropdown-menu" tal:define="baseurl view/sort_base_url">
-              <li><a href="#" tal:attributes="href string:${baseurl}">Folder Order</a></li>
-              <li><a href="#" tal:attributes="href string:${baseurl}sortable_title">Title</a></li>
-              <li><a href="#" tal:attributes="href string:${baseurl}modified">Modification Date</a></li>
-              <li><a href="#" tal:attributes="href string:${baseurl}created">Creation Date</a></li>
-              <li><a href="#" tal:attributes="href string:${baseurl}effective">Effective Date</a></li>
+              <li><a href="#" tal:attributes="href string:${baseurl}">
+                <b tal:condition="python: not sort_on or sort_on == 'getObjPositionInParent'"
+                    class="right-caret"></b>Folder Order</a></li>
+              <li><a href="#" tal:attributes="href string:${baseurl}sortable_title">
+                <b tal:condition="python: sort_on == 'sortable_title'"
+                    class="right-caret"></b>Title</a></li>
+              <li><a href="#" tal:attributes="href string:${baseurl}modified">
+                <b tal:condition="python: sort_on == 'modified'"
+                    class="right-caret"></b>Modification Date</a></li>
+              <li><a href="#" tal:attributes="href string:${baseurl}created">
+                <b tal:condition="python: sort_on == 'created'"
+                    class="right-caret"></b>Creation Date</a></li>
+              <li><a href="#" tal:attributes="href string:${baseurl}effective">
+                <b tal:condition="python: sort_on == 'effective'"
+                    class="right-caret"></b>Effective Date</a></li>
+              <li class="divider"></li>
               <li tal:condition="python: 'sort_order' in request.form">
                 <a tal:attributes="href view/ascending_url">Ascending order</a>
               </li>

@@ -6,6 +6,10 @@ var shifted = false;
 var last_checked = null;
 
 fc = {
+    sortable: function(){
+        var sort_on = $('#foldercontents-order-column').data('sort_on');
+        return sort_on === undefined || sort_on === '' || sort_on === 'getObjPositionInParent';
+    },
     showLoading: function(){
         $('#kss-spinner').show();
     },
@@ -48,37 +52,41 @@ fc = {
     },
     initialize: function(){
         var start = null;
-        $('#listing-table tbody').sortable({
-            start: function(event, ui){
-                start = ui.item.index();
-            },
-            update: function(event, ui) {
-                fc.moveItem(ui.item, {delta: ui.item.index() - start});
-            },
-            change: function(event, ui){
-                if(load_more_locked){
-                    return;
-                }
-                var rows = $('#listing-table tbody tr');
-                if((ui.placeholder.index() + 3) > rows.length){
-                    var next = $('.listingBar .next a');
-                    if(next.length > 0){
-                        load_more_locked = true;
-                        $.ajax({
-                            url: next.attr('href'),
-                            success: function(data){
-                                var html = $(data);
-                                $('.listingBar').replaceWith(html.find('.listingBar').eq(0));
-                                $('#listing-table tbody').append(
-                                    html.find('#listing-table tbody tr'));
-                                $('#listing-table tbody').sortable('refresh');
-                                load_more_locked = false;
-                            }
-                        })
+        if(fc.sortable()){
+            $('#listing-table tbody').sortable({
+                start: function(event, ui){
+                    start = ui.item.index();
+                },
+                update: function(event, ui) {
+                    fc.moveItem(ui.item, {delta: ui.item.index() - start});
+                },
+                change: function(event, ui){
+                    if(load_more_locked){
+                        return;
+                    }
+                    var rows = $('#listing-table tbody tr');
+                    if((ui.placeholder.index() + 3) > rows.length){
+                        var next = $('.listingBar .next a');
+                        if(next.length > 0){
+                            load_more_locked = true;
+                            $.ajax({
+                                url: next.attr('href'),
+                                success: function(data){
+                                    var html = $(data);
+                                    $('.listingBar').replaceWith(html.find('.listingBar').eq(0));
+                                    $('#listing-table tbody').append(
+                                        html.find('#listing-table tbody tr'));
+                                    if(fc.sortable()){
+                                        $('#listing-table tbody').sortable('refresh');
+                                    }
+                                    load_more_locked = false;
+                                }
+                            })
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
         $('.dropdown-toggle').dropdown();
         $('#content-core').delegate('.move-top', 'click', function(){
             fc.showLoading();

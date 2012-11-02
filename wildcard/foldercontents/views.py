@@ -59,26 +59,45 @@ class NewTable(Table):
         return '%s/@@folder_contents?%s' % (
             self.base_url, qs)
 
+    @property
+    def show_all_url(self):
+        return '%s&show_all=true' % (
+            self.view_url)
+
+    @property
+    def selectnone_url(self):
+        base = self.view_url + '&pagenumber=%s' % (self.pagenumber)
+        if self.show_all:
+            base += '&show_all=true'
+        return base
+
 
 class NewFolderContentsTable(FolderContentsTable):
     def __init__(self, context, request, contentFilter=None):
         self.context = context
         self.request = request
         self.contentFilter = contentFilter is not None and contentFilter or {}
-        sort = self.request.form.get('sort_on')
+        sort = self.request.form.get('sort_on', '')
         if sort:
             self.contentFilter['sort_on'] = sort
-        order = self.request.form.get('sort_order')
+        order = self.request.form.get('sort_order', '')
         if order:
             self.contentFilter['sort_order'] = 'reverse'
         self.items = self.folderitems()
 
         url = context.absolute_url()
-        view_url = url + '/folder_contents'
+        view_url = '%s/folder_contents?sort_on=%s&sort_order=%s' % (
+            url, sort, order)
         self.table = NewTable(request, url, view_url, self.items,
                            show_sort_column=self.show_sort_column,
                            buttons=self.buttons)
         self.table.is_collection = _is_collection(self.context)
+
+    @property
+    def show_sort_column(self):
+        sort = self.request.form.get('sort_on')
+        return self.orderable and self.editable and \
+            sort in ('', None, 'getObjPositionInParent')
 
 
 class NewFolderContentsView(FolderContentsView):
