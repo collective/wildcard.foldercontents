@@ -54,7 +54,19 @@ fc = {
         var start = null;
         if(fc.sortable()){
             $('#listing-table tbody').sortable({
+                forcePlaceholderSize: true,
+                placeholder: "sortable-placeholder",
+                forceHelperSize: true,
+                helper: "clone",
                 start: function(event, ui){
+                    // show original, get width, then hide again
+                    ui.item.css('display', '');
+                    var origtds = ui.item.find('td');
+                    var helpertds = ui.helper.find('td');
+                    origtds.each(function(index){
+                        helpertds.eq(index).css('width', $(this).width());
+                    });
+                    ui.item.css('display', 'none');
                     start = ui.item.index();
                 },
                 update: function(event, ui) {
