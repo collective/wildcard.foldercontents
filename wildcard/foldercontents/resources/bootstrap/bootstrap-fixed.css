@@ -2685,18 +2685,18 @@
 }
 
 .fc .btn-primary,
-.fc .btn-primary:hover,
+#content .fc a.btn-primary:hover,
 .fc .btn-warning,
-.fc .btn-warning:hover,
+#content .fc a.btn-warning:hover,
 .fc .btn-danger,
-.fc .btn-danger:hover,
+#content .fc a.btn-danger:hover,
 .fc .btn-success,
-.fc .btn-success:hover,
+#content .fc a.btn-success:hover,
 .fc .btn-info,
-.fc .btn-info:hover,
+#content .fc a.btn-info:hover,
 .fc .btn-inverse,
 .fc .btn-inverse:hover {
-  color: #ffffff;
+  color: #ffffff !important;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 
