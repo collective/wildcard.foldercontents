@@ -264,11 +264,15 @@ class JUpload(BrowserView):
 
         factory = IFileFactory(self.context)
         fi = factory(filename, content_type, filedata)
+        try:
+            size = fi.getSize()
+        except AttributeError:
+            size = fi.getObjSize()
         result = {
             "url": fi.absolute_url(),
             "name": fi.getId(),
             "type": fi.getContentType(),
-            "size": fi.getSize()}
+            "size": size}
         if fi.portal_type == 'Image':
             result['thumbnail_url'] = result['url'] + '/image_thumb'
         return json.dumps([result])
