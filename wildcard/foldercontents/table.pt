@@ -1,5 +1,5 @@
 <div id="folderlisting-main-table-noplonedrag"
-     i18n:domain="plone"
+     i18n:domain="wildcard.foldercontents"
      tal:define="is_collection python: view.is_collection">
   <input type="hidden" name="sort_on"
          tal:attributes="value request/sort_on|string:getObjPositionInParent"
@@ -13,7 +13,7 @@
            tal:attributes="value item/path|item/id|item/getId"/>
   </tal:block>
 
-  <p class="discreet"
+  <p i18n:domain="plone" class="discreet"
      tal:condition="not: view/batch"
      i18n:translate="description_no_visible_items_add_paste">
     This folder has no visible items. To add content, press the
@@ -32,10 +32,10 @@
            i18n:attributes="summary summary_content_listing;"
            tal:condition="view/items">
       <thead>
-        <tr tal:condition="python:view.show_select_column and not view.selectcurrentbatch">
+        <tr i18n:domain="plone" tal:condition="python:view.show_select_column and not view.selectcurrentbatch">
           <th colspan="6" class="nosort"><span i18n:translate="label_select" tal:omit-tag="">Select:</span> <a i18n:translate="label_all" tal:attributes="href view/selectscreen_url" id="foldercontents-selectall">All</a></th>
         </tr>
-        <tr tal:condition="view/show_select_all_items">
+        <tr i18n:domain="plone" tal:condition="view/show_select_all_items">
           <th colspan="6" class="nosort">
             <span tal:omit-tag="" i18n:translate="tableheading_all_items_selected">
             All <tal:block replace="view/batch/items_on_page" i18n:name="count"/> items on this
@@ -47,7 +47,7 @@
             <tal:block replace="view/batch/size" i18n:name="count"/> items in this folder.</a>
           </th>
         </tr>
-        <tr tal:condition="view/selectall">
+        <tr i18n:domain="plone" tal:condition="view/selectall">
           <th colspan="6" class="nosort">
             <span tal:omit-tag="" i18n:translate="tableheading_all_items_selected_in_folder">
             All <tal:block replace="view/batch/size" i18n:name="count"/> items in this folder
@@ -64,30 +64,42 @@
               tal:define="sort_on request/sort_on|nothing;"
               tal:attributes="data-sort_on sort_on">
             <div class="btn-group">
-            <button data-toggle="dropdown" class="btn btn-small dropdown-toggle allowMultiSubmit">
-              Display sort order <span class="caret"></span></button>
+            <button data-toggle="dropdown"
+                    class="btn btn-small dropdown-toggle allowMultiSubmit">
+              <tal:display_order i18n:translate="foldercontents_display_sortorder">Display sort order</tal:display_order>
+              <span class="caret"></span></button>
             <ul class="dropdown-menu" tal:define="baseurl view/sort_base_url">
               <li><a href="#" tal:attributes="href string:${baseurl}">
                 <b tal:condition="python: not sort_on or sort_on == 'getObjPositionInParent'"
-                    class="right-caret"></b>Folder Order</a></li>
+                    class="right-caret"></b>
+                <tal:select_order i18n:translate="foldercontents_folder_order">Folder Order</tal:select_order>
+              </a></li>
               <li><a href="#" tal:attributes="href string:${baseurl}sortable_title">
                 <b tal:condition="python: sort_on == 'sortable_title'"
-                    class="right-caret"></b>Title</a></li>
+                    class="right-caret"></b>
+                <tal:select_order i18n:translate="foldercontents_title_order">Title</tal:select_order>
+              </a></li>
               <li><a href="#" tal:attributes="href string:${baseurl}modified">
                 <b tal:condition="python: sort_on == 'modified'"
-                    class="right-caret"></b>Modification Date</a></li>
+                    class="right-caret"></b>
+                <tal:select_order i18n:translate="foldercontents_modification_order">Modification Date</tal:select_order>
+              </a></li>
               <li><a href="#" tal:attributes="href string:${baseurl}created">
                 <b tal:condition="python: sort_on == 'created'"
-                    class="right-caret"></b>Creation Date</a></li>
+                    class="right-caret"></b>
+                  <tal:select_order i18n:translate="foldercontents_creation_order">Creation Date</tal:select_order>
+              </a></li>
               <li><a href="#" tal:attributes="href string:${baseurl}effective">
                 <b tal:condition="python: sort_on == 'effective'"
-                    class="right-caret"></b>Effective Date</a></li>
+                    class="right-caret"></b>
+                  <tal:select_order i18n:translate="foldercontents_effective_order">Effective Date</tal:select_order>
+              </a></li>
               <li class="divider"></li>
               <li tal:condition="python: 'sort_order' in request.form">
-                <a tal:attributes="href view/ascending_url">Ascending order</a>
+                <a tal:attributes="href view/ascending_url" i18n:translate="foldercontents_ascending_order">Ascending order</a>
               </li>
               <li tal:condition="python: 'sort_order' not in request.form">
-                <a tal:attributes="href view/descending_url">Descending order</a>
+                <a tal:attributes="href view/descending_url" i18n:translate="foldercontents_descending_order">Descending order</a>
               </li>
             </ul>
           </div>
@@ -97,21 +109,25 @@
               id="foldercontents-select-column"
               tal:condition="view/show_select_column">&nbsp;</th>
           <th class="nosort column"
+              i18n:domain="plone"
               id="foldercontents-title-column">&nbsp;<tal:title i18n:translate="listingheader_title"
               >Title</tal:title>&nbsp;</th>
           <th class="nosort column"
+              i18n:domain="plone"
               id="foldercontents-size-column"
               tal:condition="view/show_size_column">&nbsp;<tal:size i18n:translate="listingheader_size"
               >Size</tal:size>&nbsp;</th>
           <th class="nosort column"
+              i18n:domain="plone"
               id="foldercontents-modified-column"
               tal:condition="view/show_modified_column">&nbsp;<tal:modified i18n:translate="listingheader_modified"
               >Modified</tal:modified>&nbsp;</th>
           <th class="nosort column"
+              i18n:domain="plone"
               id="foldercontents-status-column"
               tal:condition="view/show_status_column">&nbsp;<tal:state i18n:translate="listingheader_status"
               >State</tal:state>&nbsp;</th>
-          <th tal:condition="not: is_collection" class="nosort column">Sort</th>
+          <th tal:condition="not: is_collection" class="nosort column" i18n:translate="foldercontents_listingheader_sort">Sort</th>
         </tr>
       </thead>
 
@@ -126,7 +142,7 @@
 
               <td>
                 <span tal:condition="view/show_sort_column" class="draggable"
-                      style="cursor: ns-resize; ">
+                  style="cursor: ns-resize; ">
                   ⣿
                 </span>
               </td>
@@ -159,6 +175,7 @@
                   </a>
 
                 <span class="state-expired"
+                      i18n:domain="plone"
                       tal:condition="item/is_expired|nothing"
                       i18n:translate="time_expired">expired</span>
               </td>
@@ -174,7 +191,7 @@
                   tal:attributes="class item/state_class|nothing">
                 08/19/2001 03:01 AM
               </td>
-              <td tal:condition="view/show_status_column">
+              <td i18n:domain="plone" tal:condition="view/show_status_column">
                 <span i18n:translate=""
                       tal:condition="item/state_title|nothing"
                       tal:content="item/state_title"
@@ -185,15 +202,15 @@
                 <div class="btn-group">
                   <button class="btn btn-mini dropdown-toggle" class="allowMultiSubmit"><i class="icon-cog"></i><span class="caret"></span></button>
                     <ul class="dropdown-menu">
-                      <li><a class="move-top" href="#">Move to top</a></li>
-                      <li><a class="move-bottom" href="#">Move to bottom</a></li>
+                      <li><a class="move-top" href="#" i18n:translate="foldercontents_move_top">Move to top</a></li>
+                      <li><a class="move-bottom" href="#" i18n:translate="foldercontents_move_bottom">Move to bottom</a></li>
                     </ul>
                 </div>
               </td>
             </tr>
           </tal:items>
         </tbody>
-        <tfoot tal:condition="not:view/within_batch_size">
+        <tfoot tal:condition="not:view/within_batch_size" i18n:domain="plone">
           <tr tal:condition="not:view/show_all">
             <th colspan="6" class="nosort">
               <a tal:attributes="href view/show_all_url"
@@ -221,8 +238,8 @@
              i18n:attributes="value"
              tal:attributes="value button/title; name button/url; class string:${button/cssclass|nothing} btn" />
     </tal:buttons>
-    <a tal:condition="not: is_collection" class="btn btn-success" id="upload-files">Upload Files</a>
-    <a tal:condition="not: is_collection" class="btn btn-danger" id="sort-folder">Sort folder by...</a>
+    <a tal:condition="not: is_collection" class="btn btn-success" id="upload-files" i18n:translate="foldercontents_uploadfiles">Upload Files</a>
+    <a tal:condition="not: is_collection" class="btn btn-danger" id="sort-folder" i18n:translate="foldercontents_sortby">Sort folder by...</a>
   </div>
   </metal:listing>
 </div>

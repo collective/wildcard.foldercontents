@@ -1,0 +1,58 @@
+# --- PLEASE EDIT THE LINES BELOW CORRECTLY ---
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2012-11-21 17:18+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: wildcard.foldercontents\n"
+
+#. Default: "File is too big"
+#: ./resources/jquery-file-upload/js/locale.js
+msgid "File is too big"
+msgstr ""
+
+#. Default: "File is too small"
+#: ./resources/jquery-file-upload/js/locale.js
+msgid "File is too small"
+msgstr ""
+
+#. Default: "Filetype not allowed"
+#: ./resources/jquery-file-upload/js/locale.js
+msgid "Filetype not allowed"
+msgstr ""
+
+#. Default: "Max number of files exceeded"
+#: ./resources/jquery-file-upload/js/locale.js
+msgid "Max number of files exceeded"
+msgstr ""
+
+#. Default: "Uploaded bytes exceed file size"
+#: ./resources/jquery-file-upload/js/locale.js
+msgid "Uploaded bytes exceed file size"
+msgstr ""
+
+#. Default: "Empty file upload result"
+#: ./resources/jquery-file-upload/js/locale.js
+msgid "Empty file upload result"
+msgstr ""
+
+#. Default: "Start"
+#: ./resources/jquery-file-upload/js/locale.js
+msgid "Start"
+msgstr ""
+
+#. Default: "Delete"
+#: ./resources/jquery-file-upload/js/locale.js
+msgid "Delete"
+msgstr ""
