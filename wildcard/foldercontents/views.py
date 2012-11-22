@@ -52,7 +52,7 @@ class NewTable(Table):
         qs = urlencode(form)
         if qs:
             qs += '&'
-        return '%s/@@folder_contents?%ssort_on=' % (
+        return '%s/folder_contents?%ssort_on=' % (
             self.base_url, qs)
 
     def ascending_url(self):
@@ -60,14 +60,14 @@ class NewTable(Table):
         if 'sort_order' in form:
             del form['sort_order']
         qs = urlencode(form)
-        return '%s/@@folder_contents?%s' % (
+        return '%s/folder_contents?%s' % (
             self.base_url, qs)
 
     def descending_url(self):
         form = dict(self.request.form)
         form['sort_order'] = 'reverse'
         qs = urlencode(form)
-        return '%s/@@folder_contents?%s' % (
+        return '%s/folder_contents?%s' % (
             self.base_url, qs)
 
     @property
