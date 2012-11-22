@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0b5 (unreleased)
+1.0b5 (2012-11-22)
 ------------------
 
 - Fixed control in drawing sort_order column. Now doesn't disappear when sort_on is different from "getObjectPositionInParent" [cekk]
