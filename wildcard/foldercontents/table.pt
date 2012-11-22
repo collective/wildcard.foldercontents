@@ -124,9 +124,11 @@
                  tal:attributes="class item/table_row_class;
                                 id string:folder-contents-item-${id};">
 
-              <td tal:condition="view/show_sort_column" class="draggable"
-                  style="cursor: ns-resize; ">
-                ⣿
+              <td>
+                <span tal:condition="view/show_sort_column" class="draggable"
+                      style="cursor: ns-resize; ">
+                  ⣿
+                </span>
               </td>
               <td tal:condition="view/show_select_column" class="notDraggable">
                 <input type="checkbox"
