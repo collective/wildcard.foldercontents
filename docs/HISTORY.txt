@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.0b5 (unreleased)
+------------------
+
+- Fixed control in drawing sort_order column. Now doesn't disappear when sort_on is different from "getObjectPositionInParent" [cekk]
+- Fixed error with getSize attribute when upload a plain/text [cekk]
+- Added translations (also for javascript variables with jarn.jsi18n dependency) [cekk]
+- Fixed button styles on hover [cekk]
+
 1.0b4 (2012-11-03)
 ------------------
 

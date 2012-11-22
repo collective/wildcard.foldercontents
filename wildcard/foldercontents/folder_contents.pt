@@ -3,7 +3,7 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xml:lang="en" lang="en"
-      i18n:domain="plone"
+      i18n:domain="wildcard.foldercontents"
       metal:use-macro="here/main_template/macros/master">
 
   <head>
@@ -136,6 +136,7 @@
              tal:define="parent_url view/parent_url"
              tal:condition="parent_url"
              tal:attributes="href string:${parent_url}/folder_contents"
+             i18n:domain="plone"
              i18n:translate="go_to_parent_url">
               Up one level
           </a>
@@ -158,16 +159,16 @@
                     <!-- The fileinput-button span is used to style the file input field as button -->
                     <span class="btn btn-success fileinput-button">
                         <i class="icon-plus icon-white"></i>
-                        <span>Add files...</span>
+                        <span i18n:translate="foldercontents_add_files">Add files...</span>
                         <input type="file" name="files[]" multiple>
                     </span>
                     <button type="submit" class="btn btn-primary start">
                         <i class="icon-upload icon-white"></i>
-                        <span>Start upload</span>
+                        <span i18n:translate="foldercontents_start_upload">Start upload</span>
                     </button>
                     <button type="reset" class="btn btn-warning cancel">
                         <i class="icon-ban-circle icon-white"></i>
-                        <span>Cancel upload</span>
+                        <span i18n:translate="foldercontents_cancel_upload">Cancel upload</span>
                     </button>
                     <input type="checkbox" class="toggle">
                 </div>
@@ -190,19 +191,18 @@
           <div id="sort-container" style="display:none">
             <form class="well form-inline" method="POST"
               tal:attributes="action string:${context/absolute_url}/@@wcfcsort">
-              <label>Sort on:</label>
+              <label i18n:translate="foldercontents_sorton">Sort on:</label>
               <select name="on">
-                <option value="sortable_title">Title</option>
-                <option value="id">ID</option>
-                <option value="modified">Modification Date</option>
-                <option value="created">Creation Date</option>
-                <option value="effective">Effective Date</option>
+                <option value="sortable_title" i18n:translate="foldercontents_title_order">Title</option>
+                <option value="id" i18n:translate="foldercontents_id_order">ID</option>
+                <option value="modified" i18n:translate="foldercontents_modification_order">Modification Date</option>
+                <option value="created" i18n:translate="foldercontents_creation_order">Creation Date</option>
+                <option value="effective" i18n:translate="foldercontents_effective_order">Effective Date</option>
               </select>
-              <label class="checkbox">
-                <input type="checkbox" name="reversed"> Reversed
-              </label>
+              <input type="checkbox" name="reversed" />
+              <label i18n:translate="foldercontents_reversed_order" class="checkbox">Reversed</label>
               <input tal:replace="structure context/@@authenticator/authenticator" />
-              <button type="submit" class="btn btn-warning">Sort folder</button>
+              <button type="submit" class="btn btn-warning" i18n:translate="foldercontents_sort_folder">Sort folder</button>
             </form>
           </div>
         </div>

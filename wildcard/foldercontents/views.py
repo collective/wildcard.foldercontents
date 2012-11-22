@@ -52,7 +52,7 @@ class NewTable(Table):
         qs = urlencode(form)
         if qs:
             qs += '&'
-        return '%s/@@folder_contents?%ssort_on=' % (
+        return '%s/folder_contents?%ssort_on=' % (
             self.base_url, qs)
 
     def ascending_url(self):
@@ -60,14 +60,14 @@ class NewTable(Table):
         if 'sort_order' in form:
             del form['sort_order']
         qs = urlencode(form)
-        return '%s/@@folder_contents?%s' % (
+        return '%s/folder_contents?%s' % (
             self.base_url, qs)
 
     def descending_url(self):
         form = dict(self.request.form)
         form['sort_order'] = 'reverse'
         qs = urlencode(form)
-        return '%s/@@folder_contents?%s' % (
+        return '%s/folder_contents?%s' % (
             self.base_url, qs)
 
     @property
@@ -145,7 +145,7 @@ class NewFolderContentsView(FolderContentsView):
         <td class="name"><span>{%=file.name%}</span></td>
         <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
         {% if (file.error) { %}
-            <td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
+            <td class="error" colspan="2"><span class="label label-important">{%=locale.messagefactory(locale.fileupload.error)%}</span> {%=locale.messagefactory(locale.fileupload.errors[file.error]) || file.error%}</td>
         {% } else if (o.files.valid && !i) { %}
             <td>
                 <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bar" style="width:0%;"></div></div>
@@ -153,7 +153,7 @@ class NewFolderContentsView(FolderContentsView):
             <td class="start">{% if (!o.options.autoUpload) { %}
                 <button class="btn btn-primary">
                     <i class="icon-upload icon-white"></i>
-                    <span>{%=locale.fileupload.start%}</span>
+                    <span>{%=locale.messagefactory(locale.fileupload.start)%}</span>
                 </button>
             {% } %}</td>
         {% } else { %}
@@ -162,7 +162,7 @@ class NewFolderContentsView(FolderContentsView):
         <td class="cancel">{% if (!i) { %}
             <button class="btn btn-warning">
                 <i class="icon-ban-circle icon-white"></i>
-                <span>{%=locale.fileupload.cancel%}</span>
+                <span>{%=locale.messagefactory(locale.fileupload.cancel)%}</span>
             </button>
         {% } %}</td>
     </tr>
@@ -176,7 +176,7 @@ class NewFolderContentsView(FolderContentsView):
             <td></td>
             <td class="name"><span>{%=file.name%}</span></td>
             <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
-            <td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
+            <td class="error" colspan="2"><span class="label label-important">{%=locale.messagefactory(locale.fileupload.error)%}</span> {%=locale.messagefactory(locale.fileupload.errors[file.error]) || file.error%}</td>
         {% } else { %}
             <td class="preview">{% if (file.thumbnail_url) { %}
                 <a href="{%=file.url%}" title="{%=file.name%}" rel="gallery" download="{%=file.name%}"><img src="{%=file.thumbnail_url%}"></a>
@@ -264,11 +264,15 @@ class JUpload(BrowserView):
 
         factory = IFileFactory(self.context)
         fi = factory(filename, content_type, filedata)
+        try:
+            size = fi.getSize()
+        except AttributeError:
+            size = fi.getObjSize()
         result = {
             "url": fi.absolute_url(),
             "name": fi.getId(),
             "type": fi.getContentType(),
-            "size": fi.getSize()}
+            "size": size}
         if fi.portal_type == 'Image':
             result['thumbnail_url'] = result['url'] + '/image_thumb'
         return json.dumps([result])

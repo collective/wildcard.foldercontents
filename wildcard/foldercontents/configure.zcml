@@ -7,7 +7,8 @@
     i18n_domain="wildcard.foldercontents">
 
   <five:registerPackage package="." initialize=".initialize" />
-
+  <i18n:registerTranslations directory="locales" />
+  
   <browser:page
     for="Products.CMFCore.interfaces._content.IFolderish"
     class=".views.NewFolderContentsView"
