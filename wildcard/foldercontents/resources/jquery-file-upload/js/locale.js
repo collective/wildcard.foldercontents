@@ -16,8 +16,10 @@ var lang = jq('html').attr('lang');
  
 // get the translation tool catalog for the given language and domain
 jarn.i18n.loadCatalog('wildcard.foldercontents', lang);
+
 // let's create a message factory
-mf = jarn.i18n.MessageFactory('wildcard.foldercontents');
+mf = jarn.i18n.MessageFactory('wildcard.foldercontents', lang);
+
 window.locale = {
     "messagefactory": mf,
     "fileupload": {
@@ -35,3 +37,4 @@ window.locale = {
         "destroy": "Delete"
     }
 };
+console.log(locale.fileupload.start);
