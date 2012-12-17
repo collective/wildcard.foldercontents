@@ -18,42 +18,23 @@ var lang = jq('html').attr('lang');
 jarn.i18n.loadCatalog('wildcard.foldercontents', lang);
 
 // let's create a message factory
-    mf = jarn.i18n.MessageFactory('wildcard.foldercontents', lang);
-if (! jarn.i18n.catalogs['wildcard.foldercontents'][lang]) {
-    window.locale = {
-        "messagefactory": mf,
-        "fileupload": {
-            "errors": {
-                "maxFileSize": "File is too big",
-                "minFileSize": "File is too small",
-                "acceptFileTypes": "Filetype not allowed",
-                "maxNumberOfFiles": "Max number of files exceeded",
-                "uploadedBytes": "Uploaded bytes exceed file size",
-                "emptyResult": "Empty file upload result"
-            },
-            "error": "Error",
-            "start": "Start",
-            "cancel": "Cancel",
-            "destroy": "Delete"
-        }
-    };
-}
-else {
-    window.locale = {
-        "messagefactory": mf,
-        "fileupload": {
-            "errors": {
-                "maxFileSize": mf("File is too big"),
-                "minFileSize": mf("File is too small"),
-                "acceptFileTypes": mf("Filetype not allowed"),
-                "maxNumberOfFiles": mf("Max number of files exceeded"),
-                "uploadedBytes": mf("Uploaded bytes exceed file size"),
-                "emptyResult": mf("Empty file upload result")
-            },
-            "error": mf("Error"),
-            "start": mf("Start"),
-            "cancel": mf("Cancel"),
-            "destroy": mf("Delete")
-        }
-    };
-}
+mf = jarn.i18n.MessageFactory('wildcard.foldercontents', lang);
+
+window.locale = {
+    "messagefactory": mf,
+    "fileupload": {
+        "errors": {
+            "maxFileSize": "File is too big",
+            "minFileSize": "File is too small",
+            "acceptFileTypes": "Filetype not allowed",
+            "maxNumberOfFiles": "Max number of files exceeded",
+            "uploadedBytes": "Uploaded bytes exceed file size",
+            "emptyResult": "Empty file upload result"
+        },
+        "error": "Error",
+        "start": "Start",
+        "cancel": "Cancel",
+        "destroy": "Delete"
+    }
+};
+console.log(locale.fileupload.start);
