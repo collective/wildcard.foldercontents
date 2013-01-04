@@ -1,27 +1,30 @@
-from zope.component import getUtility
-from Products.CMFCore.utils import getToolByName
-from zope.filerepresentation.interfaces import IFileFactory
-from zope.component import adapts
 import transaction
-from zope.interface import implements
-from Products.Archetypes.event import ObjectInitializedEvent
+from thread import allocate_lock
+
+from zope.component import getUtility
+from zope.component import adapts
 from zope.container.interfaces import INameChooser
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.event import notify
+from zope.interface import implements
+
+from Products.Archetypes.event import ObjectInitializedEvent
+from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.interfaces._content import IFolderish
-from thread import allocate_lock
-from plone.i18n.normalizer.interfaces import IFileNameNormalizer
 from Products.CMFPlone import utils as ploneutils
 
+from plone.i18n.normalizer.interfaces import IFileNameNormalizer
+
+from wildcard.foldercontents.interfaces import IATCTFileFactory
 
 upload_lock = allocate_lock()
 
 
-class ACTCFileFactory(object):
+class ATCTFileFactory(object):
     """
     ripped out of collective.uploadify
     """
-    implements(IFileFactory)
+    implements(IATCTFileFactory)
     adapts(IFolderish)
 
     def __init__(self, context):

@@ -27,7 +27,7 @@ except ImportError:
     class ICollection(Interface):
         pass
 
-from collective.quickupload.interfaces import IQuickUploadFileFactory
+from wildcard.foldercontents.interfaces import IATCTFileFactory
 
 
 logger = logging.getLogger("wildcard.foldercontents")
@@ -269,19 +269,9 @@ class JUpload(BrowserView):
         if not filedata:
             return
 
-        try:
-            factory = IFileFactory(self.context)
-            obj = factory(filename, content_type, filedata)
-        except TypeError:
-            # TypeError: __call__() takes exactly 7 arguments (4 given)
-            # error for newer versions of collective.quickupload
-            title = filename
-            description = ''
-            ctr = getToolByName(self.context, 'content_type_registry')
-            portal_type = ctr.findTypeName(filename.lower(), '', '') or 'File'
-            factory = IQuickUploadFileFactory(self.context)
-            result = factory(filename, title, description, content_type, filedata, portal_type)
-            obj = result['success']
+        factory = IATCTFileFactory(self.context)
+        obj = factory(filename, content_type, filedata)
+
         try:
             size = obj.getSize()
         except AttributeError:
