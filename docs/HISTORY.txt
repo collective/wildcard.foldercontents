@@ -4,6 +4,7 @@ Changelog
 1.0b6 (unreleased)
 ------------------
 - Fixed js translation factory [cekk]
+- Use specific interface for file factory adapter in order to not conflict with other (like quickupload one) [simahawk]
 
 1.0b5 (2012-11-22)
 ------------------
