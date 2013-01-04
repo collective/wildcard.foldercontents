@@ -1,20 +1,25 @@
-from zope.interface import Interface
-from Products.CMFCore.utils import getToolByName
-from zope.component import getMultiAdapter
-from AccessControl import Unauthorized
-from Products.Five import BrowserView
-from Acquisition import aq_inner
-from plone.app.content.browser.foldercontents import FolderContentsView, \
-FolderContentsTable
-from plone.app.content.browser.tableview import Table
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from Products.statusmessages.interfaces import IStatusMessage
-from plone.folder.interfaces import IExplicitOrdering
-from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
+import logging
 import mimetypes
-from zope.filerepresentation.interfaces import IFileFactory
 import json
 from urllib import urlencode
+
+from Acquisition import aq_inner
+from AccessControl import Unauthorized
+
+from zope.interface import Interface
+from zope.component import getMultiAdapter
+from zope.filerepresentation.interfaces import IFileFactory
+
+from plone.app.content.browser.foldercontents import (FolderContentsView,
+                                                      FolderContentsTable)
+from plone.app.content.browser.tableview import Table
+from plone.folder.interfaces import IExplicitOrdering
+
+from Products.CMFCore.utils import getToolByName
+from Products.Five import BrowserView
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from Products.statusmessages.interfaces import IStatusMessage
+from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
 from Products.ATContentTypes.interfaces.topic import IATTopic
 try:
     from plone.app.collection.interfaces import ICollection
@@ -22,7 +27,9 @@ except ImportError:
     class ICollection(Interface):
         pass
 
-import logging
+from wildcard.foldercontents.interfaces import IATCTFileFactory
+
+
 logger = logging.getLogger("wildcard.foldercontents")
 
 
@@ -262,17 +269,19 @@ class JUpload(BrowserView):
         if not filedata:
             return
 
-        factory = IFileFactory(self.context)
-        fi = factory(filename, content_type, filedata)
+        factory = IATCTFileFactory(self.context)
+        obj = factory(filename, content_type, filedata)
+
         try:
-            size = fi.getSize()
+            size = obj.getSize()
         except AttributeError:
-            size = fi.getObjSize()
+            size = obj.getObjSize()
         result = {
-            "url": fi.absolute_url(),
-            "name": fi.getId(),
-            "type": fi.getContentType(),
-            "size": size}
-        if fi.portal_type == 'Image':
+            "url": obj.absolute_url(),
+            "name": obj.getId(),
+            "type": obj.getContentType(),
+            "size": size
+        }
+        if obj.portal_type == 'Image':
             result['thumbnail_url'] = result['url'] + '/image_thumb'
         return json.dumps([result])

@@ -51,6 +51,6 @@
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
-  <adapter factory=".factories.ACTCFileFactory" />
+  <adapter factory=".factories.ATCTFileFactory" />
   
 </configure>
