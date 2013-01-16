@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.0b7 (development)
+------------------
+
+
 1.0b6 (2013-01-16)
 ------------------
 - Fixed js translation factory [cekk]
