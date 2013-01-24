@@ -8,7 +8,8 @@
 
   <five:registerPackage package="." initialize=".initialize" />
   <i18n:registerTranslations directory="locales" />
-  
+  <include package="Products.CMFCore" />
+
   <browser:page
     for="Products.CMFCore.interfaces._content.IFolderish"
     class=".views.NewFolderContentsView"
@@ -30,7 +31,7 @@
     name="fcjupload"
     permission="cmf.AddPortalContent"
     layer=".interfaces.ILayer" />
-    
+
   <browser:page
     for="Products.CMFCore.interfaces._content.IFolderish"
     class=".views.Sort"
@@ -52,5 +53,5 @@
       />
 
   <adapter factory=".factories.ATCTFileFactory" />
-  
+
 </configure>
