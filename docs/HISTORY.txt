@@ -1,7 +1,11 @@
 Changelog
 =========
 
-1.1b1 (development)
+1.1b2 (development)
+------------------
+
+
+1.1b1 (2013-01-24)
 ------------------
 
 - upgrade jquery file upload(supports dropping files)
