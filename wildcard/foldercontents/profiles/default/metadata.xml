@@ -2,7 +2,6 @@
 <metadata>
   <version>1000</version>
   <dependencies>
-    <dependency>profile-collective.js.jqueryui:default</dependency>
     <dependency>profile-jarn.jsi18n:default</dependency>
   </dependencies>
 </metadata>

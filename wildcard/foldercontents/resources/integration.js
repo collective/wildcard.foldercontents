@@ -165,5 +165,14 @@ fc = {
 $(document).ready(function(){
     fc.initialize();
     $(document).bind('keyup keydown', function(e){shifted = e.shiftKey} );
+
+    $('#fileupload').fileupload({
+        'limitConcurrentUploads': 2,
+        'singleFileUploads': true,
+        'dataType': 'json',
+        'formData': {
+            '_authenticator': $('input[name="_authenticator"]').attr('value')
+        }
+    });
 });
 })(jQuery);

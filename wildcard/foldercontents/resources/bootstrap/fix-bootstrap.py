@@ -4,7 +4,7 @@
 # one area of the site
 #
 
-_input = open('bootstrap.css')
+_input = open('bootstrap-orig.css')
 _output = open('bootstrap-fixed.css', 'w')
 _prefix = '.fc'
 

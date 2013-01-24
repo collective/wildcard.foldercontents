@@ -14,12 +14,20 @@
 // Get the current language
 var lang = jq('html').attr('lang');
  
-// get the translation tool catalog for the given language and domain
-jarn.i18n.loadCatalog('wildcard.foldercontents', lang);
+mf = function(m){
+    return m;
+}
 
-// let's create a message factory
-mf = jarn.i18n.MessageFactory('wildcard.foldercontents', lang);
+try{
+    // get the translation tool catalog for the given language and domain
+    jarn.i18n.loadCatalog('wildcard.foldercontents', lang);
 
+    // let's create a message factory
+    mf = jarn.i18n.MessageFactory('wildcard.foldercontents', lang);
+}catch(e){
+    console.log('failed to load jarn.i18n');
+    // do not bork...
+}
 window.locale = {
     "messagefactory": mf,
     "fileupload": {
@@ -37,4 +45,3 @@ window.locale = {
         "destroy": "Delete"
     }
 };
-console.log(locale.fileupload.start);

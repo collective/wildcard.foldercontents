@@ -25,8 +25,7 @@ setup(name='wildcard.foldercontents',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'collective.js.jqueryui',
-          'jarn.jsi18n',
+          'jarn.jsi18n'
       ],
       entry_points="""
       # -*- Entry points: -*-

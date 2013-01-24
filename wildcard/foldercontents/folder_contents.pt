@@ -53,10 +53,11 @@
       <tal:templates tal:replace="structure view/jstemplates" />
       <script type="text/javascript" src="++resource++wcfc/jquery.js"
         tal:attributes="src string:${resources_url}/jquery.js"></script>
-      <script type="text/javascript" src="++resource++wcfc/collective.js.jqueryui.custom.min.js"
-        tal:attributes="src string:${context/portal_url}/collective.js.jqueryui.custom.min.js"></script>
-      <script type="text/javascript" src="++resource++wcfc/bootstrap/bootstrap-dropdown.js"
-        tal:attributes="src string:${resources_url}/bootstrap/bootstrap-dropdown.js"></script>
+      <script type="text/javascript" src="++resource++wcfc/js/jquery-ui.js"
+        tal:attributes="src string:${resources_url}/jquery-file-upload/js/jquery-ui.js"></script>
+
+      <script type="text/javascript" src="++resource++wcfc/bootstrap/bootstrap.min.js"
+        tal:attributes="src string:${resources_url}/bootstrap/bootstrap.min.js"></script>
       <script src="http://blueimp.github.com/JavaScript-Templates/tmpl.min.js"
         tal:attributes="src string:${resources_url}/jquery-file-upload/js/tmpl.min.js"></script>
       <!-- The Load Image plugin is included for the preview images and image resizing functionality -->
@@ -83,11 +84,8 @@
       <script src="js/jquery.fileupload-ui.js"
         tal:attributes="src string:${resources_url}/jquery-file-upload/js/jquery.fileupload-ui.js"></script>
       <!-- The localization script -->
-      <script src="js/locale.js"
-        tal:attributes="src string:${resources_url}/jquery-file-upload/js/locale.js"></script>
-      <!-- The main application script -->
-      <script src="js/main.js"
-        tal:attributes="src string:${resources_url}/jquery-file-upload/js/main.js"></script>
+      <script src="locale.js"
+        tal:attributes="src string:${resources_url}/locale.js"></script>
       <!-- The XDomainRequest Transport is included for cross-domain file deletion for IE8+ -->
 
       <tal:iefixstart replace="structure string:&lt;!--[if gte IE 8]&gt;" />
@@ -170,16 +168,6 @@
                         <i class="icon-ban-circle icon-white"></i>
                         <span i18n:translate="foldercontents_cancel_upload">Cancel upload</span>
                     </button>
-                    <input type="checkbox" class="toggle">
-                </div>
-                <!-- The global progress information -->
-                <div class="span5 fileupload-progress fade">
-                    <!-- The global progress bar -->
-                    <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                        <div class="bar" style="width:0%;"></div>
-                    </div>
-                    <!-- The extended global progress information -->
-                    <div class="progress-extended">&nbsp;</div>
                 </div>
             </div>
             <!-- The loading indicator is shown during file processing -->
