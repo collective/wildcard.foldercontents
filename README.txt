@@ -11,3 +11,4 @@ Features
 - Multi-file upload
 - Auto folder sorting
 - shift-click selection
+- drag drop files from desktop to upload
