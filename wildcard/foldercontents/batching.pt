@@ -43,7 +43,7 @@
     <!-- Pagelist with links to previous pages for quick navigation -->
     <span tal:repeat="pagenumber batch/previous_pages"
           tal:omit-tag="" >
-      <a href="" tal:content="pagenumber" 
+      <a href="" tal:content="pagenumber"
          tal:attributes="href string:${view/url}&amp;pagenumber=$pagenumber"/>
     </span>
 
@@ -56,7 +56,7 @@
     <!-- Pagelist with links to next pages for quick navigation -->
     <span tal:repeat="pagenumber batch/next_pages"
           tal:omit-tag="" >
-      <a href="" tal:content="pagenumber" 
+      <a href="" tal:content="pagenumber"
          tal:attributes="href string:${view/url}&amp;pagenumber=$pagenumber"/>
     </span>
 

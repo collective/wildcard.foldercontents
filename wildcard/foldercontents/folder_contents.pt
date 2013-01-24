@@ -12,7 +12,7 @@
     </metal:block>
     <metal:css fill-slot="style_slot"
       tal:define="resources_url string:${context/portal_url}/++resource++wcfc">
-      <link href="++resource++wcfc/bootstrap/bootstrap-fixed.css" 
+      <link href="++resource++wcfc/bootstrap/bootstrap-fixed.css"
         tal:attributes="href string:${resources_url}/bootstrap/bootstrap-fixed.css"
         rel="stylesheet" type="text/css"/>
       <!-- Bootstrap Image Gallery styles -->
@@ -101,7 +101,7 @@
   <body>
 
       <metal:content-title fill-slot="content-title">
-          <h1 class="documentFirstHeading"> 
+          <h1 class="documentFirstHeading">
               <tal:block condition="exists:here/aq_explicit/widget">
                   <metal:field use-macro="python:here.widget('title', mode='view')">
                   Title
@@ -110,9 +110,9 @@
               <tal:block condition="not:exists:here/aq_explicit/widget">
                   <span tal:content="view/title" tal:omit-tag="">Directory Id</span>
               </tal:block>
-          </h1>        
+          </h1>
       </metal:content-title>
-      
+
       <metal:content-description fill-slot="content-description">
           <div class="documentDescription" tal:condition="exists:here/aq_explicit/widget">
               <metal:field use-macro="python:here.widget('description', mode='view')">
@@ -120,9 +120,9 @@
               </metal:field>
           </div>
           <tal:block condition="not:exists:here/aq_explicit/widget">
-              <div class="documentDescription" 
-                         tal:content="context/Description" 
-                         tal:condition="context/Description"> 
+              <div class="documentDescription"
+                         tal:content="context/Description"
+                         tal:condition="context/Description">
                   Description
               </div>
           </tal:block>
@@ -195,6 +195,6 @@
           </div>
         </div>
       </metal:content-core>
-      
+
   </body>
 </html>
