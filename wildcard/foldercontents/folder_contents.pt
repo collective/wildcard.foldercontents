@@ -44,6 +44,9 @@
       #content ul.dropdown-menu li a{
         border-bottom: none;
       }
+      #foldercontents-display-sortorder{
+        float: right;
+      }
       </style>
 
     </metal:css>
