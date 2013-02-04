@@ -4,6 +4,10 @@ Changelog
 1.1b2 (development)
 ------------------
 
+- Moved 'Display sort order' button to the right (#5) [jcerjak]
+- Include Products.CMFCore in zcml to get rid of errors when starting the
+instance (Plone >= 4.1) [jcerjak]
+
 
 1.1b1 (2013-01-24)
 ------------------
