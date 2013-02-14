@@ -1,0 +1,165 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2012-11-22 08:14+0000\n"
+"PO-Revision-Date: 2013-02-14 15:24+0100\n"
+"Last-Translator: Martijn Zweistra <martijn.zweistra@edition1.nl>\n"
+"Language-Team: Edition1 <info@edition1.nl>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Language-Code: nl\n"
+"Language-Name: Dutch\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: wildcard.foldercontents\n"
+
+#. Default: "Cancel"
+#: resources/jquery-file-upload/js/locale.js
+msgid "Cancel"
+msgstr "Annuleren"
+
+#. Default: "Delete"
+#: resources/jquery-file-upload/js/locale.js
+msgid "Delete"
+msgstr "Verwijderen"
+
+#. Default: "Empty file upload result"
+#: resources/jquery-file-upload/js/locale.js
+msgid "Empty file upload result"
+msgstr "Leeg bestand upload resultaat"
+
+#. Default: "File is too big"
+#: resources/jquery-file-upload/js/locale.js
+msgid "File is too big"
+msgstr "Bestand is te groot"
+
+#. Default: "File is too small"
+#: resources/jquery-file-upload/js/locale.js
+msgid "File is too small"
+msgstr "Bestand is te klein"
+
+#. Default: "Filetype not allowed"
+#: resources/jquery-file-upload/js/locale.js
+msgid "Filetype not allowed"
+msgstr "Bestandstype niet toegestaan"
+
+#. Default: "Max number of files exceeded"
+#: resources/jquery-file-upload/js/locale.js
+msgid "Max number of files exceeded"
+msgstr "Max. aantal bestanden overschreden"
+
+#. Default: "Start"
+#: resources/jquery-file-upload/js/locale.js
+msgid "Start"
+msgstr "Start"
+
+#. Default: "Uploaded bytes exceed file size"
+#: resources/jquery-file-upload/js/locale.js
+msgid "Uploaded bytes exceed file size"
+msgstr "Geuploadde bytes overschrijden bestandsgrootte"
+
+#. Default: "Add files..."
+#: folder_contents.pt:162
+msgid "foldercontents_add_files"
+msgstr "Bestanden toevoegen..."
+
+#. Default: "Ascending order"
+#: table.pt:99
+msgid "foldercontents_ascending_order"
+msgstr "Oplopende volgorde"
+
+#. Default: "Cancel upload"
+#: folder_contents.pt:171
+msgid "foldercontents_cancel_upload"
+msgstr "Annuleer upload"
+
+#. Default: "Creation Date"
+#: folder_contents.pt:199 table.pt:90
+msgid "foldercontents_creation_order"
+msgstr "Aanmaakdatum"
+
+#. Default: "Descending order"
+#: table.pt:102
+msgid "foldercontents_descending_order"
+msgstr "Aflopende volgorde"
+
+#. Default: "Display sort order"
+#: table.pt:69
+msgid "foldercontents_display_sortorder"
+msgstr "Sorteervolgorde weergave"
+
+#. Default: "Effective Date"
+#: folder_contents.pt:200 table.pt:95
+msgid "foldercontents_effective_order"
+msgstr "Ingangsdatum"
+
+#. Default: "Folder Order"
+#: table.pt:75
+msgid "foldercontents_folder_order"
+msgstr "Map volgorde"
+
+#. Default: "ID"
+#: folder_contents.pt:197
+msgid "foldercontents_id_order"
+msgstr "ID"
+
+#. Default: "Sort"
+#: table.pt:130
+msgid "foldercontents_listingheader_sort"
+msgstr "Sorteer"
+
+#. Default: "Modification Date"
+#: folder_contents.pt:198 table.pt:85
+msgid "foldercontents_modification_order"
+msgstr "Wijzigingsdatum"
+
+#. Default: "Move to bottom"
+#: table.pt:206
+msgid "foldercontents_move_bottom"
+msgstr "Naar beneden"
+
+#. Default: "Move to top"
+#: table.pt:205
+msgid "foldercontents_move_top"
+msgstr "Naar boven"
+
+#. Default: "Reversed"
+#: folder_contents.pt:203
+msgid "foldercontents_reversed_order"
+msgstr "Omgekeerd"
+
+#. Default: "Sort folder"
+#: folder_contents.pt:205
+msgid "foldercontents_sort_folder"
+msgstr "Sorteer map"
+
+#. Default: "Sort folder by..."
+#: table.pt:242
+msgid "foldercontents_sortby"
+msgstr "Sorteer map op..."
+
+#. Default: "Sort on:"
+#: folder_contents.pt:194
+msgid "foldercontents_sorton"
+msgstr "Sorteer op:"
+
+#. Default: "Start upload"
+#: folder_contents.pt:167
+msgid "foldercontents_start_upload"
+msgstr "Start upload"
+
+#. Default: "Title"
+#: folder_contents.pt:196 table.pt:80
+msgid "foldercontents_title_order"
+msgstr "Titel"
+
+#. Default: "Upload Files"
+#: table.pt:241
+msgid "foldercontents_uploadfiles"
+msgstr "Upload bestanden"
+
+#. Default: "Content listing"
+#: table.pt:29
+msgid "summary_content_listing"
+msgstr "Inhoudsopgave"
