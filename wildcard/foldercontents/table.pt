@@ -90,6 +90,11 @@
                        class="right-caret"></b>
                     <tal:select_order i18n:translate="foldercontents_effective_order">Effective Date</tal:select_order>
                 </a></li>
+                <li><a href="#" tal:attributes="href string:${baseurl}Type">
+                    <b tal:condition="python: sort_on == 'Type'"
+                       class="right-caret"></b>
+                    <tal:select_order i18n:domain="cmfeditions" i18n:translate="label_file_type">File type</tal:select_order>
+                </a></li>
                 <li class="divider"></li>
                 <li tal:condition="python: 'sort_order' in request.form">
                   <a tal:attributes="href view/ascending_url" i18n:translate="foldercontents_ascending_order">Ascending order</a>
