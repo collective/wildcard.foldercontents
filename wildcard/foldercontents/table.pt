@@ -62,9 +62,9 @@
                  tal:attributes="data-sort_on sort_on">
               <button data-toggle="dropdown"
                       class="btn btn-small dropdown-toggle allowMultiSubmit">
-                <tal:display_order i18n:translate="foldercontents_display_sortorder">Display sort order</tal:display_order>
+                <tal:display_order i18n:domain="wildcard.foldercontents" i18n:translate="foldercontents_display_sortorder">Display sort order</tal:display_order>
                 <span class="caret"></span></button>
-              <ul class="dropdown-menu" tal:define="baseurl view/sort_base_url">
+              <ul class="dropdown-menu" tal:define="baseurl view/sort_base_url" i18n:domain="wildcard.foldercontents">
                 <li><a href="#" tal:attributes="href string:${baseurl}">
                     <b tal:condition="python: not sort_on or sort_on == 'getObjPositionInParent'"
                        class="right-caret"></b>
