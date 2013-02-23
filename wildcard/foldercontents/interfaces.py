@@ -10,3 +10,8 @@ class ILayer(Interface):
 class IATCTFileFactory(IFileFactory):
     """ adapter factory for ATCT
     """
+
+
+class IDXFileFactory(IFileFactory):
+    """ adapter factory for DX types
+    """

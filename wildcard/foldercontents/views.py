@@ -27,7 +27,17 @@ except ImportError:
     class ICollection(Interface):
         pass
 
-from wildcard.foldercontents.interfaces import IATCTFileFactory
+import pkg_resources
+
+try:
+    pkg_resources.get_distribution('plone.dexterity')
+except pkg_resources.DistributionNotFound:
+    HAS_DEXTERITY = False
+else:
+    from plone.dexterity.interfaces import IDexterityFTI
+    HAS_DEXTERITY = True
+
+from wildcard.foldercontents.interfaces import IATCTFileFactory, IDXFileFactory
 
 
 logger = logging.getLogger("wildcard.foldercontents")
@@ -260,7 +270,10 @@ class Sort(BrowserView):
 
 
 class JUpload(BrowserView):
-
+    """ We only support two kind of file/image types, AT or DX based (in case
+        that p.a.contenttypes are installed ans assuming their type names are
+        'File' and 'Image'.
+    """
     def __call__(self):
         authenticator = getMultiAdapter((self.context, self.request),
             name=u"authenticator")
@@ -276,21 +289,53 @@ class JUpload(BrowserView):
         if not filedata:
             return
 
-        factory = IATCTFileFactory(self.context)
+        # Determine if the default file/image types are DX or AT based
+        ctr = getToolByName(self.context, 'content_type_registry')
+        type_ = ctr.findTypeName(filename.lower(), '', '') or 'File'
+
+        DX_BASED = False
+        if HAS_DEXTERITY:
+            pt = getToolByName(self.context, 'portal_types')
+            if IDexterityFTI.providedBy(getattr(pt, type_)):
+                factory = IDXFileFactory(self.context)
+                DX_BASED = True
+            else:
+                factory = IATCTFileFactory(self.context)
+        else:
+            factory = IATCTFileFactory(self.context)
+
         obj = factory(filename, content_type, filedata)
 
-        try:
-            size = obj.getSize()
-        except AttributeError:
-            size = obj.getObjSize()
-        result = {
-            "url": obj.absolute_url(),
-            "name": obj.getId(),
-            "type": obj.getContentType(),
-            "size": size
-        }
-        if obj.portal_type == 'Image':
-            result['thumbnail_url'] = result['url'] + '/image_thumb'
+        if DX_BASED:
+            if 'File' in obj.portal_type:
+                size = obj.file.getSize()
+                content_type = obj.file.contentType
+            elif 'Image' in obj.portal_type:
+                size = obj.image.getSize()
+                content_type = obj.image.contentType
+
+            result = {
+                "url": obj.absolute_url(),
+                "name": obj.getId(),
+                "type": content_type,
+                "size": size
+            }
+        else:
+            try:
+                size = obj.getSize()
+            except AttributeError:
+                size = obj.getObjSize()
+
+            result = {
+                "url": obj.absolute_url(),
+                "name": obj.getId(),
+                "type": obj.getContentType(),
+                "size": size
+            }
+
+        if 'Image' in obj.portal_type:
+            result['thumbnail_url'] = result['url'] + '/@@images/image/tile'
+
         return json.dumps({
             'files': [result]
         })

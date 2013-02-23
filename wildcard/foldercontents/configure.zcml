@@ -53,5 +53,6 @@
       />
 
   <adapter factory=".factories.ATCTFileFactory" />
+  <adapter factory=".factories.DXFileFactory" />
 
 </configure>
