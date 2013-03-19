@@ -144,7 +144,7 @@ class NewFolderContentsView(FolderContentsView):
             messages = IStatusMessage(self.request)
             messages.add(u"This type of folder does not support ordering",
                 type=u"info")
-        return super(NewFolderContentsView, self).__call__(self)
+        return super(NewFolderContentsView, self).__call__()
 
     def contents_table(self):
         table = NewFolderContentsTable(aq_inner(self.context), self.request)
