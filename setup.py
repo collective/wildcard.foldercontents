@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.1dev'
+version = '1.2'
 
 setup(name='wildcard.foldercontents',
       version=version,
