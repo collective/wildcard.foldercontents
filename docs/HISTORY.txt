@@ -9,7 +9,7 @@ Changelog
   instance (Plone >= 4.1) [jcerjak]
 - Included support for plone.app.contenttypes Dexterity-based filetypes in
   jQuery file uploads [sneridagh]
-
+- Fixed name normalize [jianaijun]
 
 1.1b1 (2013-01-24)
 ------------------
