@@ -13,7 +13,6 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.interfaces._content import IFolderish
 from Products.CMFPlone import utils as ploneutils
 
-from plone.i18n.normalizer.interfaces import IFileNameNormalizer
 from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedBlobFile
 from wildcard.foldercontents.interfaces import IATCTFileFactory, IDXFileFactory
@@ -88,19 +87,15 @@ class DXFileFactory(object):
         ctr = getToolByName(self.context, 'content_type_registry')
         type_ = ctr.findTypeName(name.lower(), '', '') or 'File'
 
-        # XXX: quick fix for german umlauts
         name = name.decode("utf8")
 
-        normalizer = getUtility(IFileNameNormalizer)
         chooser = INameChooser(self.context)
 
         # otherwise I get ZPublisher.Conflict ConflictErrors
         # when uploading multiple files
         upload_lock.acquire()
 
-        # this should fix #8
-        newid = chooser.chooseName(normalizer.normalize(name),
-            self.context.aq_parent)
+        newid = chooser.chooseName(name, self.context.aq_parent)
         try:
             transaction.begin()
 
