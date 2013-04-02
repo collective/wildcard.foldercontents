@@ -15,6 +15,7 @@ from Products.CMFPlone import utils as ploneutils
 
 from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedBlobFile
+from plone.i18n.normalizer.interfaces import IFileNameNormalizer
 from wildcard.foldercontents.interfaces import IATCTFileFactory, IDXFileFactory
 
 upload_lock = allocate_lock()
