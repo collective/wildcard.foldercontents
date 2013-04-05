@@ -25,7 +25,8 @@ setup(name='wildcard.foldercontents',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'jarn.jsi18n'
+          'jarn.jsi18n',
+          'plone.namedfile[blobs]',
       ],
       entry_points="""
       # -*- Entry points: -*-
