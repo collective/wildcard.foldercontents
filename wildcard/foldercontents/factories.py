@@ -13,8 +13,12 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.interfaces._content import IFolderish
 from Products.CMFPlone import utils as ploneutils
 
-from plone.namedfile.file import NamedBlobImage
-from plone.namedfile.file import NamedBlobFile
+try:
+    from plone.namedfile.file import NamedBlobImage
+    from plone.namedfile.file import NamedBlobFile
+except ImportError:
+    # only for dext
+    pass
 from plone.i18n.normalizer.interfaces import IFileNameNormalizer
 from wildcard.foldercontents.interfaces import IATCTFileFactory, IDXFileFactory
 

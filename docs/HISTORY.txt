@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.2.2 (unreleased)
+------------------
+
+- fix when dexterity isn't installed
+  [vangheem]
+
 1.2.1 (2013-04-02)
 ------------------
 
