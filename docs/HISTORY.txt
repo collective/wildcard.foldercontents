@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.2.3 (unreleased)
+------------------
+
+- handle folder not orderable
+  [vangheem]
+
 1.2.2 (2013-05-09)
 ------------------
 

@@ -136,6 +136,8 @@ class NewFolderContentsView(FolderContentsView):
             return False
         if IPloneSiteRoot.providedBy(self.context):
             return True
+        if not hasattr(self.context, 'getOrdering'):
+            return False
         ordering = self.context.getOrdering()
         return IExplicitOrdering.providedBy(ordering)
 
