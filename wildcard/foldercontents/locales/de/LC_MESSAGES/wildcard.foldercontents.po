@@ -99,7 +99,7 @@ msgstr "Datum"
 #. Default: "Folder Order"
 #: ./table.pt:75
 msgid "foldercontents_folder_order"
-msgstr "Ordner Sortierung"
+msgstr "Ordnersortierung"
 
 #. Default: "ID"
 #: ./folder_contents.pt:197
@@ -130,7 +130,7 @@ msgstr "Nach oben verschieben"
 #. Default: "Reversed"
 #: ./folder_contents.pt:203
 msgid "foldercontents_reversed_order"
-msgstr "Umkehren"
+msgstr "Sortierung umkehren"
 
 #. Default: "Sort folder"
 #: ./folder_contents.pt:205
