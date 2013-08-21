@@ -26,14 +26,6 @@ upload_lock = allocate_lock()
 
 import pkg_resources
 
-try:
-    pkg_resources.get_distribution('plone.dexterity')
-except pkg_resources.DistributionNotFound:
-    HAS_DEXTERITY = False
-else:
-    from plone.dexterity.utils import createContentInContainer
-    HAS_DEXTERITY = True
-
 
 class ATCTFileFactory(object):
     """
