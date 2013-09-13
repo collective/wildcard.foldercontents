@@ -81,6 +81,9 @@ class DXFileFactory(object):
         self.context = context
 
     def __call__(self, name, content_type, data):
+        # contextual import to prevent ImportError
+        from plone.dexterity.utils import createContentInContainer
+
         ctr = getToolByName(self.context, 'content_type_registry')
         type_ = ctr.findTypeName(name.lower(), '', '') or 'File'
 
