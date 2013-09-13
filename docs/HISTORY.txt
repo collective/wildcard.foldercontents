@@ -1,6 +1,18 @@
 Changelog
 =========
 
+1.2.4 (2013-09-13)
+------------------
+
+- fix dexterity missing import
+  [gborelli]
+
+- fix use of "jq"
+  [gborelli]
+
+- fix batch size
+  [gborelli]
+
 1.2.3 (2013-05-23)
 ------------------
 
