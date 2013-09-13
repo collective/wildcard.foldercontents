@@ -12,8 +12,8 @@
 /*global window */
 
 // Get the current language
-var lang = jq('html').attr('lang');
- 
+var lang = $('html').attr('lang');
+
 mf = function(m){
     return m;
 }
