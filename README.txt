@@ -12,3 +12,9 @@ Features
 - Auto folder sorting
 - shift-click selection
 - drag drop files from desktop to upload
+
+
+1.x
+~~~
+
+- maintenance branch
