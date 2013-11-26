@@ -1,10 +1,12 @@
 Changelog
 =========
 
-1.2.5 (unreleased)
+2.0a1 (unreleased)
 ------------------
 
-- nothing yet
+- change this package into being a backport of the plone 5 folder contents
+  [vangheem]
+
 
 1.2.4 (2013-09-13)
 ------------------
