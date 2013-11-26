@@ -1,203 +1,43 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xml:lang="en" lang="en"
-      i18n:domain="wildcard.foldercontents"
-      metal:use-macro="here/main_template/macros/master">
-
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="plone">
   <head>
-    <metal:block fill-slot="top_slot">
-      <tal:insert tal:replace="nothing" tal:define="dummy python:request.set('enable_border', 1)" />
-    </metal:block>
-    <metal:css fill-slot="style_slot"
-               tal:define="resources_url string:${context/portal_url}/++resource++wcfc">
-      <link href="++resource++wcfc/bootstrap/bootstrap-fixed.css"
-            tal:attributes="href string:${resources_url}/bootstrap/bootstrap-fixed.css"
-            rel="stylesheet" type="text/css"/>
-      <!-- Bootstrap Image Gallery styles -->
-      <link rel="stylesheet"
-            href="http://blueimp.github.com/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css"
-            tal:attributes="href string:${resources_url}/jquery-file-upload/css/bootstrap-image-gallery.min.css" />
-      <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
-      <link rel="stylesheet" href="css/jquery.fileupload-ui.css"
-            tal:attributes="href string:${resources_url}/jquery-file-upload/css/jquery.fileupload-ui.css" />
-      <!-- Shim to make HTML5 elements usable in older Internet Explorer versions -->
-      <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-
-      <style>
-      .right-caret {
-        border-bottom: 4px solid transparent;
-        border-top: 4px solid transparent;
-        border-left: 4px solid #000000;
-        display: inline-block;
-        height: 0;
-        opacity: 0.3;
-        vertical-align: top;
-        width: 0;
-        margin-top: 4px;
-        margin-right: 4px;
-      }
-      #content ul.dropdown-menu{
-        list-style-type: none;
-      }
-      #content ul.dropdown-menu li a{
-        border-bottom: none;
-      }
-      #foldercontents-display-sortorder{
-        float: right;
-      }
-      </style>
-
-    </metal:css>
-    <metal:js fill-slot="javascript_head_slot"
-              tal:define="resources_url string:${context/portal_url}/++resource++wcfc">
-      <!-- The template to display files available for upload -->
-      <tal:templates tal:replace="structure view/jstemplates" />
-      <script type="text/javascript" src="++resource++wcfc/jquery.js"
-              tal:attributes="src string:${resources_url}/jquery.js"></script>
-      <script type="text/javascript" src="++resource++wcfc/js/jquery-ui.js"
-              tal:attributes="src string:${resources_url}/jquery-file-upload/js/jquery-ui.js"></script>
-
-      <script type="text/javascript" src="++resource++wcfc/bootstrap/bootstrap.min.js"
-              tal:attributes="src string:${resources_url}/bootstrap/bootstrap.min.js"></script>
-      <script src="http://blueimp.github.com/JavaScript-Templates/tmpl.min.js"
-              tal:attributes="src string:${resources_url}/jquery-file-upload/js/tmpl.min.js"></script>
-      <!-- The Load Image plugin is included for the preview images and image resizing functionality -->
-      <script src="http://blueimp.github.com/JavaScript-Load-Image/load-image.min.js"
-              tal:attributes="src string:${resources_url}/jquery-file-upload/js/load-image.min.js"></script>
-      <!-- The Canvas to Blob plugin is included for image resizing functionality -->
-      <script src="http://blueimp.github.com/JavaScript-Canvas-to-Blob/canvas-to-blob.min.js"
-              tal:attributes="src string:${resources_url}/jquery-file-upload/js/canvas-to-blob.min.js"></script>
-      <!-- Bootstrap JS and Bootstrap Image Gallery are not required, but included for the demo -->
-      <script src="http://blueimp.github.com/cdn/js/bootstrap.min.js"
-              tal:attributes="src string:${resources_url}/jquery-file-upload/js/bootstrap.min.js"></script>
-      <script src="http://blueimp.github.com/Bootstrap-Image-Gallery/js/bootstrap-image-gallery.min.js"
-              tal:attributes="src string:${resources_url}/jquery-file-upload/js/bootstrap-image-gallery.min.js"></script>
-      <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
-      <script src="js/jquery.iframe-transport.js"
-              tal:attributes="src string:${resources_url}/jquery-file-upload/js/jquery.iframe-transport.js"></script>
-      <!-- The basic File Upload plugin -->
-      <script src="js/jquery.fileupload.js"
-              tal:attributes="src string:${resources_url}/jquery-file-upload/js/jquery.fileupload.js"></script>
-      <!-- The File Upload file processing plugin -->
-      <script src="js/jquery.fileupload-fp.js"
-              tal:attributes="src string:${resources_url}/jquery-file-upload/js/jquery.fileupload-fp.js"></script>
-      <!-- The File Upload user interface plugin -->
-      <script src="js/jquery.fileupload-ui.js"
-              tal:attributes="src string:${resources_url}/jquery-file-upload/js/jquery.fileupload-ui.js"></script>
-      <!-- The localization script -->
-      <script src="locale.js"
-              tal:attributes="src string:${resources_url}/locale.js"></script>
-      <!-- The XDomainRequest Transport is included for cross-domain file deletion for IE8+ -->
-
-      <tal:iefixstart replace="structure string:&lt;!--[if gte IE 8]&gt;" />
-      <script src="js/cors/jquery.xdr-transport.js"
-              tal:attributes="src string:${resources_url}/jquery-file-upload/js/cors/jquery.xdr-transport.js"></script>
-      <tal:iefixend replace="structure string:&lt;![endif]--&gt;" />
-      <script type="text/javascript" src="++resource++wcfc/integration.js"
-              tal:attributes="src string:${context/portal_url}/++resource++wcfc/integration.js"></script>
-
-    </metal:js>
+      <metal:block fill-slot="javascript_head_slot">
+        <tal:insert tal:replace="nothing"
+              tal:define="dummy python:request.set('enable_border', 1)" />
+<link rel="stylesheet" 
+      tal:attributes="href string:${portal_url}/++resource++wcfc/toolbar.min.css" />
+        <script
+tal:attributes="src string:${portal_url}/++resource++wcfc/structure.js">
+        </script>
+        <style>
+.modal-body .documentFirstHeading{
+  display: none;
+}
+.modal-body #viewlet-below-content-title{
+  display:none;
+}
+.popover.columns ul li {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+        </style>
+      </metal:block>
   </head>
+<body>
 
-  <body>
-
-    <metal:content-title fill-slot="content-title">
-      <h1 class="documentFirstHeading">
-        <tal:block condition="exists:here/aq_explicit/widget">
-          <metal:field use-macro="python:here.widget('title', mode='view')">
-            Title
-          </metal:field>
-        </tal:block>
-        <tal:block condition="not:exists:here/aq_explicit/widget">
-          <span tal:content="view/title" tal:omit-tag="">Directory Id</span>
-        </tal:block>
-      </h1>
-    </metal:content-title>
-
-    <metal:content-description fill-slot="content-description">
-      <div class="documentDescription" tal:condition="exists:here/aq_explicit/widget">
-        <metal:field use-macro="python:here.widget('description', mode='view')">
-          Description
-        </metal:field>
-      </div>
-      <tal:block condition="not:exists:here/aq_explicit/widget">
-        <div class="documentDescription"
-             tal:content="context/Description"
-             tal:condition="context/Description">
-          Description
-        </div>
-      </tal:block>
-    </metal:content-description>
-
-    <metal:content-core fill-slot="content-core">
-      <a href=""
-         class="link-parent"
-         tal:define="parent_url view/parent_url"
-         tal:condition="parent_url"
-         tal:attributes="href string:${parent_url}/folder_contents"
-         i18n:domain="plone"
-         i18n:translate="go_to_parent_url">
-        Up one level
-      </a>
-
-      <div class="fc">
-        <form name="folderContentsForm"
-              method="post"
-              action="folder_object"
-              tal:attributes="action context/absolute_url"
-              class="kssattr-serveraction-foldercontents_update_table">
-          <div tal:replace="structure view/contents_table"></div>
-          <input tal:replace="structure context/@@authenticator/authenticator" />
-        </form>
-        <form id="fileupload" action="@@fcjupload" method="POST" enctype="multipart/form-data"
-              tal:attributes="action string:${context/absolute_url}/@@fcjupload"
-              style="display:none;">
-          <!-- The fileupload-buttonbar contains buttons to add files and start/cancel the upload -->
-          <div class="row fileupload-buttonbar">
-            <div class="span7">
-              <!-- The fileinput-button span is used to style the file input field as button -->
-              <span class="btn btn-success fileinput-button">
-                <i class="icon-plus icon-white"></i>
-                <span i18n:translate="foldercontents_add_files">Add files...</span>
-                <input type="file" name="files[]" multiple>
-              </span>
-              <button type="submit" class="btn btn-primary start">
-                <i class="icon-upload icon-white"></i>
-                <span i18n:translate="foldercontents_start_upload">Start upload</span>
-              </button>
-              <button type="reset" class="btn btn-warning cancel">
-                <i class="icon-ban-circle icon-white"></i>
-                <span i18n:translate="foldercontents_cancel_upload">Cancel upload</span>
-              </button>
-            </div>
-          </div>
-          <!-- The loading indicator is shown during file processing -->
-          <div class="fileupload-loading"></div>
-          <br>
-          <!-- The table listing the files available for upload/download -->
-          <table role="presentation" class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody></table>
-        </form>
-        <div id="sort-container" style="display:none">
-          <form class="well form-inline" method="POST"
-                tal:attributes="action string:${context/absolute_url}/@@wcfcsort">
-            <label i18n:translate="foldercontents_sorton">Sort on:</label>
-            <select name="on">
-              <option value="sortable_title" i18n:translate="foldercontents_title_order">Title</option>
-              <option value="id" i18n:translate="foldercontents_id_order">ID</option>
-              <option value="modified" i18n:translate="foldercontents_modification_order">Modification Date</option>
-              <option value="created" i18n:translate="foldercontents_creation_order">Creation Date</option>
-              <option value="effective" i18n:translate="foldercontents_effective_order">Effective Date</option>
-            </select>
-            <input type="checkbox" name="reversed" />
-            <label i18n:translate="foldercontents_reversed_order" class="checkbox">Reversed</label>
-            <input tal:replace="structure context/@@authenticator/authenticator" />
-            <button type="submit" class="btn btn-warning" i18n:translate="foldercontents_sort_folder">Sort folder</button>
-          </form>
-        </div>
-      </div>
+<metal:content-core fill-slot="content-core">
+    <metal:content-core define-macro="content-core">
+        <span tal:replace="structure context/@@authenticator/authenticator"/>
+        <div class="pat-structure"
+          tal:attributes="data-pat-structure view/options" />
     </metal:content-core>
+</metal:content-core>
 
-  </body>
+</body>
 </html>

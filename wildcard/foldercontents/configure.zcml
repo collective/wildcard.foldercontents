@@ -9,39 +9,11 @@
   <five:registerPackage package="." initialize=".initialize" />
   <i18n:registerTranslations directory="locales" />
   <include package="Products.CMFCore" />
-
-  <browser:page
-    for="Products.CMFCore.interfaces._content.IFolderish"
-    class=".views.NewFolderContentsView"
-    name="folder_contents"
-    template="folder_contents.pt"
-    permission="cmf.ListFolderContents"
-    layer=".interfaces.ILayer" />
-
-  <browser:page
-    for="Products.CMFCore.interfaces._content.IFolderish"
-    class=".views.Move"
-    name="fcmove"
-    permission="cmf.ModifyPortalContent"
-    layer=".interfaces.ILayer" />
-
-  <browser:page
-    for="Products.CMFCore.interfaces._content.IFolderish"
-    class=".views.JUpload"
-    name="fcjupload"
-    permission="cmf.AddPortalContent"
-    layer=".interfaces.ILayer" />
-
-  <browser:page
-    for="Products.CMFCore.interfaces._content.IFolderish"
-    class=".views.Sort"
-    name="wcfcsort"
-    permission="cmf.ModifyPortalContent"
-    layer=".interfaces.ILayer" />
+  <include file="views.zcml" />
 
   <browser:resourceDirectory
     name="wcfc"
-    directory="resources"
+    directory="static"
   />
 
   <genericsetup:registerProfile
@@ -54,5 +26,10 @@
 
   <adapter factory=".factories.ATCTFileFactory" />
   <adapter factory=".factories.DXFileFactory" />
+
+  <utility
+    factory=".vocabularies.CatalogVocabularyFactory"
+    name="wildcard.foldercontents.vocabularies.Catalog"
+    />
 
 </configure>

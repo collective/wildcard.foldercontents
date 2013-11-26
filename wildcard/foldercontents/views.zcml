@@ -1,0 +1,209 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="plone.app.toolbar">
+
+  <browser:page
+    for="Products.CMFCore.interfaces._content.IFolderish"
+    class=".views.FolderContentsView"
+    name="folder_contents"
+    template="folder_contents.pt"
+    permission="cmf.ListFolderContents"
+    layer=".interfaces.ILayer"
+    />
+
+  <browser:page
+    for="Products.CMFCore.interfaces._content.IFolderish"
+    name="fc-delete"
+    class=".views.DeleteAction"
+    permission="cmf.ListFolderContents"
+    layer=".interfaces.ILayer"
+    />
+
+  <browser:page
+    for="Products.CMFCore.interfaces._content.IFolderish"
+    name="fc-paste"
+    class=".views.PasteAction"
+    permission="cmf.ListFolderContents"
+    layer=".interfaces.ILayer"
+    />
+
+  <browser:page
+    for="Products.CMFCore.interfaces._content.IFolderish"
+    name="fc-workflow"
+    class=".views.WorkflowAction"
+    permission="cmf.ListFolderContents"
+    layer=".interfaces.ILayer"
+    />
+
+  <browser:page
+    for="Products.CMFCore.interfaces._content.IFolderish"
+    name="fc-tags"
+    class=".views.TagsAction"
+    permission="cmf.ListFolderContents"
+    layer=".interfaces.ILayer"
+    />
+
+  <browser:page
+    for="Products.CMFCore.interfaces._content.IFolderish"
+    name="fc-properties"
+    class=".views.PropertiesAction"
+    permission="cmf.ListFolderContents"
+    layer=".interfaces.ILayer"
+    />
+
+  <browser:page
+    for="Products.CMFCore.interfaces._content.IFolderish"
+    name="fc-rename"
+    class=".views.RenameAction"
+    permission="cmf.ListFolderContents"
+    layer=".interfaces.ILayer"
+    />
+
+  <browser:page
+    for="Products.CMFCore.interfaces._content.IFolderish"
+    name="fc-itemOrder"
+    class=".views.ItemOrder"
+    permission="cmf.ModifyPortalContent"
+    layer=".interfaces.ILayer"
+    />
+
+  <browser:page
+    for="Products.CMFCore.interfaces._content.IFolderish"
+    name="fc-contextInfo"
+    class=".views.ContextInfo"
+    permission="cmf.ListFolderContents"
+    layer=".interfaces.ILayer"
+    />
+
+  <browser:page
+    for="Products.CMFCore.interfaces._content.IFolderish"
+    name="fc-setDefaultPage"
+    class=".views.SetDefaultPage"
+    permission="cmf.ModifyPortalContent"
+    layer=".interfaces.ILayer"
+    />
+
+  <browser:page
+    name="wcVocabulary"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    class=".views.VocabularyView"
+    permission="zope2.View"
+    layer=".interfaces.ILayer"
+    />
+
+  <browser:page
+    name="wcFileUpload"
+    for="Products.CMFCore.interfaces._content.IFolderish"
+    class=".views.FileUploadView"
+    permission="cmf.AddPortalContent"
+    layer=".interfaces.ILayer"
+    />
+
+  <browser:page
+    name="qsOptions"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    class=".views.QueryStringIndexOptions"
+    permission="zope2.View"
+    layer=".interfaces.ILayer"
+    />
+
+    <browser:resource
+        name="plone.app.toolbar-glyphicons-halflings.png"
+        file="static/toolbar-glyphicons-halflings.png"
+        layer=".interfaces.ILayer"
+        />
+    <browser:resource
+        name="plone.app.toolbar-glyphicons-halflings-white.png"
+        file="static/toolbar-glyphicons-halflings-white.png"
+        layer=".interfaces.ILayer"
+        />
+
+    <browser:resource
+        name="plone.app.toolbar-fontawesome-webfont.eot"
+        file="static/toolbar-fontawesome-webfont.eot"
+        layer=".interfaces.ILayer"
+        />
+    <browser:resource
+        name="plone.app.toolbar-fontawesome-webfont.woff"
+        file="static/toolbar-fontawesome-webfont.woff"
+        layer=".interfaces.ILayer"
+        />
+    <browser:resource
+        name="plone.app.toolbar-fontawesome-webfont.ttf"
+        file="static/toolbar-fontawesome-webfont.ttf"
+        layer=".interfaces.ILayer"
+        />
+    <browser:resource
+            name="plone.app.toolbar-fontawesome-webfont.svg"
+            file="static/toolbar-fontawesome-webfont.svg"
+            layer=".interfaces.ILayer"
+            />
+
+    <browser:resource
+            name="plone.app.toolbar-select2.png"
+            file="static/toolbar-select2.png"
+            layer=".interfaces.ILayer"
+            />
+    <browser:resource
+            name="plone.app.toolbar-select2-spinner.gif"
+            file="static/toolbar-select2-spinner.gif"
+            layer=".interfaces.ILayer"
+            />
+
+    <browser:resource
+            name="plone.app.toolbar-icomoon.eot"
+            file="static/toolbar-icomoon.eot"
+            layer=".interfaces.ILayer"
+            />
+    <browser:resource
+            name="plone.app.toolbar-icomoon.svg"
+            file="static/toolbar-icomoon.svg"
+            layer=".interfaces.ILayer"
+            />
+    <browser:resource
+            name="plone.app.toolbar-icomoon.woff"
+            file="static/toolbar-icomoon.woff"
+            layer=".interfaces.ILayer"
+            />
+    <browser:resource
+            name="plone.app.toolbar-icomoon.ttf"
+            file="static/toolbar-icomoon.ttf"
+            layer=".interfaces.ILayer"
+            />
+    <browser:resource
+            name="plone.app.toolbar-icomoon-small.eot"
+            file="static/toolbar-icomoon.eot"
+            layer=".interfaces.ILayer"
+            />
+    <browser:resource
+            name="plone.app.toolbar-icomoon-small.svg"
+            file="static/toolbar-icomoon.svg"
+            layer=".interfaces.ILayer"
+            />
+    <browser:resource
+            name="plone.app.toolbar-icomoon-small.woff"
+            file="static/toolbar-icomoon.woff"
+            layer=".interfaces.ILayer"
+            />
+    <browser:resource
+            name="plone.app.toolbar-icomoon-small.ttf"
+            file="static/toolbar-icomoon.ttf"
+            layer=".interfaces.ILayer"
+            />
+
+    <browser:resource
+            name="plone.app.toolbar-spritemap.png"
+            file="static/toolbar-spritemap.png"
+            layer=".interfaces.ILayer"
+            />
+    <browser:resource
+            name="plone.app.toolbar-spritemap@2x.png"
+            file="static/toolbar-spritemap@2x.png"
+            layer=".interfaces.ILayer"
+            />
+
+
+</configure>

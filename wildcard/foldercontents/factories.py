@@ -12,7 +12,7 @@ from Products.Archetypes.event import ObjectInitializedEvent
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.interfaces._content import IFolderish
 from Products.CMFPlone import utils as ploneutils
-from Products.CMFPlone.utils import safe_unicode
+
 
 try:
     from plone.namedfile.file import NamedBlobImage
@@ -20,12 +20,20 @@ try:
 except ImportError:
     # only for dext
     pass
-
+from plone.i18n.normalizer.interfaces import IFileNameNormalizer
 from wildcard.foldercontents.interfaces import IATCTFileFactory, IDXFileFactory
 
 upload_lock = allocate_lock()
 
 import pkg_resources
+
+try:
+    pkg_resources.get_distribution('plone.dexterity')
+except pkg_resources.DistributionNotFound:
+    HAS_DEXTERITY = False
+else:
+    from plone.dexterity.utils import createContentInContainer
+    HAS_DEXTERITY = True
 
 
 class ATCTFileFactory(object):
@@ -42,17 +50,23 @@ class ATCTFileFactory(object):
         ctr = getToolByName(self.context, 'content_type_registry')
         type_ = ctr.findTypeName(name.lower(), '', '') or 'File'
 
+        # XXX: quick fix for german umlauts
+        name = name.decode("utf8")
+
+        normalizer = getUtility(IFileNameNormalizer)
+        chooser = INameChooser(self.context)
+
         # otherwise I get ZPublisher.Conflict ConflictErrors
         # when uploading multiple files
         upload_lock.acquire()
 
-        name = safe_unicode(name)
-        chooser = INameChooser(self.context)
-        newid = chooser.chooseName(name, self.context.aq_parent)
+        # this should fix #8
+        newid = chooser.chooseName(normalizer.normalize(name),
+                                   self.context.aq_parent)
         try:
             transaction.begin()
             obj = ploneutils._createObjectByType(type_,
-                self.context, newid)
+                                                 self.context, newid)
             mutator = obj.getPrimaryField().getMutator(obj)
             mutator(data, content_type=content_type)
             obj.setTitle(name)
@@ -76,18 +90,17 @@ class DXFileFactory(object):
         self.context = context
 
     def __call__(self, name, content_type, data):
-        # contextual import to prevent ImportError
-        from plone.dexterity.utils import createContentInContainer
-
         ctr = getToolByName(self.context, 'content_type_registry')
         type_ = ctr.findTypeName(name.lower(), '', '') or 'File'
+
+        name = name.decode("utf8")
+
+        chooser = INameChooser(self.context)
 
         # otherwise I get ZPublisher.Conflict ConflictErrors
         # when uploading multiple files
         upload_lock.acquire()
 
-        name = safe_unicode(name)
-        chooser = INameChooser(self.context)
         newid = chooser.chooseName(name, self.context.aq_parent)
         try:
             transaction.begin()
@@ -98,7 +111,7 @@ class DXFileFactory(object):
             # its type name
             if 'File' in type_:
                 file = NamedBlobFile(data=data.read(),
-                                     filename=safe_unicode(data.filename),
+                                     filename=unicode(data.filename),
                                      contentType=content_type)
                 obj = createContentInContainer(self.context,
                                                type_,
@@ -106,7 +119,7 @@ class DXFileFactory(object):
                                                file=file)
             elif 'Image' in type_:
                 image = NamedBlobImage(data=data.read(),
-                                       filename=safe_unicode(data.filename),
+                                       filename=unicode(data.filename),
                                        contentType=content_type)
                 obj = createContentInContainer(self.context,
                                                type_,
