@@ -30,7 +30,7 @@ that you pin a few newer versions of a few plone packages.
 Plone 4.3
 ~~~~~~~~~
 
-version pins:
+version pins::
 
     [versions]
     plone.app.querystring = 1.1.0
@@ -39,7 +39,7 @@ version pins:
 Plone 4.2
 ~~~~~~~~~
 
-version pins:
+version pins::
 
     [versions]
     plone.app.querystring = 1.1.0
@@ -49,7 +49,7 @@ version pins:
 Plone 4.1
 ~~~~~~~~~
 
-version pins:
+version pins::
 
     [versions]
     plone.app.vocabularies = 2.1.12
