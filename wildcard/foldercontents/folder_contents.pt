@@ -11,6 +11,10 @@
               tal:define="dummy python:request.set('enable_border', 1)" />
 <link rel="stylesheet" 
       tal:attributes="href string:${portal_url}/++resource++wcfc/toolbar.min.css" />
+        <script tal:condition="view/is_plone_41"
+tal:attributes="src string:${portal_url}/++resource++wcfc/jquery.js">
+        </script>
+
         <script
 tal:attributes="src string:${portal_url}/++resource++wcfc/structure.js">
         </script>

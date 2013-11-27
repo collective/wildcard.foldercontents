@@ -50,6 +50,13 @@ logger = getLogger(__name__)
 
 class FolderContentsView(BrowserView):
 
+    def is_plone_41(self):
+        try:
+            from plone.app.upgrade import v42
+            return False
+        except:
+            return True
+
     def __call__(self):
         site = getSite()
         base_url = site.absolute_url()
