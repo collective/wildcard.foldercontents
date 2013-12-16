@@ -109,15 +109,16 @@ class DXFileFactory(object):
             # This will suffice for standard p.a.contenttypes File/Image
             # and any other custom type that would have 'File' or 'Image' in
             # its type name
+            filename = ploneutils.safe_unicode(data.filename)
             if 'Image' in type_:
                 image = NamedBlobImage(data=data.read(),
-                                       filename=unicode(data.filename),
+                                       filename=filename,
                                        contentType=content_type)
                 obj = createContentInContainer(
                     self.context, type_, id=newid, image=image)
             else:
                 file = NamedBlobFile(data=data.read(),
-                                     filename=unicode(data.filename),
+                                     filename=filename,
                                      contentType=content_type)
                 obj = createContentInContainer(
                     self.context, type_, id=newid, file=file)
