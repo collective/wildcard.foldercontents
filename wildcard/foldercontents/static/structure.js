@@ -5026,6 +5026,7 @@ define('mockup-patterns-modal',[
           '  </div>' +
           '  <div class="<%= options.classFooterName %>"> ' +
           '    <%= buttons %> ' +
+          '    <a class="close hiddenStructure">&times;</a>' +
           '  </div>' +
           '</div>'
       },
@@ -5246,7 +5247,12 @@ define('mockup-patterns-modal',[
           return;
         }
         var $raw = self.$raw.clone();
-
+        // fix for IE9 bug (see http://bugs.jquery.com/ticket/10550)
+        $('input:checked', $raw).each(function() {
+          if (this.setAttribute){
+            this.setAttribute('checked', 'checked');
+          }
+        });
         // Object that will be passed to the template
         var tpl_object = {
           title: '',
@@ -5281,6 +5287,19 @@ define('mockup-patterns-modal',[
         // Render html
         self.$modal = $(_.template(self.options.templateOptions.template, tpl_object));
 
+        // In most browsers, when you hit the enter key while a form element is focused
+        // the browser will trigger the form 'submit' event.  Google Chrome also does this,
+        // but not when when the default submit button is hidden with 'display: none'.
+        // The following code will work around this issue:
+        $('form', self.$modal).on ('keydown', function (event) {
+            // ignore keys which are not enter, and ignore enter inside a textarea.
+            if (event.keyCode !== 13 || event.target.nodeName == 'TEXTAREA')
+                return;
+
+            event.preventDefault ();
+            $('input[type=submit], button[type=submit], button:not(type)', this).eq(0).trigger ('click');
+        });
+
         // Setup buttons
         $(options.buttons, self.$modal).each(function() {
           var $button = $(this);
@@ -5302,7 +5321,7 @@ define('mockup-patterns-modal',[
         self.trigger('before-events-setup');
 
         // Wire up events
-        $('.modal-header > a.close', self.$modal)
+        $('.modal-header > a.close, .modal-footer > a.close', self.$modal)
           .off('click')
           .on('click', function(e) {
             e.stopPropagation();
@@ -7244,7 +7263,8 @@ define('js/patterns/structure/views/contextmenu',[
       'click .move-top a': 'moveTopClicked',
       'click .move-bottom a': 'moveBottomClicked',
       'click .set-default-page a': 'setDefaultPageClicked',
-      'click .open': 'openClicked'
+      'click .open': 'openClicked',
+      'click .edit': 'editClicked'
     },
     template: _.template(
       '<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">' +
@@ -7255,6 +7275,7 @@ define('js/patterns/structure/views/contextmenu',[
           '<li class="move-bottom"><a href="#">Move to bottom of folder</a></li>' +
           '<li class="set-default-page"><a href="#">Set as default page</a></li>' +
           '<li class="open"><a href="#">Open</a></li>' +
+          '<li class="edit"><a href="#">Edit</a></li>' +
       '</ul>'),
     active: null,
     initialize: function(){
@@ -7375,22 +7396,36 @@ define('js/patterns/structure/views/contextmenu',[
         }
       });
     },
-    openClicked: function(){
+    getSelectedBaseUrl: function(){
       var self = this;
+      var uid = self.$active.attr('data-UID');
+      var model = self.app.collection.findWhere({UID: uid});
+      return model.attributes.getURL;
+    },
+    getWindow: function(){
       var win = window;
       if (win.parent !== window) {
         win = win.parent;
       }
-      var uid = self.$active.attr('data-UID');
-      var model = self.app.collection.findWhere({UID: uid});
-
-      var url = model.attributes.getURL + '/view';
+      return win;
+    },
+    openUrl: function(url){
+      var self = this;
+      var win = self.getWindow();
       var keyEvent = this.app.keyEvent;
       if(keyEvent && keyEvent.ctrlKey){
         win.open(url);
       }else{
         win.location = url;
       }
+    },
+    openClicked: function(){
+      var self = this;
+      self.openUrl(self.getSelectedBaseUrl() + '/view');
+    },
+    editClicked: function(){
+      var self = this;
+      self.openUrl(self.getSelectedBaseUrl() + '/edit');
     }
   });
 
@@ -13855,6 +13890,14 @@ define('mockup-patterns-select2',[
           self.options.tags = self.options.tags.split(self.options.separator);
         }
       }
+
+      if (self.options.tags && !self.options.allowNewItems) {
+         self.options.data = $.map (self.options.tags, function (value, i) {
+             return { id: value, text: value };
+         });
+         self.options.multiple = true;
+         delete self.options.tags;
+      }
     },
     initializeOrdering: function(){
       var self = this;
@@ -13927,6 +13970,9 @@ define('mockup-patterns-select2',[
     init: function() {
       var self = this;
 
+      self.options.allowNewItems = self.options.hasOwnProperty ('allowNewItems') ?
+            JSON.parse(self.options.allowNewItems) : true;
+
       if (self.options.ajax || self.options.vocabularyUrl) {
         if(self.options.vocabularyUrl) {
           self.options.multiple = true;
@@ -13961,12 +14007,17 @@ define('mockup-patterns-select2',[
                 data_ids.push(item.id);
               });
               results = [];
-              if (query_term !== ''  && $.inArray(query_term, data_ids) === -1) {
-                results.push({id:query_term, text:query_term});
+
+              var have_result = query_term === '' || $.inArray(query_term, data_ids) >= 0;
+              if (self.options.allowNewItems && !have_result) {
+                  results.push({id:query_term, text:query_term});
               }
-              $.each(data.results, function(i, item) {
-                results.push(item);
-              });
+
+              if (have_result || self.options.allowNewItems) {
+                $.each(data.results, function(i, item) {
+                    results.push(item);
+                });
+              }
             }
             return { results: results };
           }
@@ -17752,7 +17803,7 @@ define('mockup-patterns-querystring',[
     defaults: {
       indexWidth: '20em',
       placeholder: 'Select criteria',
-      remove: 'remove line',
+      remove: '<span class="icon icon-remove"></span>',
       results: ' items matching your search.',
       days: 'days',
       betweendt: 'to',
@@ -21929,9 +21980,20 @@ define('js/patterns/structure/views/app',[
 
       /* dropzone support */
       if(self.options.uploadUrl){
+        /* add upload button to toolbar */
+        var uploadBtn = new ButtonView({
+          title: 'Upload',
+          context: 'success',
+          icon: 'upload'
+        });
+        self.toolbar.$el.append(uploadBtn.render().el);
+        uploadBtn.on('button:click', function(){
+          self.dropzone.hiddenFileInput.click();
+        });
         self.dropzone = new DropZone(self.$el, {
           className: 'structure-dropzone',
-          clickable: false,
+          //clickable: false,
+          clickable: $('<div/>')[0],
           url: self.getAjaxUrl(self.options.uploadUrl),
           autoCleanResults: true,
           success: function(e, data){
@@ -21948,6 +22010,8 @@ define('js/patterns/structure/views/app',[
           // because this can change depending on the folder we're in
           self.dropzone.options.url = self.getAjaxUrl(self.options.uploadUrl);
         });
+        /* allow multiple to upload at once */
+        $(self.dropzone.hiddenFileInput).attr('multiple', 'true');
       }
 
       // Backdrop class
