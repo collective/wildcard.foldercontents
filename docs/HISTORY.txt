@@ -4,6 +4,9 @@ Changelog
 2.0a2 (unreleased)
 ------------------
 
+- just always default to using File objects for uploads that aren't images.
+  [vangheem]
+
 
 2.0a1 (2013-11-26)
 ------------------
