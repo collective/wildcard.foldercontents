@@ -3607,9 +3607,9 @@ define('mockup-router',[
   var Router = Backbone.Router.extend({
     actions: [],
     redirects: {},
-    addRoute: function(patternName, id, callback, context, pathExp) {
+    addRoute: function(patternName, id, callback, context, pathExp, expReplace) {
       if (_.findWhere(this.patterns, {patternName: patternName, id: id}) === undefined) {
-        this.actions.push({patternName: patternName, id: id, callback: callback, context: context, pathExp: pathExp});
+        this.actions.push({patternName: patternName, id: id, callback: callback, context: context, pathExp: pathExp, expReplace: expReplace});
       }
       var regex = new RegExp('(' + regexEscape(patternName) + ':' + regexEscape(id) + ')');
       this.route(regex, 'handleRoute');
@@ -3637,7 +3637,11 @@ define('mockup-router',[
           regex = new RegExp(action.pathExp);
           if (path.match(regex)) {
             hash = '!/' + action.patternName + ':' + action.id;
-            newPath = path.replace(regex, '');
+            var replaceWith = '';
+            if(action.expReplace){
+              replaceWith = action.expReplace;
+            }
+            newPath = path.replace(regex, replaceWith);
             return true;
           }
         }
@@ -5405,7 +5409,7 @@ define('mockup-patterns-modal',[
       if (self.options.routerOptions.id !== null) {
         Router.addRoute('modal', self.options.routerOptions.id, function() {
           this.show();
-        }, self, self.options.routerOptions.pathExp);
+        }, self, self.options.routerOptions.pathExp, self.options.routerOptions.expReplace);
       }
 
       self.backdrop.on('hidden', function(e) {
@@ -5893,14 +5897,7 @@ define('mockup-patterns-queryhelper',[
         dataType: 'JSON',
         quietMillis: 100,
         data: function(term, page) {
-          var opts = {
-            query: JSON.stringify({
-              criteria: self.getCriterias(term)
-            }),
-            batch: JSON.stringify(self.getBatch(page)),
-            attributes: JSON.stringify(self.options.attributes)
-          };
-          return opts;
+          return self.getQueryData(term, page);
         },
         results: function (data, page) {
           var more = (page * 10) < data.total; // whether or not there are more results available
@@ -5909,7 +5906,29 @@ define('mockup-patterns-queryhelper',[
         }
       };
     },
-
+    getUrl: function(){
+      var self = this;
+      var url = self.options.vocabularyUrl;
+      if(url.indexOf('?') === -1){
+        url += '?';
+      }else{
+        url += '&';
+      }
+      return url + $.param(self.getQueryData());
+    },
+    getQueryData: function(term, page){
+      var self = this;
+      var data = {
+        query: JSON.stringify({
+          criteria: self.getCriterias(term)
+        }),
+        attributes: JSON.stringify(self.options.attributes)
+      };
+      if(page){
+        data.batch = JSON.stringify(self.getBatch(page));
+      }
+      return data;
+    },
     search: function(term, operation, value, callback, useBaseCriteria){
       if(useBaseCriteria === undefined){
         useBaseCriteria = true;
@@ -7087,7 +7106,179 @@ define('text',['module'], function (module) {
     return text;
 });
 
-define('text!js/patterns/structure/templates/tablerow.xml',[],function () { return '<td class="selection"><input type="checkbox" <% if(selected){ %> checked="checked" <% } %>/></td>\n<td class="title">\n  <% if(attributes.is_folderish){ %>\n    <a href="<%- getURL %>">\n        <span class="icon icon-folder-open"></span> <%- Title %>\n    </a>\n  <% } else { %>\n    <% if([\'File\', \'Image\'].indexOf(attributes.Type) !== -1){ %>\n      <span class="icon icon-file"></span>\n    <% } %>\n    <%- Title %>\n  <% } %>\n</td>\n<% _.each(activeColumns, function(column){ %>\n  <% if(_.has(availableColumns, column)) { %>\n    <td class="<%- column %>"><%- attributes[column] %></td>\n  <% } %>\n<% }); %>\n\n';});
+define('text!js/patterns/structure/templates/tablerow.xml',[],function () { return '<td class="selection"><input type="checkbox" <% if(selected){ %> checked="checked" <% } %>/></td>\n<td class="title">\n  <a href="<%- getURL %>">\n    <% if([\'File\', \'Image\'].indexOf(attributes.Type) !== -1){ %>\n      <span class="icon icon-file"></span>\n    <% } %>\n    <% if(attributes.is_folderish) { %>\n      <span class="icon icon-folder-open"></span>\n    <% } %>\n    <%- Title %>\n  </a>\n</td>\n<% _.each(activeColumns, function(column){ %>\n  <% if(_.has(availableColumns, column)) { %>\n    <td class="<%- column %>"><%- attributes[column] %></td>\n  <% } %>\n<% }); %>\n<td>\n  <div class="btn-group">\n    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">\n      <i class="icon-gears"></i>\n      <span class="caret"></span>\n    </a>\n    <ul class="dropdown-menu">\n      <li class="cutItem"><a href="#">Cut</a></li>\n      <li class="copyItem"><a href="#">Copy</a></li>\n      <% if(pasteAllowed && attributes.is_folderish){ %>\n        <li class="pasteItem"><a href="#">Paste</a></li>\n      <% } %>\n      <% if(!inQueryMode){ %>\n        <li class="move-top"><a href="#">Move to top of folder</a></li>\n        <li class="move-bottom"><a href="#">Move to bottom of folder</a></li>\n      <% } %>\n      <% if(!attributes.is_folderish && canSetDefaultPage){ %>\n        <li class="set-default-page"><a href="#">Set as default page</a></li>\n      <% } %>\n      <li class="openItem"><a href="#">Open</a></li>\n      <li class="editItem"><a href="#">Edit</a></li>\n    </ul>\n  </div>\n</td>\n';});
+
+/* ============================================================
+ * bootstrap-dropdown.js v2.3.2
+ * http://getbootstrap.com/2.3.2/javascript.html#dropdowns
+ * ============================================================
+ * Copyright 2013 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ============================================================ */
+
+
+!function ($) {
+
+   // jshint ;_;
+
+
+ /* DROPDOWN CLASS DEFINITION
+  * ========================= */
+
+  var toggle = '[data-toggle=dropdown]'
+    , Dropdown = function (element) {
+        var $el = $(element).on('click.dropdown.data-api', this.toggle)
+        $('html').on('click.dropdown.data-api', function () {
+          $el.parent().removeClass('open')
+        })
+      }
+
+  Dropdown.prototype = {
+
+    constructor: Dropdown
+
+  , toggle: function (e) {
+      var $this = $(this)
+        , $parent
+        , isActive
+
+      if ($this.is('.disabled, :disabled')) return
+
+      $parent = getParent($this)
+
+      isActive = $parent.hasClass('open')
+
+      clearMenus()
+
+      if (!isActive) {
+        if ('ontouchstart' in document.documentElement) {
+          // if mobile we we use a backdrop because click events don't delegate
+          $('<div class="dropdown-backdrop"/>').insertBefore($(this)).on('click', clearMenus)
+        }
+        $parent.toggleClass('open')
+      }
+
+      $this.focus()
+
+      return false
+    }
+
+  , keydown: function (e) {
+      var $this
+        , $items
+        , $active
+        , $parent
+        , isActive
+        , index
+
+      if (!/(38|40|27)/.test(e.keyCode)) return
+
+      $this = $(this)
+
+      e.preventDefault()
+      e.stopPropagation()
+
+      if ($this.is('.disabled, :disabled')) return
+
+      $parent = getParent($this)
+
+      isActive = $parent.hasClass('open')
+
+      if (!isActive || (isActive && e.keyCode == 27)) {
+        if (e.which == 27) $parent.find(toggle).focus()
+        return $this.click()
+      }
+
+      $items = $('[role=menu] li:not(.divider):visible a', $parent)
+
+      if (!$items.length) return
+
+      index = $items.index($items.filter(':focus'))
+
+      if (e.keyCode == 38 && index > 0) index--                                        // up
+      if (e.keyCode == 40 && index < $items.length - 1) index++                        // down
+      if (!~index) index = 0
+
+      $items
+        .eq(index)
+        .focus()
+    }
+
+  }
+
+  function clearMenus() {
+    $('.dropdown-backdrop').remove()
+    $(toggle).each(function () {
+      getParent($(this)).removeClass('open')
+    })
+  }
+
+  function getParent($this) {
+    var selector = $this.attr('data-target')
+      , $parent
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && /#/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, '') //strip for ie7
+    }
+
+    $parent = selector && $(selector)
+
+    if (!$parent || !$parent.length) $parent = $this.parent()
+
+    return $parent
+  }
+
+
+  /* DROPDOWN PLUGIN DEFINITION
+   * ========================== */
+
+  var old = $.fn.dropdown
+
+  $.fn.dropdown = function (option) {
+    return this.each(function () {
+      var $this = $(this)
+        , data = $this.data('dropdown')
+      if (!data) $this.data('dropdown', (data = new Dropdown(this)))
+      if (typeof option == 'string') data[option].call($this)
+    })
+  }
+
+  $.fn.dropdown.Constructor = Dropdown
+
+
+ /* DROPDOWN NO CONFLICT
+  * ==================== */
+
+  $.fn.dropdown.noConflict = function () {
+    $.fn.dropdown = old
+    return this
+  }
+
+
+  /* APPLY TO STANDARD DROPDOWN ELEMENTS
+   * =================================== */
+
+  $(document)
+    .on('click.dropdown.data-api', clearMenus)
+    .on('click.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
+    .on('click.dropdown.data-api'  , toggle, Dropdown.prototype.toggle)
+    .on('keydown.dropdown.data-api', toggle + ', [role=menu]' , Dropdown.prototype.keydown)
+
+}(window.jQuery);
+
+define("bootstrap-dropdown", ["jquery"], function(){});
 
 // Author: Nathan Van Gheem
 // Contact: nathan@vangheem.us
@@ -7118,7 +7309,8 @@ define('js/patterns/structure/views/tablerow',[
   'jquery',
   'underscore',
   'backbone',
-  'text!js/patterns/structure/templates/tablerow.xml'
+  'text!js/patterns/structure/templates/tablerow.xml',
+  'bootstrap-dropdown'
 ], function($, _, Backbone, TableRowTemplate) {
   
 
@@ -7128,52 +7320,67 @@ define('js/patterns/structure/views/tablerow',[
     template: _.template(TableRowTemplate),
     events: {
       'change input': 'itemSelected',
-      'click a': 'itemClicked'
+      'click td.title a': 'itemClicked',
+      'click .cutItem a': 'cutClicked',
+      'click .copyItem a': 'copyClicked',
+      'click .pasteItem a': 'pasteClicked',
+      'click .move-top a': 'moveTopClicked',
+      'click .move-bottom a': 'moveBottomClicked',
+      'click .set-default-page a': 'setDefaultPageClicked',
+      'click .openItem a': 'openClicked',
+      'click .editItem a': 'editClicked'
     },
     initialize: function(){
       this.app = this.options.app;
       this.selectedCollection = this.app.selectedCollection;
+      this.table = this.options.table;
     },
     render: function() {
+      var self = this;
       var data = this.model.toJSON();
       data.selected = false;
       if(this.selectedCollection.findWhere({UID: data.UID})){
         data.selected = true;
       }
-      data.attributes = this.model.attributes;
-      data.activeColumns = this.app.activeColumns;
-      data.availableColumns = this.app.availableColumns;
-      this.$el.html(this.template(data));
-      var attrs = this.model.attributes;
-      this.$el.addClass('state-' + attrs.review_state).
+      data.attributes = self.model.attributes;
+      data.activeColumns = self.app.activeColumns;
+      data.availableColumns = self.app.availableColumns;
+      data.pasteAllowed = self.app.pasteAllowed;
+      data.canSetDefaultPage = self.app.setDefaultPageUrl;
+      data.inQueryMode = self.app.inQueryMode();
+      self.$el.html(self.template(data));
+      var attrs = self.model.attributes;
+      self.$el.addClass('state-' + attrs.review_state).
         addClass('type-' + attrs.Type);
       if(attrs.is_folderish){
-        this.$el.addClass('folder');
+        self.$el.addClass('folder');
       }
-      this.$el.attr('data-path', data.path);
-      this.$el.attr('data-UID', data.UID);
-      this.$el.attr('data-id', data.id);
-      this.$el.attr('data-type', data.Type);
-      this.$el.attr('data-folderish', data.is_folderish);
-      this.el.model = this.model;
+      self.$el.attr('data-path', data.path);
+      self.$el.attr('data-UID', data.UID);
+      self.$el.attr('data-id', data.id);
+      self.$el.attr('data-type', data.Type);
+      self.$el.attr('data-folderish', data.is_folderish);
+      self.el.model = this.model;
+
+      self.$dropdown = self.$('.dropdown-toggle');
+      self.$dropdown.dropdown();
+
       return this;
     },
     itemClicked: function(e){
+      e.preventDefault();
       /* check if this should just be opened in new window */
       var keyEvent = this.app.keyEvent;
       if(keyEvent && keyEvent.ctrlKey){
-        /* control held down, let's open in new window */
-        var win = window;
-        if (win.parent !== window) {
-          win = win.parent;
-        }
-        var url = this.model.attributes.getURL + '/view';
-        win.open(url);
+        this.openClicked(e);
       }else if(this.model.attributes.is_folderish){
-        // it's a folder, folder down path and show in contents window.
-        e.preventDefault();
+        // it's a folder, go down path and show in contents window.
         this.app.queryHelper.currentPath = this.model.attributes.path;
-        this.app.collection.pager();
+        // also switch to fix page in batch
+        var collection = this.app.collection;
+        collection.goTo(collection.information.firstPage);
+      }else{
+        this.openClicked(e);
       }
     },
     itemSelected: function(){
@@ -7213,173 +7420,44 @@ define('js/patterns/structure/views/tablerow',[
 
       }
       this.app.last_selected = this.el;
-    }
-  });
-
-  return TableRowView;
-});
-
-define('text!js/patterns/structure/templates/table.xml',[],function () { return '<div class="alert alert-<%= statusType %> status">\n    <%= status %>\n</div>\n<table class="table table-striped table-bordered">\n  <thead>\n    <tr class="breadcrumbs">\n        <td colspan="<%= activeColumns.length + 2 %>">\n          <a href="#" data-path="/">\n              <span class="icon icon-home"></span> /\n          </a>\n        <% _.each(pathParts, function(part, idx, list){\n          if(part){\n            if(idx > 0){ %>\n              /\n            <% } %>\n            <a href="#" data-path="<%- part %>"><%- part %></a>\n          <% }\n        }); %>\n      </td>\n    </tr>\n    <tr>\n      <th><input type="checkbox" class="select-all" /></th>\n      <th>Title</th>\n      <% _.each(activeColumns, function(column){ %>\n        <% if(_.has(availableColumns, column)) { %>\n          <th><%- availableColumns[column] %></th>\n        <% } %>\n      <% }); %>\n    </tr>\n  </thead>\n  <tbody>\n  </tbody>\n</table>\n';});
-
-// Author: Nathan Van Gheem
-// Contact: nathan@vangheem.us
-// Version: 1.0
-//
-// Description:
-//
-// License:
-//
-// Copyright (C) 2010 Plone Foundation
-//
-// This program is free software; you can redistribute it and/or modify it
-// under the terms of the GNU General Public License as published by the Free
-// Software Foundation; either version 2 of the License.
-//
-// This program is distributed in the hope that it will be useful, but WITHOUT
-// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-// more details.
-//
-// You should have received a copy of the GNU General Public License along with
-// this program; if not, write to the Free Software Foundation, Inc., 51
-// Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-//
-
-
-define('js/patterns/structure/views/contextmenu',[
-  'jquery',
-  'underscore',
-  'backbone',
-  'js/ui/views/base'
-], function($, _, Backbone, BaseView) {
-  
-
-  var ContextMenu = BaseView.extend({
-    className: 'dropdown clearfix contextmenu',
-    events: {
-      'click .cut a': 'cutClicked',
-      'click .copy a': 'copyClicked',
-      'click .paste a': 'pasteClicked',
-      'click .move-top a': 'moveTopClicked',
-      'click .move-bottom a': 'moveBottomClicked',
-      'click .set-default-page a': 'setDefaultPageClicked',
-      'click .open': 'openClicked',
-      'click .edit': 'editClicked'
     },
-    template: _.template(
-      '<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">' +
-          '<li class="cut"><a href="#">Cut</a></li>' +
-          '<li class="copy"><a href="#">Copy</a></li>' +
-          '<li class="paste"><a href="#">Paste</a></li>' +
-          '<li class="move-top"><a href="#">Move to top of folder</a></li>' +
-          '<li class="move-bottom"><a href="#">Move to bottom of folder</a></li>' +
-          '<li class="set-default-page"><a href="#">Set as default page</a></li>' +
-          '<li class="open"><a href="#">Open</a></li>' +
-          '<li class="edit"><a href="#">Edit</a></li>' +
-      '</ul>'),
-    active: null,
-    initialize: function(){
-      var self = this;
-      BaseView.prototype.initialize.call(self);
-    },
-    render: function(){
-      var self = this;
-      self.$el.html(self.template({}));
-      self.$el.hide();
-
-      $('body').bind('modal-click click', function(){
-        self.$el.hide();
-        self.removeActiveClass();
-      });
-
-      self.$paste = self.$('.paste');
-      self.$cut = self.$('.cut');
-      self.$copy = self.$('.copy');
-      self.$moveTop = self.$('.move-top');
-      self.$moveBottom = self.$('.move-bottom');
-      self.$setDefaultPage = self.$('.set-default-page');
-
-      return this;
-    },
-    removeActiveClass: function(){
-      this.container.$('.contextmenuactive').removeClass('contextmenuactive');
-    },
-    showHideButtons: function($el){
-      var self = this;
-      var folderish = $el.attr('data-folderish');
-      if(folderish === 'true'){
-        // its a valid folder type
-        if(self.app.pasteAllowed){
-          self.$paste.show();
-        }else{
-          self.$paste.hide();
-        }
-        self.$setDefaultPage.hide();
-      }else{
-        self.$paste.hide();
-        if(self.app.setDefaultPageUrl){
-          self.$setDefaultPage.show();
-        }else{
-          self.$setDefaultPage.hide();
-        }
-      }
-      if(self.app.inQueryMode()){
-        self.$moveTop.hide();
-        self.$moveBottom.hide();
-      }else{
-        self.$moveTop.show();
-        self.$moveBottom.show();
-      }
-    },
-    bind: function($el){
-      var self = this;
-      $el.bind('contextmenu', function(e){
-        self.removeActiveClass();
-        self.$el.css({
-          display: 'block',
-          left: e.pageX,
-          top: e.pageY
-        });
-        self.showHideButtons($el);
-        self.$active = $el;
-        $el.addClass('contextmenuactive');
-        return false;
-      });
-    },
-    cutClicked: function(){
+    cutClicked: function(e){
+      e.preventDefault();
       this.cutCopyClicked('cut');
+      this.app.collection.pager(); // reload to be able to now show paste button
     },
-    copyClicked: function(){
+    copyClicked: function(e){
+      e.preventDefault();
       this.cutCopyClicked('copy');
+      this.app.collection.pager(); // reload to be able to now show paste button
     },
     cutCopyClicked: function(operation){
       var self = this;
       self.app.pasteOperation = operation;
 
-      var uid = self.$active.attr('data-UID');
-      var model = self.app.collection.findWhere({UID: uid});
-      if(model){
-        self.app.pasteSelection = new Backbone.Collection();
-        self.app.pasteSelection.add(model);
-        self.app.setStatus(operation + ' 1 item');
-        self.app.pasteAllowed = true;
-        self.app.buttons.primary.get('paste').enable();
-      }else{
-        self.app.setStatus('could not ' + operation + ' item');
-      }
+      self.app.pasteSelection = new Backbone.Collection();
+      self.app.pasteSelection.add(this.model);
+      self.app.setStatus(operation + ' 1 item');
+      self.app.pasteAllowed = true;
+      self.app.buttons.primary.get('paste').enable();
     },
     pasteClicked: function(e){
+      e.preventDefault();
       this.app.pasteEvent(this.app.buttons.primary.get('paste'), e, {
-        folder: this.$active.attr('data-path')
+        folder: this.model.attributes.path
       });
+      this.app.collection.pager(); // reload to be able to now show paste button
     },
-    moveTopClicked: function(){
-      this.app.moveItem(this.$active.attr('data-id'), 'top');
+    moveTopClicked: function(e){
+      e.preventDefault();
+      this.app.moveItem(this.model.attributes.id, 'top');
     },
-    moveBottomClicked: function(){
-      this.app.moveItem(this.$active.attr('data-id'), 'bottom');
+    moveBottomClicked: function(e){
+      e.preventDefault();
+      this.app.moveItem(this.model.attributes.id, 'bottom');
     },
-    setDefaultPageClicked: function(){
+    setDefaultPageClicked: function(e){
+      e.preventDefault();
       var self = this;
       $.ajax({
         url: self.app.getAjaxUrl(self.app.setDefaultPageUrl),
@@ -7398,9 +7476,7 @@ define('js/patterns/structure/views/contextmenu',[
     },
     getSelectedBaseUrl: function(){
       var self = this;
-      var uid = self.$active.attr('data-UID');
-      var model = self.app.collection.findWhere({UID: uid});
-      return model.attributes.getURL;
+      return self.model.attributes.getURL;
     },
     getWindow: function(){
       var win = window;
@@ -7419,19 +7495,22 @@ define('js/patterns/structure/views/contextmenu',[
         win.location = url;
       }
     },
-    openClicked: function(){
+    openClicked: function(e){
+      e.preventDefault();
       var self = this;
       self.openUrl(self.getSelectedBaseUrl() + '/view');
     },
-    editClicked: function(){
+    editClicked: function(e){
+      e.preventDefault();
       var self = this;
       self.openUrl(self.getSelectedBaseUrl() + '/edit');
     }
   });
 
-  return ContextMenu;
+  return TableRowView;
 });
 
+define('text!js/patterns/structure/templates/table.xml',[],function () { return '<div class="alert alert-<%= statusType %> status">\n    <%= status %>\n</div>\n<table class="table table-striped table-bordered">\n  <thead>\n    <tr class="breadcrumbs">\n        <td colspan="<%= activeColumns.length + 2 %>">\n          <a href="#" data-path="/">\n              <span class="icon icon-home"></span> /\n          </a>\n        <% _.each(pathParts, function(part, idx, list){\n          if(part){\n            if(idx > 0){ %>\n              /\n            <% } %>\n            <a href="#" class="crumb" data-path="<%- part %>"><%- part %></a>\n          <% }\n        }); %>\n      </td>\n    </tr>\n    <tr>\n      <th><input type="checkbox" class="select-all" /></th>\n      <th>Title</th>\n      <% _.each(activeColumns, function(column){ %>\n        <% if(_.has(availableColumns, column)) { %>\n          <th><%- availableColumns[column] %></th>\n        <% } %>\n      <% }); %>\n      <th>Actions</th>\n    </tr>\n  </thead>\n  <tbody>\n  </tbody>\n</table>\n';});
 
 /*! 
  * jquery.event.drag - v 2.2
@@ -10132,12 +10211,11 @@ define('js/patterns/structure/views/table',[
   'backbone',
   'js/patterns/structure/views/tablerow',
   'text!js/patterns/structure/templates/table.xml',
-  'js/patterns/structure/views/contextmenu',
   'js/ui/views/base',
   'mockup-patterns-dragdrop',
   'mockup-patterns-moment'
-], function($, _, Backbone, TableRowView, TableTemplate, ContextMenu, BaseView,
-            DragDrop, Moment) {
+], function($, _, Backbone, TableRowView, TableTemplate, BaseView, DragDrop,
+            Moment) {
   
 
   var TableView = BaseView.extend({
@@ -10161,6 +10239,14 @@ define('js/patterns/structure/views/table',[
           $defaultPage.find('td.title').prepend('<span>*</span> ');
           $defaultPage.addClass('default-page');
         }
+        /* set breadcrumb title info */
+        var crumbs = data.breadcrumbs;
+        if(crumbs && crumbs.length){
+          var $crumbs = self.$('.breadcrumbs a.crumb');
+          _.each(crumbs, function(crumb, idx){
+            $crumbs.eq(idx).html(crumb.title);
+          });
+        }
       });
     },
     events: {
@@ -10178,20 +10264,14 @@ define('js/patterns/structure/views/table',[
         availableColumns: self.app.availableColumns
       }));
 
-      self.contextMenu = (new ContextMenu({
-        container: self,
-        app: self.app
-      })).render();
-      self.$el.append(self.contextMenu.$el);
-
       if(self.collection.length){
         var container = self.$('tbody');
         self.collection.each(function(result){
           var view = (new TableRowView({
             model: result,
-            app: self.app
+            app: self.app,
+            table: self
           })).render();
-          self.contextMenu.bind(view.$el);
           container.append(view.el);
         });
       }
@@ -17158,6 +17238,81 @@ define('js/patterns/structure/views/rename',[
 
 
 
+// Author: Nathan Van Gheem
+// Contact: nathan@vangheem.us
+// Version: 1.0
+//
+// Description:
+//
+// License:
+//
+// Copyright (C) 2010 Plone Foundation
+//
+// This program is free software; you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the Free
+// Software Foundation; either version 2 of the License.
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+// more details.
+//
+// You should have received a copy of the GNU General Public License along with
+// this program; if not, write to the Free Software Foundation, Inc., 51
+// Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+//
+
+
+define('js/patterns/structure/views/sort',[
+  'jquery',
+  'underscore',
+  'js/ui/views/popover'
+], function($, _, PopoverView) {
+  
+
+  var SortView = PopoverView.extend({
+    className: 'popover sort',
+    title: _.template('Sort items in this folder'),
+    content: _.template(
+      '<label>What to sort on</label>' +
+      '<select name="sort_on">' +
+        '<% _.each(sortProperties, function(title, property){ %>' +
+          '<option value="<%- property %>"><%- title %></option>' +
+        '<% }); %>' +
+      '</select>' +
+      '<label>Reverse <input type="checkbox" name="reversed" /></label>' +
+      '<button class="btn btn-block btn-primary">Sort</button>'
+    ),
+    events: {
+      'click button': 'sortButtonClicked'
+    },
+    initialize: function(){
+      this.app = this.options.app;
+      PopoverView.prototype.initialize.call(this);
+      this.options.sortProperties = this.app.options.sort.properties;
+    },
+    render: function(){
+      PopoverView.prototype.render.call(this);
+      this.$sortOn = this.$('[name="sort_on"]');
+      this.$reversed = this.$('[name="reversed"]');
+      return this;
+    },
+    sortButtonClicked: function(){
+      var data = {
+        sort_on: this.$sortOn.val(),
+        reversed: false
+      };
+      if(this.$reversed[0].checked){
+        data.reversed = true;
+      }
+      this.app.defaultButtonClickEvent(this.triggerView, data);
+      this.hide();
+    }
+  });
+
+  return SortView;
+});
+
 define('text!js/patterns/structure/templates/selection_button.xml',[],function () { return '<%= title %> \r<span class="badge<% if (length > 0) { %> badge-success<% } %>">\r  <%= length %>\r</span>\r';});
 
 // Author: Ryan Foster
@@ -17354,178 +17509,6 @@ define('js/patterns/structure/views/paging',[
 
   return PagingView;
 });
-
-/* ============================================================
- * bootstrap-dropdown.js v2.3.2
- * http://getbootstrap.com/2.3.2/javascript.html#dropdowns
- * ============================================================
- * Copyright 2013 Twitter, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ============================================================ */
-
-
-!function ($) {
-
-   // jshint ;_;
-
-
- /* DROPDOWN CLASS DEFINITION
-  * ========================= */
-
-  var toggle = '[data-toggle=dropdown]'
-    , Dropdown = function (element) {
-        var $el = $(element).on('click.dropdown.data-api', this.toggle)
-        $('html').on('click.dropdown.data-api', function () {
-          $el.parent().removeClass('open')
-        })
-      }
-
-  Dropdown.prototype = {
-
-    constructor: Dropdown
-
-  , toggle: function (e) {
-      var $this = $(this)
-        , $parent
-        , isActive
-
-      if ($this.is('.disabled, :disabled')) return
-
-      $parent = getParent($this)
-
-      isActive = $parent.hasClass('open')
-
-      clearMenus()
-
-      if (!isActive) {
-        if ('ontouchstart' in document.documentElement) {
-          // if mobile we we use a backdrop because click events don't delegate
-          $('<div class="dropdown-backdrop"/>').insertBefore($(this)).on('click', clearMenus)
-        }
-        $parent.toggleClass('open')
-      }
-
-      $this.focus()
-
-      return false
-    }
-
-  , keydown: function (e) {
-      var $this
-        , $items
-        , $active
-        , $parent
-        , isActive
-        , index
-
-      if (!/(38|40|27)/.test(e.keyCode)) return
-
-      $this = $(this)
-
-      e.preventDefault()
-      e.stopPropagation()
-
-      if ($this.is('.disabled, :disabled')) return
-
-      $parent = getParent($this)
-
-      isActive = $parent.hasClass('open')
-
-      if (!isActive || (isActive && e.keyCode == 27)) {
-        if (e.which == 27) $parent.find(toggle).focus()
-        return $this.click()
-      }
-
-      $items = $('[role=menu] li:not(.divider):visible a', $parent)
-
-      if (!$items.length) return
-
-      index = $items.index($items.filter(':focus'))
-
-      if (e.keyCode == 38 && index > 0) index--                                        // up
-      if (e.keyCode == 40 && index < $items.length - 1) index++                        // down
-      if (!~index) index = 0
-
-      $items
-        .eq(index)
-        .focus()
-    }
-
-  }
-
-  function clearMenus() {
-    $('.dropdown-backdrop').remove()
-    $(toggle).each(function () {
-      getParent($(this)).removeClass('open')
-    })
-  }
-
-  function getParent($this) {
-    var selector = $this.attr('data-target')
-      , $parent
-
-    if (!selector) {
-      selector = $this.attr('href')
-      selector = selector && /#/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, '') //strip for ie7
-    }
-
-    $parent = selector && $(selector)
-
-    if (!$parent || !$parent.length) $parent = $this.parent()
-
-    return $parent
-  }
-
-
-  /* DROPDOWN PLUGIN DEFINITION
-   * ========================== */
-
-  var old = $.fn.dropdown
-
-  $.fn.dropdown = function (option) {
-    return this.each(function () {
-      var $this = $(this)
-        , data = $this.data('dropdown')
-      if (!data) $this.data('dropdown', (data = new Dropdown(this)))
-      if (typeof option == 'string') data[option].call($this)
-    })
-  }
-
-  $.fn.dropdown.Constructor = Dropdown
-
-
- /* DROPDOWN NO CONFLICT
-  * ==================== */
-
-  $.fn.dropdown.noConflict = function () {
-    $.fn.dropdown = old
-    return this
-  }
-
-
-  /* APPLY TO STANDARD DROPDOWN ELEMENTS
-   * =================================== */
-
-  $(document)
-    .on('click.dropdown.data-api', clearMenus)
-    .on('click.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
-    .on('click.dropdown.data-api'  , toggle, Dropdown.prototype.toggle)
-    .on('keydown.dropdown.data-api', toggle + ', [role=menu]' , Dropdown.prototype.keydown)
-
-}(window.jQuery);
-
-define("bootstrap-dropdown", ["jquery"], function(){});
 
 // Author: Nathan Van Gheem
 // Contact: nathan@vangheem.us
@@ -21586,6 +21569,7 @@ define('js/patterns/structure/views/app',[
   'js/patterns/structure/views/workflow',
   'js/patterns/structure/views/delete',
   'js/patterns/structure/views/rename',
+  'js/patterns/structure/views/sort',
   'js/patterns/structure/views/selectionbutton',
   'js/patterns/structure/views/paging',
   'js/patterns/structure/views/addmenu',
@@ -21597,7 +21581,7 @@ define('js/patterns/structure/views/app',[
   'jquery.cookie'
 ], function($, _, Backbone, Toolbar, ButtonGroup, ButtonView, BaseView,
             TableView, SelectionWellView, TagsView, PropertiesView,
-            WorkflowView, DeleteView, RenameView, SelectionButtonView,
+            WorkflowView, DeleteView, RenameView, SortView, SelectionButtonView,
             PagingView, AddMenu, ColumnsView, TextFilterView, ResultCollection,
             SelectedCollection, DropZone) {
   
@@ -21618,7 +21602,8 @@ define('js/patterns/structure/views/app',[
       'properties': DISABLE_EVENT,
       'workflow': DISABLE_EVENT,
       'delete': DISABLE_EVENT,
-      'rename': DISABLE_EVENT
+      'rename': DISABLE_EVENT,
+      'sort': DISABLE_EVENT
     },
     buttonViewMapping: {
       'secondary.tags': TagsView,
@@ -21900,6 +21885,19 @@ define('js/patterns/structure/views/app',[
           app: self
         }));
       }
+      if(self.options.sort){
+        var sortButton = new ButtonView({
+          id: 'sort',
+          title: 'Sort',
+          tooltip: 'Sort folder contents',
+          url: self.options.sort.url
+        });
+        self.sortView = new SortView({
+          triggerView: sortButton,
+          app: self
+        });
+        items.push(sortButton);
+      }
 
       _.each(_.pairs(this.options.buttonGroups), function(group){
         var buttons = [];
@@ -21970,6 +21968,9 @@ define('js/patterns/structure/views/app',[
       self.$el.append(self.toolbar.render().el);
       self.$el.append(self.wellView.render().el);
       self.$el.append(self.columnsView.render().el);
+      if(self.sortView){
+        self.$el.append(self.sortView.render().el);
+      }
 
       _.each(self.buttonViews, function(view){
         self.$el.append(view.render().el);
@@ -22124,6 +22125,17 @@ define('mockup-patterns-structure',[
         'last_comment_date': 'Last comment date',
         'total_comments': 'Total comments'
       },
+      sort: {
+        properties: {
+          'id': 'ID',
+          'sortable_title': 'Title',
+          'modified': 'Last Modified',
+          'created': 'Created on',
+          'effective': 'Publication Date',
+          'Type': 'Type'
+        },
+        url: '/sort'
+      },
       basePath: '/',
       uploadUrl: null,
       moveUrl: null,
@@ -22163,7 +22175,6 @@ define('mockup-patterns-structure',[
     init: function() {
       var self = this;
       self.browsing = true; // so all queries will be correct with QueryHelper
-
       self.options.collectionUrl = self.options.vocabularyUrl;
       self.options.queryHelper = new QueryHelper(self.$el,
         $.extend(true, {}, self.options, {basePattern: self}));

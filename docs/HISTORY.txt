@@ -1,9 +1,11 @@
 Changelog
 =========
 
-2.0a3 (unreleased)
+2.0a3 (2014-01-13)
 ------------------
 
+- sync with latest: add sorting, actions column, other fixes
+  [vangheem]
 
 2.0a2 (2013-12-15)
 ------------------

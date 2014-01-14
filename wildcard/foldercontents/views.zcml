@@ -87,6 +87,14 @@
     />
 
   <browser:page
+    for="Products.CMFCore.interfaces._content.IFolderish"
+    name="fc-sort"
+    class=".views.Sort"
+    permission="cmf.ModifyPortalContent"
+    layer=".interfaces.ILayer"
+    />
+
+  <browser:page
     name="wcVocabulary"
     for="Products.CMFPlone.interfaces.IPloneSiteRoot"
     class=".views.VocabularyView"
