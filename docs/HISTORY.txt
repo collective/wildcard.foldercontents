@@ -1,9 +1,11 @@
 Changelog
 =========
 
-2.0a4 (unreleased)
+2.0a4 (2014-01-14)
 ------------------
 
+- fix upload button to upload to current directory
+  [vangheem]
 
 2.0a3 (2014-01-13)
 ------------------

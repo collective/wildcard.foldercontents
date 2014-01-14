@@ -21989,6 +21989,8 @@ define('js/patterns/structure/views/app',[
         });
         self.toolbar.$el.append(uploadBtn.render().el);
         uploadBtn.on('button:click', function(){
+          // update because the url can change depending on the folder we're in.
+          self.dropzone.options.url = self.getAjaxUrl(self.options.uploadUrl);
           self.dropzone.hiddenFileInput.click();
         });
         self.dropzone = new DropZone(self.$el, {
