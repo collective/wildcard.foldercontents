@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.0a5 (unreleased)
+2.0a5 (2014-01-21)
 ------------------
 
 - sync with latest: tus resumable large file upload support
