@@ -17,9 +17,9 @@ from Products.CMFPlone import utils as ploneutils
 try:
     from plone.namedfile.file import NamedBlobImage
     from plone.namedfile.file import NamedBlobFile
-except ImportError:
+except ImportError:  # pragma: no cover
     # only for dext
-    pass
+    pass  # pragma: no cover
 from plone.i18n.normalizer.interfaces import IFileNameNormalizer
 from wildcard.foldercontents.interfaces import IATCTFileFactory, IDXFileFactory
 
@@ -109,15 +109,15 @@ class DXFileFactory(object):
             # This will suffice for standard p.a.contenttypes File/Image
             # and any other custom type that would have 'File' or 'Image' in
             # its type name
-            filename = ploneutils.safe_unicode(data.filename)
+            filename = ploneutils.safe_unicode(name)
             if 'Image' in type_:
-                image = NamedBlobImage(data=data.read(),
+                image = NamedBlobImage(data=data,
                                        filename=filename,
                                        contentType=content_type)
                 obj = createContentInContainer(
                     self.context, type_, id=newid, image=image)
             else:
-                file = NamedBlobFile(data=data.read(),
+                file = NamedBlobFile(data=data,
                                      filename=filename,
                                      contentType=content_type)
                 obj = createContentInContainer(
