@@ -21466,7 +21466,7 @@ define('mockup-patterns-dropzone',[
               headers: {
                 'FILENAME': file.name
               },
-              chunkSize: 1024 * 1024 * 20 // 20mb chunk size
+              chunkSize: 1024 * 1024 * 5 // 5mb chunk size
             }).fail(function(){
               alert('Error uploading with TUS resumable uploads');
               file.status = Dropzone.ERROR;
@@ -22273,6 +22273,20 @@ define('mockup-patterns-structure',[
 
 (function ($) {
   
+
+  var support = (
+                  (typeof(File)!=='undefined')
+                  &&
+                  (typeof(Blob)!=='undefined')
+                  &&
+                  (typeof(FileList)!=='undefined')
+                  &&
+                  (!!Blob.prototype.webkitSlice||!!Blob.prototype.mozSlice||!!Blob.prototype.slice||false)
+                  );
+  if(!support){
+    // not supported in browser
+    return;
+  }
 
   // The Public API
   var tus = window.tus = {

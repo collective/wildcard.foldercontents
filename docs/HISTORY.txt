@@ -1,6 +1,14 @@
 Changelog
 =========
 
+2.0a6 (2014-01-21)
+------------------
+
+- another update so it doesn't bork on old browsers that doesn't support the
+  File API
+  [vangheem]
+
+
 2.0a5 (2014-01-21)
 ------------------
 
