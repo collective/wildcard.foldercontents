@@ -2,6 +2,7 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     xmlns:i18n="http://namespaces.zope.org/i18n"
     i18n_domain="plone.app.toolbar">
 
@@ -118,100 +119,106 @@
     layer=".interfaces.ILayer"
     />
 
-    <browser:resource
-        name="plone.app.toolbar-glyphicons-halflings.png"
-        file="static/toolbar-glyphicons-halflings.png"
-        layer=".interfaces.ILayer"
-        />
-    <browser:resource
-        name="plone.app.toolbar-glyphicons-halflings-white.png"
-        file="static/toolbar-glyphicons-halflings-white.png"
-        layer=".interfaces.ILayer"
-        />
+  <browser:resource
+    name="wildcard.foldercontents-structure-bootstrap-glyphicons-halflings-regular.eot"
+    file="static/structure-bootstrap-glyphicons-halflings-regular.eot"
+    layer=".interfaces.ILayer"
+    />
+  <browser:resource
+    name="wildcard.foldercontents-structure-bootstrap-glyphicons-halflings-regular.svg"
+    file="static/structure-bootstrap-glyphicons-halflings-regular.svg"
+    layer=".interfaces.ILayer"
+    />
+  <browser:resource
+    name="wildcard.foldercontents-structure-bootstrap-glyphicons-halflings-regular.ttf"
+    file="static/structure-bootstrap-glyphicons-halflings-regular.ttf"
+    layer=".interfaces.ILayer"
+    />
+  <browser:resource
+    name="wildcard.foldercontents-structure-bootstrap-glyphicons-halflings-regular.woff"
+    file="static/structure-bootstrap-glyphicons-halflings-regular.woff"
+    layer=".interfaces.ILayer"
+    />
+  <browser:resource
+    name="wildcard.foldercontents-structure-dropzone-spritemap@2x.png"
+    file="static/structure-dropzone-spritemap@2x.png"
+    layer=".interfaces.ILayer"
+    />
+  <browser:resource
+    name="wildcard.foldercontents-structure-dropzone-spritemap.png"
+    file="static/structure-dropzone-spritemap.png"
+    layer=".interfaces.ILayer"
+    />
+  <browser:resource
+    name="wildcard.foldercontents-structure-jqtree-jqtree-circle.png"
+    file="static/structure-jqtree-jqtree-circle.png"
+    layer=".interfaces.ILayer"
+    />
+  <browser:resource
+    name="wildcard.foldercontents-structure-select2-select2.png"
+    file="static/structure-select2-select2.png"
+    layer=".interfaces.ILayer"
+    />
+  <browser:resource
+    name="wildcard.foldercontents-structure-select2-select2-spinner.gif"
+    file="static/structure-select2-select2-spinner.gif"
+    layer=".interfaces.ILayer"
+    />
+  <browser:resource
+    name="wildcard.foldercontents-structure-select2-select2x2.png"
+    file="static/structure-select2-select2x2.png"
+    layer=".interfaces.ILayer"
+    />
+  <browser:resource
+    name="wildcard.foldercontents-structure-tinymce-icomoon.eot"
+    file="static/structure-tinymce-icomoon.eot"
+    layer=".interfaces.ILayer"
+    />
+  <browser:resource
+    name="wildcard.foldercontents-structure-tinymce-icomoon.svg"
+    file="static/structure-tinymce-icomoon.svg"
+    layer=".interfaces.ILayer"
+    />
+  <browser:resource
+    name="wildcard.foldercontents-structure-tinymce-icomoon.ttf"
+    file="static/structure-tinymce-icomoon.ttf"
+    layer=".interfaces.ILayer"
+    />
+  <browser:resource
+    name="wildcard.foldercontents-structure-tinymce-icomoon.woff"
+    file="static/structure-tinymce-icomoon.woff"
+    layer=".interfaces.ILayer"
+    />
+  <browser:resource
+    name="wildcard.foldercontents-structure-tinymce-loader.gif"
+    file="static/structure-tinymce-loader.gif"
+    layer=".interfaces.ILayer"
+    />
 
+  <configure zcml:condition="installed mockup">
     <browser:resource
-        name="plone.app.toolbar-fontawesome-webfont.eot"
-        file="static/toolbar-fontawesome-webfont.eot"
-        layer=".interfaces.ILayer"
-        />
+      name="wildcard.foldercontents-structure.js"
+      file="static/structure.js"
+      layer=".interfaces.ILayer"
+      />
     <browser:resource
-        name="plone.app.toolbar-fontawesome-webfont.woff"
-        file="static/toolbar-fontawesome-webfont.woff"
-        layer=".interfaces.ILayer"
-        />
-    <browser:resource
-        name="plone.app.toolbar-fontawesome-webfont.ttf"
-        file="static/toolbar-fontawesome-webfont.ttf"
-        layer=".interfaces.ILayer"
-        />
-    <browser:resource
-            name="plone.app.toolbar-fontawesome-webfont.svg"
-            file="static/toolbar-fontawesome-webfont.svg"
-            layer=".interfaces.ILayer"
-            />
+      name="wildcard.foldercontents-structure.css"
+      file="static/structure.css"
+      layer=".interfaces.ILayer"
+      />
+  </configure>
 
+  <configure zcml:condition="not-installed mockup">
     <browser:resource
-            name="plone.app.toolbar-select2.png"
-            file="static/toolbar-select2.png"
-            layer=".interfaces.ILayer"
-            />
+      name="wildcard.foldercontents-structure.js"
+      file="static/structure.min.js"
+      layer=".interfaces.ILayer"
+      />
     <browser:resource
-            name="plone.app.toolbar-select2-spinner.gif"
-            file="static/toolbar-select2-spinner.gif"
-            layer=".interfaces.ILayer"
-            />
-
-    <browser:resource
-            name="plone.app.toolbar-icomoon.eot"
-            file="static/toolbar-icomoon.eot"
-            layer=".interfaces.ILayer"
-            />
-    <browser:resource
-            name="plone.app.toolbar-icomoon.svg"
-            file="static/toolbar-icomoon.svg"
-            layer=".interfaces.ILayer"
-            />
-    <browser:resource
-            name="plone.app.toolbar-icomoon.woff"
-            file="static/toolbar-icomoon.woff"
-            layer=".interfaces.ILayer"
-            />
-    <browser:resource
-            name="plone.app.toolbar-icomoon.ttf"
-            file="static/toolbar-icomoon.ttf"
-            layer=".interfaces.ILayer"
-            />
-    <browser:resource
-            name="plone.app.toolbar-icomoon-small.eot"
-            file="static/toolbar-icomoon.eot"
-            layer=".interfaces.ILayer"
-            />
-    <browser:resource
-            name="plone.app.toolbar-icomoon-small.svg"
-            file="static/toolbar-icomoon.svg"
-            layer=".interfaces.ILayer"
-            />
-    <browser:resource
-            name="plone.app.toolbar-icomoon-small.woff"
-            file="static/toolbar-icomoon.woff"
-            layer=".interfaces.ILayer"
-            />
-    <browser:resource
-            name="plone.app.toolbar-icomoon-small.ttf"
-            file="static/toolbar-icomoon.ttf"
-            layer=".interfaces.ILayer"
-            />
-
-    <browser:resource
-            name="plone.app.toolbar-spritemap.png"
-            file="static/toolbar-spritemap.png"
-            layer=".interfaces.ILayer"
-            />
-    <browser:resource
-            name="plone.app.toolbar-spritemap@2x.png"
-            file="static/toolbar-spritemap@2x.png"
-            layer=".interfaces.ILayer"
-            />
-
+      name="wildcard.foldercontents-structure.css"
+      file="static/structure.min.css"
+      layer=".interfaces.ILayer"
+      />
+  </configure>
 
 </configure>

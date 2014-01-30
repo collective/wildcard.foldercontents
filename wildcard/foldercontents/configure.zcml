@@ -9,12 +9,8 @@
   <five:registerPackage package="." initialize=".initialize" />
   <i18n:registerTranslations directory="locales" />
   <include package="Products.CMFCore" />
-  <include file="views.zcml" />
 
-  <browser:resourceDirectory
-    name="wcfc"
-    directory="static"
-  />
+  <include file="views.zcml" />
 
   <genericsetup:registerProfile
       name="default"
