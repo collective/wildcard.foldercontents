@@ -1,7 +1,12 @@
 Changelog
 =========
 
-2.0a7 (2014-01-21)
+2.0a7 (unreleased)
+------------------
+
+- no changes
+
+2.0a7 (2014-03-10)
 ------------------
 
 - folder context actions now available
