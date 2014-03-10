@@ -1,6 +1,18 @@
 Changelog
 =========
 
+2.0a7 (2014-01-21)
+------------------
+
+- folder context actions now available
+  [vangheem]
+
+- tus support fixed
+  [vangheem]
+
+- updated with latest mockup
+
+
 2.0a6 (2014-01-21)
 ------------------
 

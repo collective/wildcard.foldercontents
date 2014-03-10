@@ -57,3 +57,36 @@ version pins::
     plone.app.registry = 1.1
 
 
+
+Tus support
+-----------
+
+add egg::
+
+    eggs = 
+        ...
+        wildcard.foldercontents
+        tus
+        ...
+
+
+Or::
+
+    eggs =
+        ...
+        wildcard.foldercontents[tus]
+        ...
+
+
+Then, settings for tus::
+
+    environment-vars =
+        TUS_ENABLED true
+        TUS_TMP_FILE_DIR ${buildout:directory}/var/tmp
+
+
+make tus directory::
+
+    mkdir var/tmp
+
+

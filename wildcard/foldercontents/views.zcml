@@ -221,4 +221,10 @@
       />
   </configure>
 
+  <browser:resource
+    name="wildcard.foldercontents.jquery.tus.js"
+    file="static/jquery.tus.js"
+    layer=".interfaces.ILayer"
+    />
+
 </configure>

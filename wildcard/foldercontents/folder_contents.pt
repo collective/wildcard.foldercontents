@@ -13,6 +13,7 @@
                 tal:define="dummy python:request.set('enable_border', 1)" />
     <link rel="stylesheet"
           tal:attributes="href string:${portal_url}/++resource++wildcard.foldercontents-structure.css" />
+    <script tal:attributes="src string:${portal_url}/++resource++wildcard.foldercontents.jquery.tus.js"></script>
     <script tal:attributes="src string:${portal_url}/++resource++wildcard.foldercontents-structure.js"></script>
     <style>
 .modal-body .documentFirstHeading{

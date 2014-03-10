@@ -99,6 +99,7 @@ class FolderContentsView(BrowserView):
     def is_plone_41(self):
         try:
             from plone.app.upgrade import v42
+            v42  # pyflakes
             return False
         except:
             return True
@@ -129,7 +130,7 @@ class FolderContentsView(BrowserView):
                     'title': 'Copy',
                 }, {
                     'title': 'Paste',
-                    'url': base_url + '/@@fc-paste'
+                    'url': base_url + '{path}/@@fc-paste'
                 }, {
                     'title': 'Delete',
                     'url': base_url + '/@@fc-delete',
@@ -150,7 +151,7 @@ class FolderContentsView(BrowserView):
                     'url': base_url + '/@@fc-rename'
                 }]
             },
-            'sort': {
+            'rearrange': {
                 'properties': {
                     'id': 'ID',
                     'sortable_title': 'Title',
@@ -537,6 +538,12 @@ class SetDefaultPage(FolderContentsActionView):
 
 class ContextInfo(BrowserView):
 
+    attributes = ['UID', 'Title', 'Type', 'path', 'review_state',
+                  'ModificationDate', 'EffectiveDate', 'CreationDate',
+                  'is_folderish', 'Subject', 'getURL', 'id',
+                  'exclude_from_nav', 'getObjSize', 'last_comment_date',
+                  'total_comments']
+
     def __call__(self):
         factories_menu = getUtility(
             IBrowserMenu, name='plone_contentmenu_factory',
@@ -553,10 +560,36 @@ class ContextInfo(BrowserView):
             })
             context = utils.parent(context)
 
+        catalog = getToolByName(self.context, 'portal_catalog')
+        try:
+            brains = catalog(UID=IUUID(self.context))
+        except TypeError:
+            brains = []
+        item = None
+        if len(brains) > 0:
+            obj = brains[0]
+            # context here should be site root
+            base_path = '/'.join(context.getPhysicalPath())
+            item = {}
+            for attr in self.attributes:
+                key = attr
+                if key == 'path':
+                    attr = 'getPath'
+                val = getattr(obj, attr, None)
+                if callable(val):
+                    if attr in _safe_callable_metadata:
+                        val = val()
+                    else:
+                        continue
+                if key == 'path':
+                    val = val[len(base_path):]
+                item[key] = val
+
         return json.dumps({
             'addButtons': factories_menu,
             'defaultPage': self.context.getDefaultPage(),
-            'breadcrumbs': [c for c in reversed(crumbs)]
+            'breadcrumbs': [c for c in reversed(crumbs)],
+            'object': item
         })
 
 
