@@ -28,6 +28,9 @@
   padding: 0;
   margin: 0;
 }
+.pat-structure .popover {
+  max-width: 600px;
+}
     </style>
   </metal:block>
 
