@@ -1,10 +1,11 @@
 Changelog
 =========
 
-2.0a7 (unreleased)
+2.0b1 (2014-05-09)
 ------------------
 
-- no changes
+- do not include other js when folder contents is loaded
+  [vangheem]
 
 2.0a7 (2014-03-10)
 ------------------

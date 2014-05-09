@@ -227,4 +227,15 @@
     layer=".interfaces.ILayer"
     />
 
+  <!-- yah, sort of a hack here. We need to prevent other js, mostly
+       jquery, from loading on this page as it conflicts -->
+  <browser:page
+    for="*"
+    name="resourceregistries_scripts_view"
+    class=".views.ScriptsView"
+    permission="zope.Public"
+    layer=".interfaces.ILayer"
+    allowed_interface="Products.ResourceRegistries.browser.interfaces.IScriptsView"
+    />
+
 </configure>

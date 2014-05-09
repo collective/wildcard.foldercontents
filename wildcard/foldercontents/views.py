@@ -1,40 +1,56 @@
 # XXX This is all ripped out of plone.app.toolbar
 
-import transaction
 from AccessControl import Unauthorized
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from zope.component import getMultiAdapter
-from zope.component import getUtility
-from OFS.CopySupport import CopyError
-from Products.CMFCore.utils import getToolByName
-from Products.Five import BrowserView
-from Products.CMFPlone import utils
-from Products.CMFPlone import PloneMessageFactory as _
-from plone.protect.postonly import check as checkpost
-from ZODB.POSException import ConflictError
-from zope.component.hooks import getSite
-from zope.event import notify
-from zope.lifecycleevent import ObjectModifiedEvent
-from plone.folder.interfaces import IExplicitOrdering
-from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
+
 from DateTime import DateTime
-from Products.CMFCore.interfaces._content import IFolderish
-from zope.browsermenu.interfaces import IBrowserMenu
-from plone.registry.interfaces import IRegistry
-from plone.app.querystring.interfaces import IQuerystringRegistryReader
-from wildcard.foldercontents.interfaces import ISlicableVocabulary
-from Products.ZCTextIndex.ParseTree import ParseError
-from types import FunctionType
-from zope.component import queryUtility
-from zope.schema.interfaces import IVocabularyFactory
+
 import inspect
 import json
-import os
+
 from logging import getLogger
-import pkg_resources
+import os
+from OFS.CopySupport import CopyError
 import mimetypes
+import pkg_resources
+
+from plone.app.querystring.interfaces import IQuerystringRegistryReader
+from plone.folder.interfaces import IExplicitOrdering
+from plone.protect.postonly import check as checkpost
+from plone.registry.interfaces import IRegistry
+from plone.uuid.interfaces import IUUID
+
+from Products.CMFCore.interfaces._content import IFolderish
+from Products.CMFCore.utils import getToolByName
+
+from Products.CMFPlone import utils
+from Products.CMFPlone import PloneMessageFactory as _
+from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
+
+from Products.Five import BrowserView
+from Products.ZCTextIndex.ParseTree import ParseError
+
+import transaction
+from types import FunctionType
+
+from wildcard.foldercontents.interfaces import ISlicableVocabulary
+from wildcard.foldercontents.interfaces import IATCTFileFactory, IDXFileFactory
+from Products.ResourceRegistries.browser.scripts import (
+    ScriptsView as BaseScriptsView
+)
+
+from zope.component import queryUtility, getUtility, getMultiAdapter
+from zope.component.hooks import getSite
+
+from zope.browsermenu.interfaces import IBrowserMenu
+from zope.event import notify
+from zope.lifecycleevent import ObjectModifiedEvent
+from ZODB.POSException import ConflictError
+from zope.schema.interfaces import IVocabularyFactory
+
+
 try:
     pkg_resources.get_distribution('plone.dexterity')
 except pkg_resources.DistributionNotFound:
@@ -42,8 +58,6 @@ except pkg_resources.DistributionNotFound:
 else:
     from plone.dexterity.interfaces import IDexterityFTI
     HAS_DEXTERITY = True
-from wildcard.foldercontents.interfaces import IATCTFileFactory, IDXFileFactory
-from plone.uuid.interfaces import IUUID
 
 
 logger = getLogger(__name__)
@@ -118,7 +132,6 @@ class FolderContentsView(BrowserView):
                 base_vocabulary),
             'usersVocabularyUrl': '%splone.app.vocabularies.Users' % (
                 base_vocabulary),
-            'uploadUrl': '%s{path}/wcFileUpload' % base_url,
             'moveUrl': '%s{path}/fc-itemOrder' % base_url,
             'indexOptionsUrl': '%s/@@qsOptions' % base_url,
             'contextInfoUrl': '%s{path}/@@fc-contextInfo' % base_url,
@@ -163,7 +176,12 @@ class FolderContentsView(BrowserView):
                 'url': '%s{path}/@@fc-sort' % base_url
             },
             'basePath': '/' + '/'.join(context_path[len(site_path):]),
-            'useTus': TUS_ENABLED
+            'upload': {
+                'relativePath': 'wcFileUpload',
+                'baseUrl': base_url,
+                'initialFolder': IUUID(self.context, None),
+                'useTus': TUS_ENABLED
+            }
         }
         self.options = json.dumps(options)
         return super(FolderContentsView, self).__call__()
@@ -887,3 +905,14 @@ class FileUploadView(BrowserView):
             'filename': filename
         })
         return json.dumps(result)
+
+
+class ScriptsView(BaseScriptsView):
+    """
+    prevent portal_javascripts js loading on folder contents page
+    """
+
+    def scripts(self):
+        if '/folder_contents' in self.request.URL:
+            return []
+        return super(ScriptsView, self).scripts()
