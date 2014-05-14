@@ -4,7 +4,10 @@ Changelog
 1.2.5 (unreleased)
 ------------------
 
-- nothing yet
+- button size fixed
+  [agitator]
+
+- fix for german umlauts
 
 1.2.4 (2013-09-13)
 ------------------
