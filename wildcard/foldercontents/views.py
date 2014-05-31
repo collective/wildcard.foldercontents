@@ -913,6 +913,14 @@ class ScriptsView(BaseScriptsView):
     """
 
     def scripts(self):
+        data = super(ScriptsView, self).scripts()
         if '/folder_contents' in self.request.URL:
-            return []
-        return super(ScriptsView, self).scripts()
+            # remove plone.app.widgets js and add jquery
+            if 'plone.app.widgets' in data[0].get('src'):
+                data.pop(0)
+                data.insert(0, {
+                    'inline': False,
+                    'conditionalcomment': '',
+                    'src': '%s/++resource++plone.app.jquery.js' % (
+                        getSite().absolute_url())})
+        return data

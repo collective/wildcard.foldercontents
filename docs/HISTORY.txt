@@ -1,6 +1,12 @@
 Changelog
 =========
 
+2.0b3 (2014-05-31)
+------------------
+
+- be smarter about how to customize js includes on folder_contents page
+  [vangheem]
+
 2.0b2 (2014-05-09)
 ------------------
 
