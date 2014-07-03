@@ -4,6 +4,12 @@ Changelog
 1.2.6 (unreleased)
 ------------------
 
+- Don't depend on the html header's <base> tag, which is removed in
+  plonetheme.sunburst 1.5 as part of the Plone 5 PLIP. This makes
+  ``plonetheme.sunburst >= 1.5`` usable together with
+  ``wildcard.foldercontents < 2``.
+  [thet]
+
 - PEP 8, JSLint'ing, Autoformat + Cleanup.
   [thet]
 

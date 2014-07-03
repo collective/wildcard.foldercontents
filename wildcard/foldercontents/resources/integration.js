@@ -1,7 +1,7 @@
 /*jslint browser: true */
 /*jslint unparam: true */
 /*jslint nomen: true */
-/*global $, jQuery */
+/*global $, jQuery, plone_context_base_url */
 
 var id_prefix = 'folder-contents-item-';
 var container_id = 'folderlisting-main-table-noplonedrag';
@@ -31,7 +31,7 @@ fc = {
         params._authenticator = $('input[name="_authenticator"]').attr('value');
         $.ajax({
             type: 'POST',
-            url: $('base').attr('href') + '@@fcmove',
+            url: plone_context_base_url + '@@fcmove',
             data: params,
             success: function() {
                 if (callback !== undefined) {
