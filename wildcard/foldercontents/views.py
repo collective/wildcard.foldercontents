@@ -1,33 +1,36 @@
-import logging
-import mimetypes
-import json
-from urllib import urlencode
-
-from Acquisition import aq_inner
+from .interfaces import IATCTFileFactory
+from .interfaces import IDXFileFactory
+from .jstemplates import JS_VARS_TEMPLATE
+from .jstemplates import NEW_FOLDER_CONTENTS_VIEW_JS_TEMPLATES
 from AccessControl import Unauthorized
-
-from zope.interface import Interface
-from zope.component import getMultiAdapter
-from zope.filerepresentation.interfaces import IFileFactory
-
-from plone.app.content.browser.foldercontents import (FolderContentsView,
-                                                      FolderContentsTable)
-from plone.app.content.browser.tableview import Table
-from plone.folder.interfaces import IExplicitOrdering
-
+from Acquisition import aq_inner
+from Products.ATContentTypes.interfaces.topic import IATTopic
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
 from Products.Five import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.statusmessages.interfaces import IStatusMessage
-from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
-from Products.ATContentTypes.interfaces.topic import IATTopic
+from plone.app.content.browser.foldercontents import FolderContentsTable
+from plone.app.content.browser.foldercontents import FolderContentsView
+from plone.app.content.browser.tableview import Table
+from plone.app.layout.viewlets.common import ViewletBase
+from plone.folder.interfaces import IExplicitOrdering
+from urllib import urlencode
+from zope.component import getMultiAdapter
+from zope.interface import Interface
+import json
+import logging
+import mimetypes
+import pkg_resources
+
 try:
-    from plone.app.collection.interfaces import ICollection
-except ImportError:
+    pkg_resources.get_distribution('plone.app.collection')
+except pkg_resources.DistributionNotFound:
     class ICollection(Interface):
         pass
+else:
+    from plone.app.collection.interfaces import ICollection
 
-import pkg_resources
 
 try:
     pkg_resources.get_distribution('plone.dexterity')
@@ -36,8 +39,6 @@ except pkg_resources.DistributionNotFound:
 else:
     from plone.dexterity.interfaces import IDexterityFTI
     HAS_DEXTERITY = True
-
-from wildcard.foldercontents.interfaces import IATCTFileFactory, IDXFileFactory
 
 
 logger = logging.getLogger("wildcard.foldercontents")
@@ -101,6 +102,7 @@ class NewTable(Table):
 
 
 class NewFolderContentsTable(FolderContentsTable):
+
     def __init__(self, context, request, contentFilter=None):
         self.context = context
         self.request = request
@@ -117,8 +119,8 @@ class NewFolderContentsTable(FolderContentsTable):
         view_url = '%s/folder_contents?sort_on=%s&sort_order=%s' % (
             url, sort, order)
         self.table = NewTable(request, url, view_url, self.items,
-                           show_sort_column=self.show_sort_column,
-                           buttons=self.buttons)
+                              show_sort_column=self.show_sort_column,
+                              buttons=self.buttons)
         self.table.is_collection = _is_collection(self.context)
 
     @property
@@ -145,7 +147,7 @@ class NewFolderContentsView(FolderContentsView):
         if not self.orderable:
             messages = IStatusMessage(self.request)
             messages.add(u"This type of folder does not support ordering",
-                type=u"info")
+                         type=u"info")
         return super(NewFolderContentsView, self).__call__()
 
     def contents_table(self):
@@ -153,70 +155,10 @@ class NewFolderContentsView(FolderContentsView):
         return table.render()
 
     def jstemplates(self):
+        """Have to include js templates from view, because tal barfs when it's
+        in the page template
         """
-        have to put it here because tal barfs when it's in the template
-        """
-        return """
-<script id="template-upload" type="text/x-tmpl">
-{% for (var i=0, file; file=o.files[i]; i++) { %}
-    <tr class="template-upload">
-        <td class="preview"><span class=""></span></td>
-        <td class="name"><span>{%=file.name%}</span></td>
-        <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
-        {% if (file.error) { %}
-            <td class="error" colspan="2">
-                <span class="label label-important">
-                {%=locale.messagefactory(locale.fileupload.error)%}
-                </span> {%=locale.messagefactory(locale.fileupload.errors[file.error]) || file.error%}
-            </td>
-        {% } else if (o.files.valid && !i) { %}
-            <td>
-                <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bar" style="width:0%;"></div></div>
-            </td>
-            <td class="start">{% if (!o.options.autoUpload) { %}
-                <button class="btn btn-primary">
-                    <i class="icon-upload icon-white"></i>
-                    <span>{%=locale.messagefactory(locale.fileupload.start)%}</span>
-                </button>
-            {% } %}</td>
-        {% } else { %}
-            <td colspan="2"></td>
-        {% } %}
-        <td colspan="2" class="cancel">{% if (!i) { %}
-            <button class="btn btn-warning">
-                <i class="icon-ban-circle icon-white"></i>
-                <span>{%=locale.messagefactory(locale.fileupload.cancel)%}</span>
-            </button>
-        {% } %}</td>
-    </tr>
-{% } %}
-</script>
-<!-- The template to display files available for download -->
-<script id="template-download" type="text/x-tmpl">
-{% for (var i=0, file; file=o.files[i]; i++) { %}
-    <tr class="template-download">
-        {% if (file.error) { %}
-            <td></td>
-            <td class="name"><span>{%=file.name%}</span></td>
-            <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
-            <td class="error" colspan="2">
-                <span class="label label-important">
-                    {%=locale.messagefactory(locale.fileupload.error)%}
-                </span> {%=locale.messagefactory(locale.fileupload.errors[file.error]) || file.error%}</td>
-        {% } else { %}
-            <td class="preview">{% if (file.thumbnail_url) { %}
-                <a href="{%=file.url%}" title="{%=file.name%}" data-gallery="gallery" download="{%=file.name%}"><img src="{%=file.thumbnail_url%}"></a>
-            {% } %}</td>
-            <td class="name">
-                <a href="{%=file.url%}" title="{%=file.name%}" data-gallery="{%=file.thumbnail_url&&'gallery'%}" download="{%=file.name%}">{%=file.name%}</a>
-            </td>
-            <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
-            <td colspan="2"></td>
-        {% } %}
-    </tr>
-{% } %}
-</script>
-"""
+        return NEW_FOLDER_CONTENTS_VIEW_JS_TEMPLATES
 
 
 def getOrdering(context):
@@ -230,10 +172,11 @@ def getOrdering(context):
 
 
 class Move(BrowserView):
+
     def __call__(self):
         ordering = getOrdering(self.context)
         authenticator = getMultiAdapter((self.context, self.request),
-            name=u"authenticator")
+                                        name=u"authenticator")
         if not authenticator.verify() or \
                 self.request['REQUEST_METHOD'] != 'POST':
             raise Unauthorized
@@ -246,14 +189,15 @@ class Move(BrowserView):
             ordering.moveObjectsToBottom([itemid])
         elif action == 'movedelta':
             ordering.moveObjectsByDelta([itemid],
-                int(self.request.form['delta']))
+                                        int(self.request.form['delta']))
         return 'done'
 
 
 class Sort(BrowserView):
+
     def __call__(self):
         authenticator = getMultiAdapter((self.context, self.request),
-            name=u"authenticator")
+                                        name=u"authenticator")
         if not authenticator.verify() or \
                 self.request['REQUEST_METHOD'] != 'POST':
             raise Unauthorized
@@ -272,13 +216,14 @@ class Sort(BrowserView):
 
 
 class JUpload(BrowserView):
-    """ We only support two kind of file/image types, AT or DX based (in case
-        that p.a.contenttypes are installed ans assuming their type names are
-        'File' and 'Image'.
+    """We only support two kind of file/image types, AT or DX based (in case
+    that p.a.contenttypes are installed ans assuming their type names are
+    'File' and 'Image'.
     """
+
     def __call__(self):
         authenticator = getMultiAdapter((self.context, self.request),
-            name=u"authenticator")
+                                        name=u"authenticator")
         if not authenticator.verify() or \
                 self.request['REQUEST_METHOD'] != 'POST':
             raise Unauthorized
@@ -341,3 +286,16 @@ class JUpload(BrowserView):
         return json.dumps({
             'files': [result]
         })
+
+
+class JSVariablesViewlet(ViewletBase):
+
+    @property
+    def js_vars(self):
+        context = aq_inner(self.context)
+        layout = getMultiAdapter((context, self.request), name=u'plone_layout')
+        base_url = layout.renderBase()
+
+        return JS_VARS_TEMPLATE % dict(
+            plone_context_base_url=base_url
+        )

@@ -1,6 +1,5 @@
-from zope.interface import Interface
-
 from zope.filerepresentation.interfaces import IFileFactory
+from zope.interface import Interface
 
 
 class ILayer(Interface):
@@ -8,10 +7,10 @@ class ILayer(Interface):
 
 
 class IATCTFileFactory(IFileFactory):
-    """ adapter factory for ATCT
+    """Adapter factory for ATCT
     """
 
 
 class IDXFileFactory(IFileFactory):
-    """ adapter factory for DX types
+    """Adapter factory for DX types
     """

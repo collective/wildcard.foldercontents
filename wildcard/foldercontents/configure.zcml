@@ -52,6 +52,18 @@
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
+  <browser:viewlet
+      name="wildcard.foldercontents.jsvariables"
+      for="*"
+      view=".views.NewFolderContentsView"
+      manager="plone.app.layout.viewlets.interfaces.IHtmlHead"
+      class=".views.JSVariablesViewlet"
+      template="jsvariables.pt"
+      permission="zope.Public"
+      layer=".interfaces.ILayer"
+      />
+
+
   <adapter factory=".factories.ATCTFileFactory" />
   <adapter factory=".factories.DXFileFactory" />
 
