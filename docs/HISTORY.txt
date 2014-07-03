@@ -4,7 +4,7 @@ Changelog
 1.2.6 (unreleased)
 ------------------
 
-- PEP 8 + Autoformat.
+- PEP 8, JSLint'ing, Autoformat + Cleanup.
   [thet]
 
 
