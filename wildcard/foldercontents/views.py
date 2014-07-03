@@ -1,33 +1,33 @@
-import logging
-import mimetypes
-import json
-from urllib import urlencode
-
-from Acquisition import aq_inner
+from .interfaces import IATCTFileFactory
+from .interfaces import IDXFileFactory
 from AccessControl import Unauthorized
-
-from zope.interface import Interface
-from zope.component import getMultiAdapter
-from zope.filerepresentation.interfaces import IFileFactory
-
-from plone.app.content.browser.foldercontents import (FolderContentsView,
-                                                      FolderContentsTable)
-from plone.app.content.browser.tableview import Table
-from plone.folder.interfaces import IExplicitOrdering
-
+from Acquisition import aq_inner
+from Products.ATContentTypes.interfaces.topic import IATTopic
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
 from Products.Five import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.statusmessages.interfaces import IStatusMessage
-from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
-from Products.ATContentTypes.interfaces.topic import IATTopic
+from plone.app.content.browser.foldercontents import FolderContentsTable
+from plone.app.content.browser.foldercontents import FolderContentsView
+from plone.app.content.browser.tableview import Table
+from plone.folder.interfaces import IExplicitOrdering
+from urllib import urlencode
+from zope.component import getMultiAdapter
+from zope.interface import Interface
+import json
+import logging
+import mimetypes
+import pkg_resources
+
 try:
-    from plone.app.collection.interfaces import ICollection
-except ImportError:
+    pkg_resources.get_distribution('plone.app.collection')
+except pkg_resources.DistributionNotFound:
     class ICollection(Interface):
         pass
+else:
+    from plone.app.collection.interfaces import ICollection
 
-import pkg_resources
 
 try:
     pkg_resources.get_distribution('plone.dexterity')
@@ -36,8 +36,6 @@ except pkg_resources.DistributionNotFound:
 else:
     from plone.dexterity.interfaces import IDexterityFTI
     HAS_DEXTERITY = True
-
-from wildcard.foldercontents.interfaces import IATCTFileFactory, IDXFileFactory
 
 
 logger = logging.getLogger("wildcard.foldercontents")
@@ -101,6 +99,7 @@ class NewTable(Table):
 
 
 class NewFolderContentsTable(FolderContentsTable):
+
     def __init__(self, context, request, contentFilter=None):
         self.context = context
         self.request = request
@@ -117,8 +116,8 @@ class NewFolderContentsTable(FolderContentsTable):
         view_url = '%s/folder_contents?sort_on=%s&sort_order=%s' % (
             url, sort, order)
         self.table = NewTable(request, url, view_url, self.items,
-                           show_sort_column=self.show_sort_column,
-                           buttons=self.buttons)
+                              show_sort_column=self.show_sort_column,
+                              buttons=self.buttons)
         self.table.is_collection = _is_collection(self.context)
 
     @property
@@ -145,7 +144,7 @@ class NewFolderContentsView(FolderContentsView):
         if not self.orderable:
             messages = IStatusMessage(self.request)
             messages.add(u"This type of folder does not support ordering",
-                type=u"info")
+                         type=u"info")
         return super(NewFolderContentsView, self).__call__()
 
     def contents_table(self):
@@ -230,10 +229,11 @@ def getOrdering(context):
 
 
 class Move(BrowserView):
+
     def __call__(self):
         ordering = getOrdering(self.context)
         authenticator = getMultiAdapter((self.context, self.request),
-            name=u"authenticator")
+                                        name=u"authenticator")
         if not authenticator.verify() or \
                 self.request['REQUEST_METHOD'] != 'POST':
             raise Unauthorized
@@ -246,14 +246,15 @@ class Move(BrowserView):
             ordering.moveObjectsToBottom([itemid])
         elif action == 'movedelta':
             ordering.moveObjectsByDelta([itemid],
-                int(self.request.form['delta']))
+                                        int(self.request.form['delta']))
         return 'done'
 
 
 class Sort(BrowserView):
+
     def __call__(self):
         authenticator = getMultiAdapter((self.context, self.request),
-            name=u"authenticator")
+                                        name=u"authenticator")
         if not authenticator.verify() or \
                 self.request['REQUEST_METHOD'] != 'POST':
             raise Unauthorized
@@ -272,13 +273,14 @@ class Sort(BrowserView):
 
 
 class JUpload(BrowserView):
-    """ We only support two kind of file/image types, AT or DX based (in case
-        that p.a.contenttypes are installed ans assuming their type names are
-        'File' and 'Image'.
+    """We only support two kind of file/image types, AT or DX based (in case
+    that p.a.contenttypes are installed ans assuming their type names are
+    'File' and 'Image'.
     """
+
     def __call__(self):
         authenticator = getMultiAdapter((self.context, self.request),
-            name=u"authenticator")
+                                        name=u"authenticator")
         if not authenticator.verify() or \
                 self.request['REQUEST_METHOD'] != 'POST':
             raise Unauthorized
