@@ -1,9 +1,15 @@
+/*jslint browser: true */
+/*jslint unparam: true */
+/*jslint nomen: true */
+/*global $, jQuery */
+
 var id_prefix = 'folder-contents-item-';
 var container_id = 'folderlisting-main-table-noplonedrag';
 var load_more_locked = false;
 var last_folder_url = window.location.href;
 var shifted = false;
 var last_checked = null;
+var fc;
 
 fc = {
     sortable: function() {
@@ -20,9 +26,9 @@ fc = {
         fc.showLoading();
         params.itemid = row.attr('id').substring(id_prefix.length);
         if (params.action === undefined) {
-            params.action = 'movedelta'
+            params.action = 'movedelta';
         }
-        params['_authenticator'] = $('input[name="_authenticator"]').attr('value');
+        params._authenticator = $('input[name="_authenticator"]').attr('value');
         $.ajax({
             type: 'POST',
             url: $('base').attr('href') + '@@fcmove',
@@ -59,10 +65,11 @@ fc = {
                 forceHelperSize: true,
                 helper: "clone",
                 start: function(event, ui) {
+                    var origtds, helpertds;
                     // show original, get width, then hide again
                     ui.item.css('display', '');
-                    var origtds = ui.item.find('td');
-                    var helpertds = ui.helper.find('td');
+                    origtds = ui.item.find('td');
+                    helpertds = ui.helper.find('td');
                     origtds.each(function(index) {
                         helpertds.eq(index).css('width', $(this).width());
                     });
@@ -75,12 +82,13 @@ fc = {
                     });
                 },
                 change: function(event, ui) {
+                    var rows, next;
                     if (load_more_locked) {
                         return;
                     }
-                    var rows = $('#listing-table tbody tr');
+                    rows = $('#listing-table tbody tr');
                     if ((ui.placeholder.index() + 3) > rows.length) {
-                        var next = $('.listingBar .next a');
+                        next = $('.listingBar .next a');
                         if (next.length > 0) {
                             load_more_locked = true;
                             $.ajax({
@@ -95,7 +103,7 @@ fc = {
                                     }
                                     load_more_locked = false;
                                 }
-                            })
+                            });
                         }
                     }
                 }
@@ -132,7 +140,7 @@ fc = {
                         fc.hideLoading();
                         fc.initialize();
                     }
-                })
+                });
                 return false;
             });
 
@@ -145,15 +153,17 @@ fc = {
             return false;
         });
 
-        $('#content-core').delegate('#listing-table input[type="checkbox"]', 'change', function(evt) {
+        $('#content-core').delegate('#listing-table input[type="checkbox"]', 'change', function(event) {
             if (shifted && last_checked !== null) {
+                var self, last_checked_index, this_index;
                 //find closest sibling
-                var self = $(this);
-                var last_checked_index = last_checked.parents('tr').index();
-                var this_index = self.parents('tr').index();
+                self = $(this);
+                last_checked_index = last_checked.parents('tr').index();
+                this_index = self.parents('tr').index();
                 $('#listing-table input[type="checkbox"]').each(function() {
-                    var el = $(this);
-                    var index = el.parents('tr').index();
+                    var el, index;
+                    el = $(this);
+                    index = el.parents('tr').index();
                     if ((index > last_checked_index && index < this_index) ||
                         (index < last_checked_index && index > this_index)) {
                         this.checked = self[0].checked;
@@ -171,7 +181,7 @@ fc = {
     $(document).ready(function() {
         fc.initialize();
         $(document).bind('keyup keydown', function(e) {
-            shifted = e.shiftKey
+            shifted = e.shiftKey;
         });
 
         $('#fileupload').fileupload({
@@ -183,4 +193,4 @@ fc = {
             }
         });
     });
-})(jQuery);
+}(jQuery));

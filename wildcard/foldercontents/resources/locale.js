@@ -8,23 +8,21 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/MIT
  */
-
-/*global window */
+/*global $, window, jarn */
 
 // Get the current language
 var lang = $('html').attr('lang');
-
-mf = function(m){
+var mf = function(m){
     return m;
 }
 
-try{
+try {
     // get the translation tool catalog for the given language and domain
     jarn.i18n.loadCatalog('wildcard.foldercontents', lang);
 
     // let's create a message factory
     mf = jarn.i18n.MessageFactory('wildcard.foldercontents', lang);
-}catch(e){
+} catch (e) {
     console.log('failed to load jarn.i18n');
     // do not bork...
 }
