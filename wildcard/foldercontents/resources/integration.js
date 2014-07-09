@@ -28,6 +28,7 @@ fc = {
         if (params.action === undefined) {
             params.action = 'movedelta';
         }
+        params['_authenticator'] = $('input[name="_authenticator"]').attr('value');
         $.ajax({
             type: 'POST',
             url: $('div.fc-container').data('contextBaseUrl') + '@@fcmove',
