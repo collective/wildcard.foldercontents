@@ -1,7 +1,7 @@
 /*jslint browser: true */
 /*jslint unparam: true */
 /*jslint nomen: true */
-/*global $, jQuery, plone_context_base_url */
+/*global $, jQuery */
 
 var id_prefix = 'folder-contents-item-';
 var container_id = 'folderlisting-main-table-noplonedrag';
@@ -28,10 +28,9 @@ fc = {
         if (params.action === undefined) {
             params.action = 'movedelta';
         }
-        params._authenticator = $('input[name="_authenticator"]').attr('value');
         $.ajax({
             type: 'POST',
-            url: plone_context_base_url + '@@fcmove',
+            url: $('div.fc-container').data('contextBaseUrl') + '@@fcmove',
             data: params,
             success: function() {
                 if (callback !== undefined) {

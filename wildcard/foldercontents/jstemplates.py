@@ -1,7 +1,3 @@
-JS_VARS_TEMPLATE = """
-var plone_context_base_url = '%(plone_context_base_url)s';
-"""
-
 NEW_FOLDER_CONTENTS_VIEW_JS_TEMPLATES = """
 <script id="template-upload" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}

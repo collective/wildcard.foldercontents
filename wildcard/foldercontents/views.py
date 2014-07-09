@@ -1,6 +1,5 @@
 from .interfaces import IATCTFileFactory
 from .interfaces import IDXFileFactory
-from .jstemplates import JS_VARS_TEMPLATE
 from .jstemplates import NEW_FOLDER_CONTENTS_VIEW_JS_TEMPLATES
 from AccessControl import Unauthorized
 from Acquisition import aq_inner
@@ -13,7 +12,6 @@ from Products.statusmessages.interfaces import IStatusMessage
 from plone.app.content.browser.foldercontents import FolderContentsTable
 from plone.app.content.browser.foldercontents import FolderContentsView
 from plone.app.content.browser.tableview import Table
-from plone.app.layout.viewlets.common import ViewletBase
 from plone.folder.interfaces import IExplicitOrdering
 from urllib import urlencode
 from zope.component import getMultiAdapter
@@ -160,6 +158,12 @@ class NewFolderContentsView(FolderContentsView):
         """
         return NEW_FOLDER_CONTENTS_VIEW_JS_TEMPLATES
 
+    @property
+    def context_base_url(self):
+        context = aq_inner(self.context)
+        layout = getMultiAdapter((context, self.request), name=u'plone_layout')
+        return layout.renderBase()
+
 
 def getOrdering(context):
     if IPloneSiteRoot.providedBy(context):
@@ -286,16 +290,3 @@ class JUpload(BrowserView):
         return json.dumps({
             'files': [result]
         })
-
-
-class JSVariablesViewlet(ViewletBase):
-
-    @property
-    def js_vars(self):
-        context = aq_inner(self.context)
-        layout = getMultiAdapter((context, self.request), name=u'plone_layout')
-        base_url = layout.renderBase()
-
-        return JS_VARS_TEMPLATE % dict(
-            plone_context_base_url=base_url
-        )
