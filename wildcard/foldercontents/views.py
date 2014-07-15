@@ -14,7 +14,9 @@ from plone.app.content.browser.foldercontents import FolderContentsView
 from plone.app.content.browser.tableview import Table
 from plone.folder.interfaces import IExplicitOrdering
 from urllib import urlencode
+from wildcard.foldercontents import wcfcMessageFactory as _
 from zope.component import getMultiAdapter
+from zope.i18n import translate
 from zope.interface import Interface
 import json
 import logging
@@ -239,11 +241,17 @@ class JUpload(BrowserView):
 
         if not filedata:
             return
-
         # Determine if the default file/image types are DX or AT based
         ctr = getToolByName(self.context, 'content_type_registry')
         type_ = ctr.findTypeName(filename.lower(), '', '') or 'File'
-
+        #if the type_ is disallowed in this folder, return an error
+        if type_ not in self.context.getImmediatelyAddableTypes():
+            msg = translate(_('disallowed_type_error',
+                        default='${filename}: adding of "${type}" type is disabled in this folder',
+                        mapping={'filename': filename, 'type': type_}),
+                    context=self.request
+            )
+            return json.dumps({'files': [{'error': msg}]})
         DX_BASED = False
         if HAS_DEXTERITY:
             pt = getToolByName(self.context, 'portal_types')
