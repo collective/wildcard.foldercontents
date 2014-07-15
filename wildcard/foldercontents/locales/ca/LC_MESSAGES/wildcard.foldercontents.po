@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2012-11-22 08:14+0000\n"
+"POT-Creation-Date: 2014-07-15 13:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: Victor Fernandez de Alba <sneridagh@gmail.com>\n"
 "Language-Team: LANGUAGE <plone.team@upcnet.es>\n"
@@ -13,11 +13,6 @@ msgstr ""
 "Language-Name: Catalan\n"
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: wildcard.foldercontents\n"
-
-#. Default: "Cancel"
-#: ./resources/jquery-file-upload/js/locale.js
-msgid "Cancel"
-msgstr "Cancel·la"
 
 #. Default: "Delete"
 #: ./resources/jquery-file-upload/js/locale.js
@@ -59,50 +54,55 @@ msgstr "Inici"
 msgid "Uploaded bytes exceed file size"
 msgstr "La quantitat de bytes pujats no corresponen amb el tamany del fitxer original"
 
+#. Default: "${filename}: adding of \"${type}\" type is disabled in this folder"
+#: ./views.py:248
+msgid "disallowed_type_error"
+msgstr ""
+
 #. Default: "Add files..."
-#: ./folder_contents.pt:162
+#: ./folder_contents.pt:163
 msgid "foldercontents_add_files"
 msgstr "Afegir fitxers..."
 
 #. Default: "Ascending order"
-#: ./table.pt:99
+#: ./table.pt:100
 msgid "foldercontents_ascending_order"
 msgstr "Ordre ascendent"
 
 #. Default: "Cancel upload"
-#: ./folder_contents.pt:171
+#: ./folder_contents.pt:172
 msgid "foldercontents_cancel_upload"
 msgstr "Cancel·la la pujada de fitxers"
 
 #. Default: "Creation Date"
-#: ./folder_contents.pt:199
-#: ./table.pt:90
+#: ./folder_contents.pt:190
+#: ./table.pt:86
 msgid "foldercontents_creation_order"
 msgstr "Data de creació"
 
 #. Default: "Descending order"
-#: ./table.pt:102
+#: ./table.pt:103
 msgid "foldercontents_descending_order"
 msgstr "Ordre descendent"
 
 #. Default: "Display sort order"
-#: ./table.pt:69
+#: ./table.pt:65
 msgid "foldercontents_display_sortorder"
 msgstr "Ordre de visualització"
 
 #. Default: "Effective Date"
-#: ./folder_contents.pt:200
-#: ./table.pt:95
+#: ./folder_contents.pt:191
+#: ./table.pt:91
 msgid "foldercontents_effective_order"
 msgstr "Data efectiva"
 
 #. Default: "Folder Order"
-#: ./table.pt:75
+#: ./table.pt:71
 msgid "foldercontents_folder_order"
 msgstr "Ordre de carpeta"
 
 #. Default: "ID"
-#: ./folder_contents.pt:197
+#: ./folder_contents.pt:188
 msgid "foldercontents_id_order"
 msgstr "Identificador (id)"
 
@@ -112,54 +112,54 @@ msgid "foldercontents_listingheader_sort"
 msgstr "Ordena"
 
 #. Default: "Modification Date"
-#: ./folder_contents.pt:198
-#: ./table.pt:85
+#: ./folder_contents.pt:189
+#: ./table.pt:81
 msgid "foldercontents_modification_order"
 msgstr "Data de modificació"
 
 #. Default: "Move to bottom"
-#: ./table.pt:206
+#: ./table.pt:203
 msgid "foldercontents_move_bottom"
 msgstr "Mou a baix de tot"
 
 #. Default: "Move to top"
-#: ./table.pt:205
+#: ./table.pt:202
 msgid "foldercontents_move_top"
 msgstr "Mou a dalt de tot"
 
 #. Default: "Reversed"
-#: ./folder_contents.pt:203
+#: ./folder_contents.pt:194
 msgid "foldercontents_reversed_order"
 msgstr "Revers"
 
 #. Default: "Sort folder"
-#: ./folder_contents.pt:205
+#: ./folder_contents.pt:196
 msgid "foldercontents_sort_folder"
 msgstr "Ordena carpeta"
 
 #. Default: "Sort folder by..."
-#: ./table.pt:242
+#: ./table.pt:239
 msgid "foldercontents_sortby"
 msgstr "Ordena carpeta per..."
 
 #. Default: "Sort on:"
-#: ./folder_contents.pt:194
+#: ./folder_contents.pt:185
 msgid "foldercontents_sorton"
 msgstr "Ordena per:"
 
 #. Default: "Start upload"
-#: ./folder_contents.pt:167
+#: ./folder_contents.pt:168
 msgid "foldercontents_start_upload"
 msgstr "Inicia la pujada de fitxers"
 
 #. Default: "Title"
-#: ./folder_contents.pt:196
-#: ./table.pt:80
+#: ./folder_contents.pt:187
+#: ./table.pt:76
 msgid "foldercontents_title_order"
 msgstr "Títol"
 
 #. Default: "Upload Files"
-#: ./table.pt:241
+#: ./table.pt:238
 msgid "foldercontents_uploadfiles"
 msgstr "Pujada de fitxers"
 

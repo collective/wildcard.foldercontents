@@ -13,6 +13,8 @@ Changelog
 - PEP 8, JSLint'ing, Autoformat + Cleanup.
   [thet]
 
+- Upload form now takes care about type filters in folders
+  [cekk]
 
 1.2.5 (2014-05-15)
 ------------------

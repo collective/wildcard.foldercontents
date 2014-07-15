@@ -38,13 +38,12 @@ NEW_FOLDER_CONTENTS_VIEW_JS_TEMPLATES = """
 {% for (var i=0, file; file=o.files[i]; i++) { %}
     <tr class="template-download">
         {% if (file.error) { %}
-            <td></td>
-            <td class="name"><span>{%=file.name%}</span></td>
-            <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
-            <td class="error" colspan="2">
+            <td class="error">
                 <span class="label label-important">
                     {%=locale.messagefactory(locale.fileupload.error)%}
-                </span> {%=locale.messagefactory(locale.fileupload.errors[file.error]) || file.error%}</td>
+                </span>
+            </td>
+            <td class="name" colspan="4">{%=locale.messagefactory(locale.fileupload.errors[file.error]) || file.error%}</td>
         {% } else { %}
             <td class="preview">{% if (file.thumbnail_url) { %}
                 <a href="{%=file.url%}" title="{%=file.name%}" data-gallery="gallery" download="{%=file.name%}"><img src="{%=file.thumbnail_url%}"></a>
