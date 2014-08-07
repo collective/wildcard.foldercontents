@@ -16,6 +16,10 @@ Changelog
 - Upload form now takes care about type filters in folders
   [cekk]
 
+- Add french translation
+  [bsuttor]
+
+
 1.2.5 (2014-05-15)
 ------------------
 

@@ -1,0 +1,170 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2014-08-07 06:38+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: Benoît Suttor <benoit.suttor@imio.be>\n"
+"Language-Team: Imio <devs@imio.be>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: DOMAIN\n"
+
+#. Default: "Delete"
+#: ./resources/jquery-file-upload/js/locale.js
+msgid "Delete"
+msgstr "Supprimer"
+
+#. Default: "Empty file upload result"
+#: ./resources/jquery-file-upload/js/locale.js
+msgid "Empty file upload result"
+msgstr "Fichier téléchargé vide"
+
+#. Default: "File is too big"
+#: ./resources/jquery-file-upload/js/locale.js
+msgid "File is too big"
+msgstr "La taille fichier est trop importante"
+
+#. Default: "File is too small"
+#: ./resources/jquery-file-upload/js/locale.js
+msgid "File is too small"
+msgstr "La taille du fichier est trop petite"
+
+#. Default: "Filetype not allowed"
+#: ./resources/jquery-file-upload/js/locale.js
+msgid "Filetype not allowed"
+msgstr "Ce type de fichier n'est pas accepté"
+
+#. Default: "Max number of files exceeded"
+#: ./resources/jquery-file-upload/js/locale.js
+msgid "Max number of files exceeded"
+msgstr "Nombre maxium de fichier dépassé"
+
+#. Default: "Start"
+#: ./resources/jquery-file-upload/js/locale.js
+msgid "Start"
+msgstr "Début"
+
+#. Default: "Uploaded bytes exceed file size"
+#: ./resources/jquery-file-upload/js/locale.js
+msgid "Uploaded bytes exceed file size"
+msgstr "Le nombre d'octet téléchargé dépasse la taille du fichier"
+
+#. Default: "${filename}: adding of \"${type}\" type is disabled in this folder"
+#: ./views.py:249
+msgid "disallowed_type_error"
+msgstr "${filename}: l'ajout de \"${type}\" type n'est pas accepté dans ce dossier"
+
+#. Default: "Add files..."
+#: ./folder_contents.pt:163
+msgid "foldercontents_add_files"
+msgstr "Ajouter un fichier"
+
+#. Default: "Ascending order"
+#: ./table.pt:100
+msgid "foldercontents_ascending_order"
+msgstr "Ordre croissant"
+
+#. Default: "Cancel upload"
+#: ./folder_contents.pt:172
+msgid "foldercontents_cancel_upload"
+msgstr "Annuler le téléchargement"
+
+#. Default: "Creation Date"
+#: ./folder_contents.pt:190
+#: ./table.pt:86
+msgid "foldercontents_creation_order"
+msgstr "Date de création"
+
+#. Default: "Descending order"
+#: ./table.pt:103
+msgid "foldercontents_descending_order"
+msgstr "Ordre décroissant"
+
+#. Default: "Display sort order"
+#: ./table.pt:65
+msgid "foldercontents_display_sortorder"
+msgstr "Afficher l'ordre de tri"
+
+#. Default: "Effective Date"
+#: ./folder_contents.pt:191
+#: ./table.pt:91
+msgid "foldercontents_effective_order"
+msgstr "Date de publication"
+
+#. Default: "Folder Order"
+#: ./table.pt:71
+msgid "foldercontents_folder_order"
+msgstr "Ordre du dossier"
+
+#. Default: "ID"
+#: ./folder_contents.pt:188
+msgid "foldercontents_id_order"
+msgstr "ID"
+
+#. Default: "Sort"
+#: ./table.pt:130
+msgid "foldercontents_listingheader_sort"
+msgstr "Trier"
+
+#. Default: "Modification Date"
+#: ./folder_contents.pt:189
+#: ./table.pt:81
+msgid "foldercontents_modification_order"
+msgstr "Date de modification"
+
+#. Default: "Move to bottom"
+#: ./table.pt:203
+msgid "foldercontents_move_bottom"
+msgstr "Déplacer vers le bas"
+
+#. Default: "Move to top"
+#: ./table.pt:202
+msgid "foldercontents_move_top"
+msgstr "Déplacer au début"
+
+#. Default: "Reversed"
+#: ./folder_contents.pt:194
+msgid "foldercontents_reversed_order"
+msgstr "Renverser"
+
+#. Default: "Sort folder"
+#: ./folder_contents.pt:196
+msgid "foldercontents_sort_folder"
+msgstr "Trier le dossier"
+
+#. Default: "Sort folder by..."
+#: ./table.pt:239
+msgid "foldercontents_sortby"
+msgstr "Trier le dossier par..."
+
+#. Default: "Sort on:"
+#: ./folder_contents.pt:185
+msgid "foldercontents_sorton"
+msgstr "Trier sur :"
+
+#. Default: "Start upload"
+#: ./folder_contents.pt:168
+msgid "foldercontents_start_upload"
+msgstr "Début du téléchargement"
+
+#. Default: "Title"
+#: ./folder_contents.pt:187
+#: ./table.pt:76
+msgid "foldercontents_title_order"
+msgstr "Titre"
+
+#. Default: "Upload Files"
+#: ./table.pt:238
+msgid "foldercontents_uploadfiles"
+msgstr "Téléchager les fichiers"
+
+#. Default: "Content listing"
+#: ./table.pt:29
+msgid "summary_content_listing"
+msgstr "Liste du contenu"
+
