@@ -5,6 +5,7 @@ from AccessControl import Unauthorized
 from Acquisition import aq_inner
 from Products.ATContentTypes.interfaces.topic import IATTopic
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces.constrains import ISelectableConstrainTypes
 from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
 from Products.Five import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
@@ -241,17 +242,11 @@ class JUpload(BrowserView):
 
         if not filedata:
             return
-        # Determine if the default file/image types are DX or AT based
+
         ctr = getToolByName(self.context, 'content_type_registry')
         type_ = ctr.findTypeName(filename.lower(), '', '') or 'File'
-        #if the type_ is disallowed in this folder, return an error
-        if type_ not in self.context.getImmediatelyAddableTypes():
-            msg = translate(_('disallowed_type_error',
-                        default='${filename}: adding of "${type}" type is disabled in this folder',
-                        mapping={'filename': filename, 'type': type_}),
-                    context=self.request
-            )
-            return json.dumps({'files': [{'error': msg}]})
+
+        # Determine if the default file/image types are DX or AT based
         DX_BASED = False
         if HAS_DEXTERITY:
             pt = getToolByName(self.context, 'portal_types')
@@ -262,6 +257,23 @@ class JUpload(BrowserView):
                 factory = IATCTFileFactory(self.context)
         else:
             factory = IATCTFileFactory(self.context)
+
+        if DX_BASED:
+            addable_types = ISelectableConstrainTypes(
+                self.context).getImmediatelyAddableTypes()
+        else:
+            addable_types = self.context.getImmediatelyAddableTypes()
+
+        #if the type_ is disallowed in this folder, return an error
+        if type_ not in addable_types:
+            msg = translate(
+                _('disallowed_type_error',
+                    default='${filename}: adding of "${type}" \
+                             type is disabled in this folder',
+                    mapping={'filename': filename, 'type': type_}),
+                context=self.request
+            )
+            return json.dumps({'files': [{'error': msg}]})
 
         obj = factory(filename, content_type, filedata)
 
