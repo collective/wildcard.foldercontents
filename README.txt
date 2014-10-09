@@ -27,23 +27,14 @@ I'm aiming to support Plone versions 4.1 through 4.3. Each version requires
 that you pin a few newer versions of a few plone packages.
 
 
-Plone 4.3
-~~~~~~~~~
-
-version pins::
-
-    [versions]
-    plone.app.querystring = 1.1.0
-
-
 Plone 4.2
 ~~~~~~~~~
 
 version pins::
 
     [versions]
-    plone.app.querystring = 1.1.0
-    plone.app.vocabularies = 2.1.12
+    plone.app.querystring = 1.1.1
+    plone.app.vocabularies = 2.1.16
 
 
 Plone 4.1
@@ -52,14 +43,16 @@ Plone 4.1
 version pins::
 
     [versions]
-    plone.app.vocabularies = 2.1.12
-    plone.app.querystring = 1.1.0
+    plone.app.querystring = 1.1.1
     plone.app.registry = 1.1
+    plone.app.vocabularies = 2.1.16
 
 
 
-Tus support
+tus support
 -----------
+
+`tus`_ is a protocol aimed at supporting resuamble file uploads on the web.
 
 add egg::
 
@@ -90,3 +83,4 @@ make tus directory::
     mkdir var/tmp
 
 
+.. _`tus`: http://tus.io/
