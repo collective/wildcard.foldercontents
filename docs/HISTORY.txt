@@ -4,6 +4,9 @@ Changelog
 1.2.6 (unreleased)
 ------------------
 
+- Upload form now takes care off type filters in folders based on AT or DX
+  [agitator]
+
 - Don't depend on the html header's <base> tag, which is removed in
   plonetheme.sunburst 1.5 as part of the Plone 5 PLIP. This makes
   ``plonetheme.sunburst >= 1.5`` usable together with
