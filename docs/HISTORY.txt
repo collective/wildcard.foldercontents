@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.2.6 (unreleased)
+1.2.6 (2014-10-19)
 ------------------
 
 - Upload form now takes care off type filters in folders based on AT or DX
