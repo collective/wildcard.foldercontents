@@ -255,13 +255,14 @@ class JUpload(BrowserView):
                 DX_BASED = True
             else:
                 factory = IATCTFileFactory(self.context)
+            # if the container is a DX type, get the available types from the behavior
+            if IDexterityFTI.providedBy(getattr(pt, self.context.portal_type)):
+                addable_types = ISelectableConstrainTypes(
+                    self.context).getImmediatelyAddableTypes()
+            else:
+                addable_types = self.context.getImmediatelyAddableTypes()
         else:
             factory = IATCTFileFactory(self.context)
-
-        if DX_BASED:
-            addable_types = ISelectableConstrainTypes(
-                self.context).getImmediatelyAddableTypes()
-        else:
             addable_types = self.context.getImmediatelyAddableTypes()
 
         #if the type_ is disallowed in this folder, return an error
