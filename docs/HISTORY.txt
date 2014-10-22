@@ -4,7 +4,8 @@ Changelog
 1.2.7 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix type filters for uploads for mixed types: for example an AT File inside a DX folder
+  [cekk]
 
 
 1.2.6 (2014-10-19)
