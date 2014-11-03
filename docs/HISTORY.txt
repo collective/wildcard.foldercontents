@@ -7,6 +7,9 @@ Changelog
 - Fix type filters for uploads for mixed types: for example an AT File inside a DX folder
   [cekk]
 
+- Fix Italian translation
+  [cekk]
+
 
 1.2.6 (2014-10-19)
 ------------------
