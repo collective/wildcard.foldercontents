@@ -120,12 +120,12 @@ msgstr "Data di Modifica"
 #. Default: "Move to bottom"
 #: ./table.pt:203
 msgid "foldercontents_move_bottom"
-msgstr "Sposta in cima"
+msgstr "Sposta in fondo"
 
 #. Default: "Move to top"
 #: ./table.pt:202
 msgid "foldercontents_move_top"
-msgstr "Sposta in fondo"
+msgstr "Sposta in cima"
 
 #. Default: "Reversed"
 #: ./folder_contents.pt:194
