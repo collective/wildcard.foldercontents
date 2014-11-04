@@ -12,6 +12,7 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.statusmessages.interfaces import IStatusMessage
 from plone.app.content.browser.foldercontents import FolderContentsTable
 from plone.app.content.browser.foldercontents import FolderContentsView
+from plone.app.content.browser.folderfactories import _allowedTypes
 from plone.app.content.browser.tableview import Table
 from plone.folder.interfaces import IExplicitOrdering
 from urllib import urlencode
@@ -248,6 +249,7 @@ class JUpload(BrowserView):
 
         # Determine if the default file/image types are DX or AT based
         DX_BASED = False
+        context_state = getMultiAdapter((self.context, self.request), name=u'plone_context_state')
         if HAS_DEXTERITY:
             pt = getToolByName(self.context, 'portal_types')
             if IDexterityFTI.providedBy(getattr(pt, type_)):
@@ -259,11 +261,18 @@ class JUpload(BrowserView):
             if IDexterityFTI.providedBy(getattr(pt, self.context.portal_type)):
                 addable_types = ISelectableConstrainTypes(
                     self.context).getImmediatelyAddableTypes()
+            elif context_state.is_portal_root():
+                allowed_types = _allowedTypes(self.request, self.context)
+                addable_types = [fti.getId() for fti in allowed_types]
             else:
                 addable_types = self.context.getImmediatelyAddableTypes()
         else:
             factory = IATCTFileFactory(self.context)
-            addable_types = self.context.getImmediatelyAddableTypes()
+            if context_state.is_portal_root():
+                allowed_types = _allowedTypes(self.request, self.context)
+                addable_types = [fti.getId() for fti in allowed_types]
+            else:
+                addable_types = self.context.getImmediatelyAddableTypes()
 
         #if the type_ is disallowed in this folder, return an error
         if type_ not in addable_types:
