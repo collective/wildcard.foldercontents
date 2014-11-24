@@ -115,6 +115,7 @@ class NewFolderContentsTable(FolderContentsTable):
         order = _normalize_form_val(self.request.form, 'sort_order')
         if order:
             self.contentFilter['sort_order'] = 'reverse'
+        self.pagesize = int(self.request.get('pagesize', 20))
         self.items = self.folderitems()
 
         url = context.absolute_url()
