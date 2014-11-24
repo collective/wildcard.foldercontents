@@ -4,7 +4,7 @@ from setuptools import setup
 
 import os
 
-version = '2.0b3'
+version = '2.0b4'
 description = 'A backport of the Plone 5 folder contents implementation.'
 long_description = (
     open('README.txt').read() + '\n' +

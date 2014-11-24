@@ -1,6 +1,12 @@
 Changelog
 =========
 
+2.0b4 (2014-11-24)
+------------------
+
+- Fixes the crash introduced by p.a.content changes in Plone 4.3.4
+  [sneridagh]
+
 2.0b3 (2014-05-31)
 ------------------
 
