@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.2.7 (unreleased)
+1.2.7 (2014-11-24)
 ------------------
 
 - Fix type filters for uploads for mixed types: for example an AT File inside a DX folder
@@ -13,6 +13,9 @@ Changelog
 - Fix upload contents in site root because it doesn't have
   getImmediatelyAddableTypes method
   [cekk]
+
+- Fixes the crash introduced by p.a.content changes in Plone 4.3.4
+  [sneridagh]
 
 
 1.2.6 (2014-10-19)
