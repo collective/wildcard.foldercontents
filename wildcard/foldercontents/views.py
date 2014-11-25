@@ -56,6 +56,7 @@ try:
 except pkg_resources.DistributionNotFound:
     HAS_DEXTERITY = False
 else:
+    from plone.dexterity.interfaces import IDexterityContent
     from plone.dexterity.interfaces import IDexterityFTI
     HAS_DEXTERITY = True
 
@@ -481,19 +482,37 @@ class PropertiesAction(FolderContentsActionView):
         self.exclude = self.request.form.get('exclude_from_nav', None)
         return super(PropertiesAction, self).__call__()
 
+    def dx_action(self, obj):
+        if self.effectiveDate and hasattr(obj, 'effective'):
+            obj.effective = DateTime(self.effectiveDate)
+        if self.expirationDate and hasattr(obj, 'expires'):
+            obj.expires = DateTime(self.expirationDate)
+        if self.copyright and hasattr(obj, 'rights'):
+            obj.rights = self.copyright
+        if self.contributors and hasattr(obj, 'contributors'):
+            obj.contributors = tuple([c['id'] for c in self.contributors])
+        if self.creators and hasattr(obj, 'creators'):
+            obj.creators = tuple([c['id'] for c in self.creators])
+        if self.exclude and hasattr(obj, 'exclude_from_nav'):
+            obj.exclude_from_nav = self.exclude == 'yes'
+
     def action(self, obj):
-        if self.effectiveDate:
-            obj.setEffectiveDate(DateTime(self.effectiveDate))
-        if self.expirationDate:
-            obj.setExpirationDate(DateTime(self.expirationDate))
-        if self.copyright:
-            obj.setRights(self.copyright)
-        if self.contributors:
-            obj.setContributors([c['id'] for c in self.contributors])
-        if self.creators:
-            obj.setCreators([c['id'] for c in self.creators])
-        if self.exclude:
-            obj.setExcludeFromNav(self.exclude == 'yes')
+
+        if HAS_DEXTERITY and IDexterityContent.providedBy(obj):
+            self.dx_action(obj)
+        else:
+            if self.effectiveDate:
+                obj.setEffectiveDate(DateTime(self.effectiveDate))
+            if self.expirationDate:
+                obj.setExpirationDate(DateTime(self.expirationDate))
+            if self.copyright:
+                obj.setRights(self.copyright)
+            if self.contributors:
+                obj.setContributors([c['id'] for c in self.contributors])
+            if self.creators:
+                obj.setCreators([c['id'] for c in self.creators])
+            if self.exclude:
+                obj.setExcludeFromNav(self.exclude == 'yes')
         obj.reindexObject()
 
 
