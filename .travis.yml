@@ -1,17 +1,17 @@
 language: python
 python: 2.7
 env:
-  - PLONE_VERSION=4.2
-  - PLONE_VERSION=4.3 QA=true
+  - PLONE_VERSION=4.2 SETUPTOOLS_VERSION=8.3
+  - PLONE_VERSION=4.3 SETUPTOOLS_VERSION=8.3 QA=true
 matrix:
   include:
     - python: 2.6
-      env: PLONE_VERSION=4.1
+      env: PLONE_VERSION=4.1 SETUPTOOLS_VERSION=8.3
   fast_finish: true
 install:
   - cp travis-$PLONE_VERSION.cfg travis.cfg
   - mkdir -p buildout-cache/downloads
-  - python bootstrap.py -c travis.cfg
+  - python bootstrap.py -c travis.cfg --setuptools-version=$SETUPTOOLS_VERSION
   - bin/buildout -c travis.cfg annotate
   - bin/buildout -c travis.cfg -N -q
 before_script:
