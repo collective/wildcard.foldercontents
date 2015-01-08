@@ -397,8 +397,10 @@ class TagsAction(FolderContentsActionView):
     required_obj_permission = 'Modify portal content'
 
     def __call__(self):
-        self.remove = set(json.loads(self.request.form.get('remove')))
-        self.add = set(json.loads(self.request.form.get('add')))
+        self.remove = set([v.encode('utf8') for v in \
+            json.loads(self.request.form.get('remove'))])
+        self.add = set([v.encode('utf8') for v in \
+            json.loads(self.request.form.get('add'))])
         return super(TagsAction, self).__call__()
 
     def action(self, obj):
