@@ -1,6 +1,12 @@
 Changelog
 =========
 
+2.0rc1 (unreleased)
+-------------------
+
+- Fix tag-actions with non-ascii keywords
+  [petschki]
+
 2.0b4 (2014-11-24)
 ------------------
 
