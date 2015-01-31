@@ -247,8 +247,8 @@ class Zope2RequestAdapter(object):
     def method(self):
         return self.req.REQUEST_METHOD
 
-    def get_header(self, name):
-        return self.req.getHeader(name)
+    def get_header(self, name, default=None):
+        return self.req.getHeader(name, default)
 
     def get_file(self):
         return self.req.form.get('files[]')
@@ -269,9 +269,11 @@ class Chunker(object):
         self.req = req
         self.tmp_file_dir = tmp_file_dir
         self.upload_valid_duration = upload_valid_duration
-        self.crange = self.req.get_header('Content-Range').replace('bytes ', '')
-        this_range, total = self.crange.split('/', 1)
-        lower_range, upper_range = this_range.split('-', 1)
+        self.crange = self.req.get_header('Content-Range', '').replace('bytes ', '')
+        total = lower_range = upper_range = 0
+        if self.crange:
+            this_range, total = self.crange.split('/', 1)
+            lower_range, upper_range = this_range.split('-', 1)
         self.lower_range = int(lower_range)
         self.upper_range = int(upper_range)
         self.total = int(total)
@@ -287,6 +289,8 @@ class Chunker(object):
         return open(self.get_filepath())
 
     def handle(self):
+        if self.lower_range == 0:
+            self.cleanup_file()
         if self.write_data(self.req.get_file()):
             return self.finished()
 
