@@ -190,7 +190,19 @@ fc = {
             'dataType': 'json',
             'formData': {
                 '_authenticator': $('input[name="_authenticator"]').attr('value')
-            }
+            },
+            maxChunkSize: 5000000
+        }).bind('fileuploadcompleted', function(){
+            fc.showLoading();
+            $.ajax({
+                url: window.location.href,
+                success: function(data) {
+                    $('#' + container_id).replaceWith(
+                        $(data).find('#' + container_id));
+                    fc.hideLoading();
+                    fc.initialize();
+                }
+            }); 
         });
     });
 }(jQuery));

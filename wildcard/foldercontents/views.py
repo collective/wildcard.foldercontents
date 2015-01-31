@@ -1,3 +1,6 @@
+import os
+import time
+import posixpath
 from .interfaces import IATCTFileFactory
 from .interfaces import IDXFileFactory
 from .jstemplates import NEW_FOLDER_CONTENTS_VIEW_JS_TEMPLATES
@@ -18,12 +21,16 @@ from plone.folder.interfaces import IExplicitOrdering
 from urllib import urlencode
 from wildcard.foldercontents import wcfcMessageFactory as _
 from zope.component import getMultiAdapter
+from zope.component.hooks import getSite
 from zope.i18n import translate
 from zope.interface import Interface
 import json
 import logging
 import mimetypes
 import pkg_resources
+
+_os_alt_seps = list(sep for sep in [os.path.sep, os.path.altsep]
+                    if sep not in (None, '/'))
 
 try:
     pkg_resources.get_distribution('plone.app.collection')
@@ -224,6 +231,114 @@ class Sort(BrowserView):
             '%s/folder_contents' % self.context.absolute_url())
 
 
+class Zope2RequestAdapter(object):
+
+    def __init__(self, req):
+        self.req = req
+        membership = getToolByName(getSite(), 'portal_membership')
+        authenticated_user = membership.getAuthenticatedMember()
+        self.userid = authenticated_user.getId()
+
+    @property
+    def url(self):
+        return self.req.URL
+
+    @property
+    def method(self):
+        return self.req.REQUEST_METHOD
+
+    def get_header(self, name):
+        return self.req.getHeader(name)
+
+    def get_file(self):
+        return self.req.form.get('files[]')
+
+    def get_filename(self):
+        return self.get_file().filename
+
+    def get_uid(self):
+        return '%s-%s' % (
+            self.get_filename(),
+            self.userid)
+
+
+class Chunker(object):
+
+    def __init__(self, req, tmp_file_dir=None, upload_valid_duration=60*60):
+        # detect request types
+        self.req = req
+        self.tmp_file_dir = tmp_file_dir
+        self.upload_valid_duration = upload_valid_duration
+        self.crange = self.req.get_header('Content-Range').replace('bytes ', '')
+        this_range, total = self.crange.split('/', 1)
+        lower_range, upper_range = this_range.split('-', 1)
+        self.lower_range = int(lower_range)
+        self.upper_range = int(upper_range)
+        self.total = int(total)
+        self.uid = self.req.get_uid()
+
+    @property
+    def valid(self):
+        if self.req.method == 'POST' and self.req.get_header('Content-Range'):
+            return True
+        return False
+
+    def finished(self):
+        return open(self.get_filepath())
+
+    def handle(self):
+        if self.write_data(self.req.get_file()):
+            return self.finished()
+
+    def get_filepath(self):
+        return safe_join(self.tmp_file_dir, self.uid)
+
+    def write_data(self, data):
+        path = safe_join(self.tmp_file_dir, self.uid)
+        if self.lower_range and not os.path.exists(path):
+            # XXX hmmm, assuming file exists, error?
+            raise Exception()
+        mode = 'wb'
+        if os.path.exists(path):
+            mode = 'ab+'
+        fi = open(path, mode)
+        fi.seek(self.lower_range)
+        if hasattr(data, 'read'):
+            if hasattr(data, 'seek'):
+                # if no seek, let's just hope it's at the beginning of the file
+                data.seek(0)
+            # file object
+            while True:
+                chunk = data.read(2 << 16)
+                if not chunk:
+                    break
+                fi.write(chunk)
+        else:
+            fi.write(data)
+
+        length = fi.tell()
+        fi.close()
+
+        return length >= self.total
+
+    def cleanup_file(self):
+        filepath = safe_join(self.tmp_file_dir, self.uid)
+        if os.path.exists(filepath):
+            os.remove(filepath)
+
+    def cleanup(self):
+        """
+        look through upload directory and remove old uploads
+        """
+        duration = self.upload_valid_duration * 60
+        for filename in os.listdir(self.tmp_file_dir):
+            filepath = os.path.join(self.tmp_file_dir, filename)
+            if os.path.isdir(filepath):
+                continue
+            if (time.time() - os.stat(filepath).st_mtime) > duration:
+                os.remove(filepath)
+
+
 class JUpload(BrowserView):
     """We only support two kind of file/image types, AT or DX based (in case
     that p.a.contenttypes are installed ans assuming their type names are
@@ -236,12 +351,41 @@ class JUpload(BrowserView):
         if not authenticator.verify() or \
                 self.request['REQUEST_METHOD'] != 'POST':
             raise Unauthorized
-        filedata = self.request.form.get("files[]", None)
+        req = self.request
+        filedata = req.form.get("files[]", None)
         if filedata is None:
             return
-        filename = filedata.filename
-        content_type = mimetypes.guess_type(filename)[0] or ""
 
+        filename = filedata.filename
+        tmp_file_dir = os.environ.get('CHUNK_FILE_DIR', '/tmp')
+        chunker = Chunker(Zope2RequestAdapter(req), tmp_file_dir=tmp_file_dir)
+        # check if this request is chunked
+        if chunker.valid:
+            result = chunker.handle()
+            if result:
+                return self.create_content(result, filename, chunker)
+            else:
+                return json.dumps({
+                    'files': [self.get_upload_data()]
+                })
+        else:
+            return self.create_content(filedata, filename)
+
+    def get_upload_data(self, **kwargs):
+        filename = kwargs.get(
+            'filename',
+            getattr(self.request.form.get("files[]", None), 'filename', ''))
+        results = dict(
+            name=filename,
+            type=self.get_content_type(filename)
+        )
+        results.update(kwargs)
+        return results
+
+    def get_content_type(self, filename):
+        return mimetypes.guess_type(filename)[0] or ""
+
+    def create_content(self, filedata, filename, chunker=None):
         if not filedata:
             return
 
@@ -250,7 +394,8 @@ class JUpload(BrowserView):
 
         # Determine if the default file/image types are DX or AT based
         DX_BASED = False
-        context_state = getMultiAdapter((self.context, self.request), name=u'plone_context_state')
+        context_state = getMultiAdapter((self.context, self.request),
+                                        name=u'plone_context_state')
         if HAS_DEXTERITY:
             pt = getToolByName(self.context, 'portal_types')
             if IDexterityFTI.providedBy(getattr(pt, type_)):
@@ -275,7 +420,7 @@ class JUpload(BrowserView):
             else:
                 addable_types = self.context.getImmediatelyAddableTypes()
 
-        #if the type_ is disallowed in this folder, return an error
+        # if the type_ is disallowed in this folder, return an error
         if type_ not in addable_types:
             msg = translate(
                 _('disallowed_type_error',
@@ -286,7 +431,7 @@ class JUpload(BrowserView):
             )
             return json.dumps({'files': [{'error': msg}]})
 
-        obj = factory(filename, content_type, filedata)
+        obj = factory(filename, self.get_content_type(filename), filedata)
 
         if DX_BASED:
             if 'File' in obj.portal_type:
@@ -296,28 +441,45 @@ class JUpload(BrowserView):
                 size = obj.image.getSize()
                 content_type = obj.image.contentType
 
-            result = {
-                "url": obj.absolute_url(),
-                "name": obj.getId(),
-                "type": content_type,
-                "size": size
-            }
+            result = self.get_upload_data(
+                url=obj.absolute_url(),
+                name=obj.getId(),
+                size=size,
+                content_type=content_type)
         else:
             try:
                 size = obj.getSize()
             except AttributeError:
                 size = obj.getObjSize()
 
-            result = {
-                "url": obj.absolute_url(),
-                "name": obj.getId(),
-                "type": obj.getContentType(),
-                "size": size
-            }
+            result = self.get_upload_data(
+                url=obj.absolute_url(),
+                name=obj.getId(),
+                type=obj.getContentType(),
+                size=size)
 
         if 'Image' in obj.portal_type:
             result['thumbnail_url'] = result['url'] + '/@@images/image/tile'
 
+        # cleanup!
+        if chunker:
+            chunker.cleanup_file()
+
         return json.dumps({
             'files': [result]
         })
+
+
+def safe_join(directory, filename):
+    """Safely join `directory` and `filename`.  If this cannot be done,
+    this function returns ``None``.
+    :param directory: the base directory.
+    :param filename: the untrusted filename relative to that directory.
+    """
+    filename = posixpath.normpath(filename)
+    for sep in _os_alt_seps:
+        if sep in filename:
+            return None
+    if os.path.isabs(filename) or filename.startswith('../'):
+        return None
+    return os.path.join(directory, filename)
