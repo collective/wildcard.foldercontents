@@ -392,7 +392,6 @@ class JUpload(BrowserView):
     def create_content(self, filedata, filename, chunker=None):
         if not filedata:
             return
-
         ctr = getToolByName(self.context, 'content_type_registry')
         type_ = ctr.findTypeName(filename.lower(), '', '') or 'File'
 

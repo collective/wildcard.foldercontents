@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.3.1 (2015-02-12)
+------------------
+
+ - fix filename issue when uploading large file
+   [vangheem]
+
+
 1.3.0 (2015-01-31)
 ------------------
 
