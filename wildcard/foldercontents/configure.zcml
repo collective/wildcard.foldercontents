@@ -51,6 +51,14 @@
       description="Installs the wildcard.foldercontents package"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
+  <genericsetup:registerProfile
+      name="uninstall"
+      title="wildcard.foldercontents: uninstall"
+      directory="profiles/uninstall"
+      description="Remove wildcard.foldercontents package"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
 
   <adapter factory=".factories.ATCTFileFactory" />
   <adapter factory=".factories.DXFileFactory" />
