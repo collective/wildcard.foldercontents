@@ -4,7 +4,8 @@ Changelog
 1.3.2 (Unreleased)
 ------------------
 
-- nothing done yet
+- really fix filename issue
+  [vangheem]
 
 
 1.3.1 (2015-02-12)
