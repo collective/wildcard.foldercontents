@@ -97,7 +97,7 @@
 
   <browser:page
     name="wcVocabulary"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    for="plone.app.layout.navigation.interfaces.INavigationRoot"
     class=".views.VocabularyView"
     permission="zope2.View"
     layer=".interfaces.ILayer"
@@ -113,7 +113,7 @@
 
   <browser:page
     name="qsOptions"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    for="plone.app.layout.navigation.interfaces.INavigationRoot"
     class=".views.QueryStringIndexOptions"
     permission="zope2.View"
     layer=".interfaces.ILayer"

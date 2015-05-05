@@ -27,6 +27,7 @@ from Products.CMFCore.utils import getToolByName
 
 from Products.CMFPlone import utils
 from Products.CMFPlone import PloneMessageFactory as _
+from plone.app.layout.navigation.interfaces import INavigationRoot
 from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
 
 from Products.Five import BrowserView
@@ -592,7 +593,7 @@ class ContextInfo(BrowserView):
 
         context = aq_inner(self.context)
         crumbs = []
-        while not IPloneSiteRoot.providedBy(context):
+        while not INavigationRoot.providedBy(context):
             crumbs.append({
                 'id': context.getId(),
                 'title': utils.pretty_title_or_id(context, context)

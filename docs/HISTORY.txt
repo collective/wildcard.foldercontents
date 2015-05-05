@@ -4,6 +4,10 @@ Changelog
 2.0rc1 (unreleased)
 -------------------
 
+- Register the wcVocabulary and other for INavigationRoot instead
+  IPloneSiteRoot. Enables collective.lineage compatibility.
+  [thet]
+
 - Fix tag-actions with non-ascii keywords
   [petschki]
 
