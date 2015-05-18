@@ -4,6 +4,9 @@ Changelog
 2.0rc1 (unreleased)
 -------------------
 
+- Align ``views.py`` with ``plone.app.content.browser.folder``.
+  [thet]
+
 - Register the wcVocabulary and other for INavigationRoot instead
   IPloneSiteRoot. Enables collective.lineage compatibility.
   [thet]

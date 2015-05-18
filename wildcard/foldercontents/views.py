@@ -1,55 +1,46 @@
-# XXX This is all ripped out of plone.app.toolbar
-
+# -*- coding: utf-8 -*-
 from AccessControl import Unauthorized
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-
 from DateTime import DateTime
-
-import inspect
-import json
-
-from logging import getLogger
-import os
 from OFS.CopySupport import CopyError
-import mimetypes
-import pkg_resources
-
+from Products.CMFCore.interfaces._content import IFolderish
+from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone import PloneMessageFactory as _
+from Products.CMFPlone import utils
+from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
+from Products.Five import BrowserView
+from Products.ResourceRegistries.browser.scripts import ScriptsView as BaseScriptsView  # noqa
+from Products.ZCTextIndex.ParseTree import ParseError
+from ZODB.POSException import ConflictError
+from logging import getLogger
+from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.querystring.interfaces import IQuerystringRegistryReader
 from plone.folder.interfaces import IExplicitOrdering
 from plone.protect.postonly import check as checkpost
 from plone.registry.interfaces import IRegistry
 from plone.uuid.interfaces import IUUID
-
-from Products.CMFCore.interfaces._content import IFolderish
-from Products.CMFCore.utils import getToolByName
-
-from Products.CMFPlone import utils
-from Products.CMFPlone import PloneMessageFactory as _
-from plone.app.layout.navigation.interfaces import INavigationRoot
-from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
-
-from Products.Five import BrowserView
-from Products.ZCTextIndex.ParseTree import ParseError
-
-import transaction
 from types import FunctionType
-
+from wildcard.foldercontents.interfaces import IATCTFileFactory
+from wildcard.foldercontents.interfaces import IDXFileFactory
 from wildcard.foldercontents.interfaces import ISlicableVocabulary
-from wildcard.foldercontents.interfaces import IATCTFileFactory, IDXFileFactory
-from Products.ResourceRegistries.browser.scripts import (
-    ScriptsView as BaseScriptsView
-)
-
-from zope.component import queryUtility, getUtility, getMultiAdapter
-from zope.component.hooks import getSite
-
+from wildcard.foldercontents.utils import json_dumps
+from wildcard.foldercontents.utils import json_loads
 from zope.browsermenu.interfaces import IBrowserMenu
+from zope.component import getMultiAdapter
+from zope.component import getUtility
+from zope.component import queryUtility
+from zope.component.hooks import getSite
+from zope.container.interfaces import INameChooser
 from zope.event import notify
 from zope.lifecycleevent import ObjectModifiedEvent
-from ZODB.POSException import ConflictError
 from zope.schema.interfaces import IVocabularyFactory
+import inspect
+import mimetypes
+import os
+import pkg_resources
+import transaction
 
 
 try:
@@ -75,7 +66,7 @@ def _tus_int(val):
     try:
         return int(val)
     except:
-        return 60*60  # default here...
+        return 60 * 60  # default here...
 
 
 possible_tus_options = {
@@ -185,7 +176,7 @@ class FolderContentsView(BrowserView):
                 'useTus': TUS_ENABLED
             }
         }
-        self.options = json.dumps(options)
+        self.options = json_dumps(options)
         return super(FolderContentsView, self).__call__()
 
 
@@ -209,11 +200,11 @@ class FolderContentsActionView(BrowserView):
 
     def json(self, data):
         self.request.response.setHeader("Content-Type", "application/json")
-        return json.dumps(data)
+        return json_dumps(data)
 
     def get_selection(self):
         selection = self.request.form.get('selection', '[]')
-        return json.loads(selection)
+        return json_loads(selection)
 
     def action(self, obj):
         """
@@ -235,8 +226,8 @@ class FolderContentsActionView(BrowserView):
         self.mtool = getToolByName(self.context, 'portal_membership')
 
         for brain in self.catalog(UID=selection):
-            selection.remove(brain.UID)  # remove everyone so we know if we
-                                         # missed any
+            # remove everyone so we know if we missed any
+            selection.remove(brain.UID)
             obj = brain.getObject()
             if self.required_obj_permission:
                 if not self.mtool.checkPermission(self.required_obj_permission,
@@ -334,7 +325,7 @@ class DeleteAction(FolderContentsActionView):
                                  mapping={u'title': title}))
             return
         else:
-            parent.manage_delObjects(obj.getId())
+            parent.manage_delObjects(obj.getId(), self.request)
 
 
 class RenameAction(FolderContentsActionView):
@@ -346,7 +337,7 @@ class RenameAction(FolderContentsActionView):
         self.protect()
         context = aq_inner(self.context)
 
-        torename = json.loads(self.request.form['torename'])
+        torename = json_loads(self.request.form['torename'])
 
         catalog = getToolByName(context, 'portal_catalog')
         mtool = getToolByName(context, 'portal_membership')
@@ -380,7 +371,14 @@ class RenameAction(FolderContentsActionView):
                     notify(ObjectModifiedEvent(obj))
                 if newid and obid != newid:
                     parent = aq_parent(aq_inner(obj))
-                    parent.manage_renameObjects((obid,), (newid,))
+                    # Make sure newid is safe
+                    newid = INameChooser(parent).chooseName(newid, obj)
+                    # Update the default_page on the parent.
+                    context_state = getMultiAdapter(
+                        (obj, self.request), name='plone_context_state')
+                    if context_state.is_default_page():
+                        parent.setDefaultPage(newid)
+                    parent.manage_renameObjects((obid, ), (newid, ))
                 elif change_title:
                     # the rename will have already triggered a reindex
                     obj.reindexObject()
@@ -398,10 +396,10 @@ class TagsAction(FolderContentsActionView):
     required_obj_permission = 'Modify portal content'
 
     def __call__(self):
-        self.remove = set([v.encode('utf8') for v in \
-            json.loads(self.request.form.get('remove'))])
-        self.add = set([v.encode('utf8') for v in \
-            json.loads(self.request.form.get('add'))])
+        self.remove = set([v.encode('utf8') for v in
+                           json_loads(self.request.form.get('remove'))])
+        self.add = set([v.encode('utf8') for v in
+                        json_loads(self.request.form.get('add'))])
         return super(TagsAction, self).__call__()
 
     def action(self, obj):
@@ -470,26 +468,26 @@ class PropertiesAction(FolderContentsActionView):
     required_obj_permission = 'Modify portal content'
 
     def __call__(self):
-        self.effectiveDate = self.request.form['effectiveDate']
-        effectiveTime = self.request.form['effectiveTime']
-        if effectiveTime:
+        self.effectiveDate = self.request.form.get('effectiveDate')
+        effectiveTime = self.request.form.get('effectiveTime')
+        if self.effectiveDate and effectiveTime:
             self.effectiveDate = self.effectiveDate + ' ' + effectiveTime
-        self.expirationDate = self.request.form['expirationDate']
-        expirationTime = self.request.form['expirationTime']
-        if expirationTime:
+        self.expirationDate = self.request.form.get('expirationDate')
+        expirationTime = self.request.form.get('expirationTime')
+        if self.expirationDate and expirationTime:
             self.expirationDate = self.expirationDate + ' ' + expirationTime
         self.copyright = self.request.form.get('copyright', '')
-        self.contributors = json.loads(
+        self.contributors = json_loads(
             self.request.form.get('contributors', '[]'))
-        self.creators = json.loads(self.request.form.get('creators', '[]'))
+        self.creators = json_loads(self.request.form.get('creators', '[]'))
         self.exclude = self.request.form.get('exclude_from_nav', None)
         return super(PropertiesAction, self).__call__()
 
     def dx_action(self, obj):
-        if self.effectiveDate and hasattr(obj, 'effective'):
-            obj.effective = DateTime(self.effectiveDate)
-        if self.expirationDate and hasattr(obj, 'expires'):
-            obj.expires = DateTime(self.expirationDate)
+        if self.effectiveDate and hasattr(obj, 'effective_date'):
+            obj.effective_date = DateTime(self.effectiveDate)
+        if self.expirationDate and hasattr(obj, 'expiration_date'):
+            obj.expiration_date = DateTime(self.expirationDate)
         if self.copyright and hasattr(obj, 'rights'):
             obj.rights = self.copyright
         if self.contributors and hasattr(obj, 'contributors'):
@@ -538,7 +536,7 @@ class ItemOrder(FolderContentsActionView):
         id = self.request.form.get('id')
         ordering = self.getOrdering()
         delta = self.request.form['delta']
-        subset_ids = json.loads(self.request.form.get('subset_ids', '[]'))
+        subset_ids = json_loads(self.request.form.get('subset_ids', '[]'))
 
         if delta == 'top':
             ordering.moveObjectsToTop([id])
@@ -625,7 +623,7 @@ class ContextInfo(BrowserView):
                     val = val[len(base_path):]
                 item[key] = val
 
-        return json.dumps({
+        return json_dumps({
             'addButtons': factories_menu,
             'defaultPage': self.context.getDefaultPage(),
             'breadcrumbs': [c for c in reversed(crumbs)],
@@ -669,7 +667,7 @@ class QueryStringIndexOptions(BrowserView):
         registry = getUtility(IRegistry)
         config = IQuerystringRegistryReader(registry)()
         self.request.response.setHeader("Content-Type", "application/json")
-        return json.dumps(config)
+        return json_dumps(config)
 
 
 _permissions = {
@@ -686,7 +684,7 @@ def _parseJSON(s):
         s = s.strip()
         if (s.startswith('{') and s.endswith('}')) or \
                 (s.startswith('[') and s.endswith(']')):  # detect if json
-            return json.loads(s)
+            return json_loads(s)
     return s
 
 
@@ -697,7 +695,7 @@ _safe_callable_metadata = ['getURL', 'getPath']
 class VocabularyView(BrowserView):
 
     def error(self):
-        return json.dumps({
+        return json_dumps({
             'results': [],
             'total': 0,
             'error': True
@@ -724,16 +722,16 @@ class VocabularyView(BrowserView):
 
         factory_name = self.request.get('name', None)
         if not factory_name:
-            return json.dumps({'error': 'No factory provided.'})
+            return json_dumps({'error': 'No factory provided.'})
         if factory_name not in _permissions:
-            return json.dumps({'error': 'Vocabulary lookup not allowed'})
+            return json_dumps({'error': 'Vocabulary lookup not allowed'})
         sm = getSecurityManager()
         if not sm.checkPermission(_permissions[factory_name], self.context):
             raise Unauthorized('You do not have permission to use this '
                                'vocabulary')
         factory = queryUtility(IVocabularyFactory, factory_name)
         if not factory:
-            return json.dumps({
+            return json_dumps({
                 'error': 'No factory with name "%s" exists.' % factory_name})
 
         # check if factory accepts query argument
@@ -770,9 +768,10 @@ class VocabularyView(BrowserView):
         try:
             total = len(vocabulary)
         except TypeError:
-            total = 0  # do not error if object does not support __len__
-                       # we'll check again later if we can figure some size
-                       # out
+            # do not error if object does not support __len__ we'll check again
+            # later if we can figure some size out
+            total = 0
+
         if batch and ('size' not in batch or 'page' not in batch):
             batch = None  # batching not providing correct options
             logger.error("A vocabulary request contained bad batch "
@@ -782,7 +781,7 @@ class VocabularyView(BrowserView):
             # must be slicable for batching support
             page = int(batch['page'])
             # page is being passed in is 1-based
-            start = (max(page-1, 0)) * int(batch['size'])
+            start = (max(page - 1, 0)) * int(batch['size'])
             end = start + int(batch['size'])
             vocabulary = vocabulary[start:end]
 
@@ -822,7 +821,7 @@ class VocabularyView(BrowserView):
         if total == 0:
             total = len(items)
 
-        return json.dumps({
+        return json_dumps({
             'results': items,
             'total': total
         })
@@ -926,7 +925,7 @@ class FileUploadView(BrowserView):
             'UID': IUUID(obj),
             'filename': filename
         })
-        return json.dumps(result)
+        return json_dumps(result)
 
 
 class ScriptsView(BaseScriptsView):
