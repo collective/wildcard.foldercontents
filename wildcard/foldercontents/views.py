@@ -15,6 +15,7 @@ from Products.ResourceRegistries.browser.scripts import ScriptsView as BaseScrip
 from Products.ZCTextIndex.ParseTree import ParseError
 from ZODB.POSException import ConflictError
 from logging import getLogger
+from plone.app.content.browser.interfaces import IFolderContentsView
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.querystring.interfaces import IQuerystringRegistryReader
 from plone.folder.interfaces import IExplicitOrdering
@@ -32,6 +33,7 @@ from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.component import queryUtility
 from zope.component.hooks import getSite
+from zope.interface import implementer
 from zope.container.interfaces import INameChooser
 from zope.event import notify
 from zope.lifecycleevent import ObjectModifiedEvent
@@ -101,6 +103,7 @@ if os.environ.get('TUS_ENABLED'):
         pass
 
 
+@implementer(IFolderContentsView)
 class FolderContentsView(BrowserView):
 
     def is_plone_41(self):
