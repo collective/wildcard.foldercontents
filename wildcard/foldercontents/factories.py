@@ -95,9 +95,14 @@ class DXFileFactory(object):
             # This will suffice for standard p.a.contenttypes File/Image
             # and any other custom type that would have 'File' or 'Image' in
             # its type name
+            filename = getattr(data, 'filename', '')
+            if not filename:
+                request_file = self.context.REQUEST.form.get('files[]')
+                if request_file:
+                    filename = request_file.filename
             if 'File' in type_:
                 file = NamedBlobFile(data=data.read(),
-                                     filename=safe_unicode(data.filename),
+                                     filename=safe_unicode(filename),
                                      contentType=content_type)
                 obj = createContentInContainer(self.context,
                                                type_,
@@ -105,7 +110,7 @@ class DXFileFactory(object):
                                                file=file)
             elif 'Image' in type_:
                 image = NamedBlobImage(data=data.read(),
-                                       filename=safe_unicode(data.filename),
+                                       filename=safe_unicode(filename),
                                        contentType=content_type)
                 obj = createContentInContainer(self.context,
                                                type_,
