@@ -4,6 +4,9 @@ Changelog
 2.0rc1 (unreleased)
 -------------------
 
+- Add uninstall profile.
+  [thet]
+
 - Let ``FolderContentsView`` implement
   ``plone.app.folder.interfaces.IFolderContentsView``. This allows to render
   the plone.contentactions menu items.
