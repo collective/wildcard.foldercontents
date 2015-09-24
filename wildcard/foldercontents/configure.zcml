@@ -22,9 +22,9 @@
       />
   <genericsetup:registerProfile
       name="uninstall"
-      title="wildcard.foldercontents"
+      title="wildcard.foldercontents UNINSTALL"
       directory="profiles/uninstall"
-      description="REMOVES the wildcard.foldercontents package"
+      description="removes the wildcard.foldercontents package"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
