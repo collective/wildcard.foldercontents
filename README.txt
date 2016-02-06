@@ -52,7 +52,7 @@ version pins::
 tus support
 -----------
 
-`tus`_ is a protocol aimed at supporting resuamble file uploads on the web.
+`tus`_ is a protocol aimed at supporting resumable file uploads on the web.
 
 add egg::
 
