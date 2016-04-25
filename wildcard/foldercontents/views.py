@@ -654,7 +654,7 @@ class Sort(FolderContentsActionView):
             brains = catalog(path={
                 'query': '/'.join(self.context.getPhysicalPath()),
                 'depth': 1
-            }, sort_on=self.request.form.get('sort_on'))
+            }, sort_on=self.request.form.get('rearrange_on'))
             if self.request.form.get('reversed') == 'true':
                 brains = [b for b in reversed(brains)]
             for idx, brain in enumerate(brains):
