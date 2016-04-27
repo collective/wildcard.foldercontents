@@ -4,6 +4,9 @@ Changelog
 2.0rc1 (unreleased)
 -------------------
 
+- Add translation to Braziliam Portuguese.
+  [rodfersou]
+
 - Add uninstall profile.
   [thet]
 
