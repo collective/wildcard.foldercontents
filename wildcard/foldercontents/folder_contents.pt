@@ -47,6 +47,15 @@
       #foldercontents-display-sortorder{
         float: right;
       }
+      .upload-use-drag-and-drop {
+        border-style: dashed;
+        border-color: #75ad0a;
+        border-width: 2px;
+        padding: 10px;
+        font-weight: bold;
+        display: inline;
+        margin: 10px;
+      }
       </style>
 
     </metal:css>
@@ -151,7 +160,7 @@
               style="display:none;">
           <!-- The fileupload-buttonbar contains buttons to add files and start/cancel the upload -->
           <div class="row fileupload-buttonbar">
-            <div class="span7">
+            <div class="span10">
               <!-- The fileinput-button span is used to style the file input field as button -->
               <span class="btn btn-success fileinput-button">
                 <i class="icon-plus icon-white"></i>
@@ -166,6 +175,11 @@
                 <i class="icon-ban-circle icon-white"></i>
                 <span i18n:translate="foldercontents_cancel_upload">Cancel upload</span>
               </button>
+              <div
+                class="upload-use-drag-and-drop"
+                i18n:translate="foldercontents_drag_and_drop_files">
+                Drag and drop files here to upload.
+              </div>
             </div>
           </div>
           <!-- The loading indicator is shown during file processing -->
