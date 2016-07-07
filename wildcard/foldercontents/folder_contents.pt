@@ -54,11 +54,6 @@
               tal:define="resources_url string:${context/portal_url}/++resource++wcfc">
       <!-- The template to display files available for upload -->
       <tal:templates tal:replace="structure view/jstemplates" />
-      <script type="text/javascript" src="++resource++wcfc/jquery.js"
-              tal:attributes="src string:${resources_url}/jquery.js"></script>
-      <script type="text/javascript" src="++resource++wcfc/js/jquery-ui.js"
-              tal:attributes="src string:${resources_url}/jquery-file-upload/js/jquery-ui.js"></script>
-
       <script type="text/javascript" src="++resource++wcfc/bootstrap/bootstrap.min.js"
               tal:attributes="src string:${resources_url}/bootstrap/bootstrap.min.js"></script>
       <script src="http://blueimp.github.com/JavaScript-Templates/tmpl.min.js"
