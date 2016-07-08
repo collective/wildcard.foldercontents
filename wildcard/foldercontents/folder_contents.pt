@@ -47,14 +47,20 @@
       #foldercontents-display-sortorder{
         float: right;
       }
-      .upload-use-drag-and-drop {
+      .drop-files-area {
         border-style: dashed;
         border-color: #75ad0a;
         border-width: 2px;
         padding: 10px;
-        font-weight: bold;
+        /*font-weight: bold;*/
         display: inline;
         margin: 10px;
+      }
+      .is-dragover {
+        background-color: #5bb75b;
+      }
+      .fileupload-buttonbar {
+        margin-bottom: 15px;
       }
       </style>
 
@@ -160,6 +166,12 @@
               style="display:none;">
           <!-- The fileupload-buttonbar contains buttons to add files and start/cancel the upload -->
           <div class="row fileupload-buttonbar">
+            <div class="span10 discreet" style="margin-bottom: 10px;">
+              Para enviar arquivos use o botão <em>Adicionar arquivos...</em> ou arraste e solte
+              arquivos para a área indicada.
+              <br/>
+              Depois de adicionar os arquivos clique em <em>Iniciar envio</em>.
+            </div>
             <div class="span10">
               <!-- The fileinput-button span is used to style the file input field as button -->
               <span class="btn btn-success fileinput-button">
@@ -175,11 +187,23 @@
                 <i class="icon-ban-circle icon-white"></i>
                 <span i18n:translate="foldercontents_cancel_upload">Cancel upload</span>
               </button>
-              <div
-                class="upload-use-drag-and-drop"
-                i18n:translate="foldercontents_drag_and_drop_files">
-                Drag and drop files here to upload.
+              <div class="drop-files-area">
+                Arraste e solte arquivos aqui
               </div>
+              <script>
+                $(document).ready(function(){
+
+                  var cssClass = 'is-dragover';
+                  var $area = $('.drop-files-area');
+
+                  $('#fileupload').on('dragover dragenter', function() {
+                    $area.addClass(cssClass);
+                  }).on('dragleave dragend drop', function() {
+                    $area.removeClass(cssClass);
+                  });
+                });
+
+              </script>
             </div>
           </div>
           <!-- The loading indicator is shown during file processing -->

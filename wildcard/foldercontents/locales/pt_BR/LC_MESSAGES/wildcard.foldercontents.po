@@ -130,7 +130,7 @@ msgstr "Mover para o topo"
 #. Default: "Reversed"
 #: ./folder_contents.pt:194
 msgid "foldercontents_reversed_order"
-msgstr "Inverter ordem"
+msgstr "Inverter"
 
 #. Default: "Sort folder"
 #: ./folder_contents.pt:196
@@ -140,7 +140,7 @@ msgstr "Ordenar pasta"
 #. Default: "Sort folder by..."
 #: ./table.pt:239
 msgid "foldercontents_sortby"
-msgstr "Ordenar pasta por..."
+msgstr "Ordenar pasta"
 
 #. Default: "Sort on:"
 #: ./folder_contents.pt:185
