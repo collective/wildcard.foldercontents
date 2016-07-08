@@ -79,7 +79,8 @@ class DXFileFactory(object):
         from plone.dexterity.utils import createContentInContainer
 
         ctr = getToolByName(self.context, 'content_type_registry')
-        type_ = ctr.findTypeName(name.lower(), '', '') or 'File'
+        type_ = ctr.findTypeName(name.lower(), '', '')
+        type_ = 'Image' if ('Image' in type_) else 'File'
 
         # otherwise I get ZPublisher.Conflict ConflictErrors
         # when uploading multiple files
