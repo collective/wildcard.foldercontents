@@ -443,7 +443,7 @@ class WorkflowAction(FolderContentsActionView):
                 'transitions': transitions
             })
 
-    def action(self, obj):
+    def action(self, obj, bypass_recurse=False):
         transitions = self.pworkflow.getTransitionsFor(obj)
         if self.transition_id in [t['id'] for t in transitions]:
             try:
@@ -454,8 +454,9 @@ class WorkflowAction(FolderContentsActionView):
                 self.pworkflow.doActionFor(obj, self.transition_id,
                                            comment=self.comments)
                 if self.putils.isDefaultPage(obj):
-                    self.action(obj.aq_parent.aq_parent)
-                if self.recurse and IFolderish.providedBy(obj):
+                    self.action(obj.aq_parent, bypass_recurse=True)
+                recurse = self.recurse and not bypass_recurse
+                if recurse and IFolderish.providedBy(obj):
                     for sub in obj.values():
                         self.action(sub)
             except ConflictError:

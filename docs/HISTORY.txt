@@ -4,6 +4,9 @@ Changelog
 2.0rc1 (unreleased)
 -------------------
 
+- fix recursive workflow actions
+  [petschki]
+
 - Add translation to Braziliam Portuguese.
   [rodfersou]
 
