@@ -11,6 +11,13 @@ var shifted = false;
 var last_checked = null;
 var fc;
 
+
+/* Given an string containing HTML, return a correspondent jQuery object. */
+function htmlToJquery(html, selector) {
+    var $e = $($.parseHTML(html));
+    return selector ? $e.find(selector) : $e;
+}
+
 fc = {
     sortable: function() {
         var sort_on = $('#foldercontents-order-column').data('sort_on');
@@ -50,7 +57,7 @@ fc = {
         $.ajax({
             url: last_folder_url,
             success: function(data) {
-                $('#listing-table').replaceWith($($.parseHTML(data)).find('#listing-table'));
+                $('#listing-table').replaceWith(htmlToJquery(data, '#listing-table'));
                 fc.initialize();
                 fc.hideLoading();
             }
@@ -94,7 +101,7 @@ fc = {
                             $.ajax({
                                 url: next.attr('href'),
                                 success: function(data) {
-                                    var html = $($.parseHTML(data));
+                                    var html = htmlToJquery(data);
                                     $('.listingBar').replaceWith(html.find('.listingBar').eq(0));
                                     $('#listing-table tbody').append(
                                         html.find('#listing-table tbody tr'));
@@ -136,7 +143,7 @@ fc = {
                     url: last_folder_url,
                     success: function(data) {
                         $('#' + container_id).replaceWith(
-                            $(data).find('#' + container_id));
+                            htmlToJquery(data, '#' + container_id));
                         fc.hideLoading();
                         fc.initialize();
                     }
@@ -198,7 +205,7 @@ fc = {
                 url: window.location.href,
                 success: function(data) {
                     $('#' + container_id).replaceWith(
-                        $($.parseHTML(data)).find('#' + container_id));
+                        htmlToJquery(data, '#' + container_id));
                     fc.hideLoading();
                     fc.initialize();
                 }
