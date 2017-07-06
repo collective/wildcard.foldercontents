@@ -4,6 +4,9 @@ Changelog
 2.0rc1 (unreleased)
 -------------------
 
+- fix JSResource hack for latest plone.app.widgets changes (aka. requirejs-unset/reset)
+  [petschki]
+
 - fix recursive workflow actions
   [petschki]
 
