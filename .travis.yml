@@ -11,7 +11,7 @@ matrix:
 install:
   - cp travis-$PLONE_VERSION.cfg travis.cfg
   - mkdir -p buildout-cache/downloads
-  - python bootstrap.py -c travis.cfg -v BUILDOUT_VERSION --setuptools-version=$SETUPTOOLS_VERSION
+  - python bootstrap.py -c travis.cfg -v $BUILDOUT_VERSION --setuptools-version=$SETUPTOOLS_VERSION
   - bin/buildout -c travis.cfg annotate
   - bin/buildout -c travis.cfg -N -q
 before_script:
